@@ -1,4 +1,4 @@
-package com.moz.qless.utils;
+package com.moz.qless.core;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -18,11 +18,11 @@ import com.google.common.io.Resources;
  *
  */
 public class LuaScript {
-  private final Logger LOGGER = LoggerFactory.getLogger(LuaScript.class);
-  public static final String SCRIPT = "qless.lua";
+  private final static Logger LOGGER = LoggerFactory.getLogger(LuaScript.class);
+  private static final String SCRIPT = "qless.lua";
   private final JedisPool jedisPool;
-  protected byte[] scriptContents;
-  protected byte[] sha1;
+  private byte[] scriptContents;
+  private byte[] sha1;
 
   public LuaScript(final JedisPool jedisPool) {
     this.jedisPool = jedisPool;
@@ -37,7 +37,7 @@ public class LuaScript {
     }
   }
 
-  byte[] scriptContents() throws IOException {
+  private byte[] scriptContents() throws IOException {
     if (null == this.scriptContents) {
       this.scriptContents = Resources
           .toByteArray(Resources.getResource(LuaScript.SCRIPT));
@@ -45,12 +45,11 @@ public class LuaScript {
     return this.scriptContents;
   }
 
-  synchronized byte[] sha1(final Jedis jedis) throws IOException {
+  private synchronized byte[] sha1(final Jedis jedis) throws IOException {
     if (null == this.sha1) {
       final byte[] script = this.scriptContents();
       this.sha1 = jedis.scriptLoad(script);
-      this.LOGGER.info("{} ({} bytes) uploaded to redis, sha1={}",
-          LuaScript.SCRIPT,
+      LuaScript.LOGGER.info("{} ({} bytes) uploaded to redis, sha1={}", LuaScript.SCRIPT,
           new DecimalFormat("#,##0.#").format(script.length),
           SafeEncoder.encode(this.sha1));
     }

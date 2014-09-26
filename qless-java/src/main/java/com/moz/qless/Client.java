@@ -3,7 +3,7 @@ package com.moz.qless;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.moz.qless.utils.LuaScript;
+import com.moz.qless.core.LuaScript;
 
 import redis.clients.jedis.JedisPool;
 
@@ -12,7 +12,7 @@ import redis.clients.jedis.JedisPool;
  *
  */
 public class Client {
-  final Logger LOGGER = LoggerFactory.getLogger(Client.class);
+  private final static Logger LOGGER = LoggerFactory.getLogger(Client.class);
   protected JedisPool jedisPool;
   protected LuaScript luaScript;
   protected Config config;
@@ -23,7 +23,7 @@ public class Client {
   public Client(final JedisPool jedisPool) {
   }
 
-  Object call(final String command, final String... args) {
+  public Object call(final String command, final String... args) {
     return null;
   }
 }
