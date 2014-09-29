@@ -1,5 +1,7 @@
 package com.moz.qless.core;
 
+import com.google.common.io.Resources;
+
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.List;
@@ -11,14 +13,12 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.util.SafeEncoder;
 
-import com.google.common.io.Resources;
-
 /**
  * A single unified core script to interact with qless-core.
  *
  */
 public class LuaScript {
-  private final static Logger LOGGER = LoggerFactory.getLogger(LuaScript.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(LuaScript.class);
   private static final String SCRIPT = "qless.lua";
   private final JedisPool jedisPool;
   private byte[] scriptContents;
@@ -28,7 +28,8 @@ public class LuaScript {
     this.jedisPool = jedisPool;
   }
 
-  public Object call(final List<String> keys, final List<String> args) throws IOException {
+  public Object call(final List<String> keys, final List<String> args)
+      throws IOException {
     final Jedis jedis = this.jedisPool.getResource();
     try {
       return jedis.evalsha(SafeEncoder.encode(this.sha1(jedis)), keys, args);

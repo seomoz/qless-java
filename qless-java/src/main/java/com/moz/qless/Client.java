@@ -1,9 +1,9 @@
 package com.moz.qless;
 
+import com.moz.qless.core.LuaScript;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.moz.qless.core.LuaScript;
 
 import redis.clients.jedis.JedisPool;
 
@@ -12,7 +12,7 @@ import redis.clients.jedis.JedisPool;
  *
  */
 public class Client {
-  private final static Logger LOGGER = LoggerFactory.getLogger(Client.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(Client.class);
   protected JedisPool jedisPool;
   protected LuaScript luaScript;
   protected Config config;
