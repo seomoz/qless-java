@@ -1,10 +1,10 @@
 package com.moz.qless.core;
 
-import com.google.common.io.Resources;
-
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.List;
+
+import com.google.common.io.Resources;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
