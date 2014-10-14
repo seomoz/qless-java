@@ -1,29 +1,124 @@
 package com.moz.qless;
 
-import com.moz.qless.core.LuaScript;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
+import com.moz.qless.client.ClientHelper;
+import com.moz.qless.client.Jobs;
+import com.moz.qless.client.Queues;
+import com.moz.qless.lua.LuaCommand;
+import com.moz.qless.lua.LuaScript;
+import com.moz.qless.utils.JsonUtils;
+
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.type.JavaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import redis.clients.jedis.JedisPool;
 
-/**
- * Basic qless client object.
- *
- */
 public class Client {
   private static final Logger LOGGER = LoggerFactory.getLogger(Client.class);
-  protected JedisPool jedisPool;
-  protected LuaScript luaScript;
-  protected Config config;
-  protected Events events;
-  protected Jobs jobs;
-  protected Queues queues;
+  private final Config config;
+  private final Events events;
+  private final JedisPool jedisPool;
 
-  public Client(final JedisPool jedisPool) {
+  private final Jobs jobs;
+  public Jobs getJobs() {
+    return this.jobs;
   }
 
-  public Object call(final String command, final String... args) {
-    return null;
+  private final LuaScript luaScript;
+  private final Queues queues;
+
+  public Client(final JedisPool jedisPool) {
+    this.jedisPool = jedisPool;
+    this.luaScript = new LuaScript(this.jedisPool);
+    this.config = new Config(this);
+    this.events = new Events(this.jedisPool);
+    this.jobs = new Jobs(this);
+    this.queues = new Queues(this);
+  }
+
+  Object call(final String command, final List<String> args) throws IOException {
+    final List<String> argsList = new ArrayList<String>();
+    argsList.add(command);
+    argsList.add(ClientHelper.getCurrentSeconds());
+
+    for (final String arg : args) {
+      argsList.add(arg);
+    }
+
+    final List<String> keysList = new ArrayList<String>();
+    if (Client.LOGGER.isDebugEnabled()) {
+      Client.LOGGER.debug("{}", argsList);
+    }
+
+    return this.luaScript.call(keysList, argsList);
+  }
+
+  public Object call(final String command, final String... args) throws IOException {
+    final List<String> argsList = new ArrayList<String>();
+    for (final String arg : args) {
+      argsList.add(arg);
+    }
+
+    return this.call(command, argsList);
+  }
+
+  public Config getConfig() {
+    return this.config;
+  }
+
+  public JedisPool getJedisPool() {
+    return this.jedisPool;
+  }
+
+  public List<String> tags(final int offset, final int count) throws IOException {
+    final List<String> params = Arrays.asList(
+        "top",
+        String.valueOf(offset),
+        String.valueOf(count));
+
+    final Object result = this.call(
+        LuaCommand.TAG.toString(),
+        params);
+
+    final JavaType javaType = new ObjectMapper().getTypeFactory()
+        .constructCollectionType(ArrayList.class, String.class);
+    return JsonUtils.parse(result.toString(), javaType);
+  }
+
+  public List<String> tags() throws IOException {
+    return this.tags(0, 100);
+  }
+
+  public void track(final String jid) throws IOException {
+    this.call(
+        LuaCommand.TRACK.toString(),
+        LuaCommand.TRACK.toString(),
+        jid);
+  }
+
+  public void untrack(final String jid) throws IOException {
+    this.call(
+        LuaCommand.TRACK.toString(),
+        LuaCommand.UNTRACK.toString(),
+        jid);
+  }
+
+  public void unfail(final String group, final String queue) throws IOException {
+    this.unfail(group, queue, 500);
+  }
+
+  public void unfail(final String group, final String queue, final int count)
+      throws IOException {
+    this.call(LuaCommand.UNFAIL.toString(), queue, group, String.valueOf(count));
+  }
+
+  public String workerName() {
+    return ClientHelper.getHostName() + "-" + ClientHelper.getPid();
   }
 }
