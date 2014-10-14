@@ -1,0 +1,7 @@
+language: java
+services:
+  - redis-server
+before_install:
+  - git submodule update --init --recursive
+  - make -C qless-java/src/qless-core/
+script: mvn clean test
