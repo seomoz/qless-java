@@ -1,59 +1,108 @@
 package com.moz.qless;
 
-import static org.junit.Assert.*;
+import java.io.IOException;
+import java.util.Map;
+
+import com.moz.qless.client.ClientHelper;
+import com.moz.qless.lua.LuaConfigParameter;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
+
 public class ConfigTest {
+  private final JedisPool jedisPool = new JedisPool(ClientHelper.DEFAULT_HOSTNAME);
+  private Client client;
+  private final String testKey = "foo";
+  private final String testKeyValue = "1";
 
-  @Test
-  public void setGetUnset() {
-    Assert.fail("Not yet implemented");
+  @Before
+  public void before() throws IOException {
+      final Jedis jedis = this.jedisPool.getResource();
+      try {
+          jedis.flushDB();
+      } finally {
+          this.jedisPool.returnResource(jedis);
+      }
+
+      this.client = new Client(this.jedisPool);
   }
 
   @Test
-  public void getAll() {
-    Assert.fail("Not yet implemented: ");
+  public void getAll() throws IOException {
+    final Map<String, Object> config = this.client.getConfig().getAll();
+
+    Assert.assertEquals(ClientHelper.DEFAULT_HEARTBEAT,
+        config.get(LuaConfigParameter.HEARTBEAT.toString()));
+    Assert.assertEquals(ClientHelper.DEFAULT_APPLICATION,
+        config.get(LuaConfigParameter.APPLICATION.toString()));
+    Assert.assertEquals(ClientHelper.DEFAULT_GRACE_PERIOD,
+        config.get(LuaConfigParameter.GRACE_PERIOD.toString()));
+    Assert.assertEquals(ClientHelper.DEFAULT_JOBS_HISTORY,
+        config.get(LuaConfigParameter.JOBS_HISTORY.toString()));
+    Assert.assertEquals(ClientHelper.DEFAULT_STATS_HISTORY,
+        config.get(LuaConfigParameter.STATS_HISTORY.toString()));
+    Assert.assertEquals(ClientHelper.DEFAULT_HISTOGRAM_HISTORY,
+        config.get(LuaConfigParameter.HISTOGRAM_HISTORY.toString()));
+    Assert.assertEquals(ClientHelper.DEFAULT_JOBS_HISTORY_COUNT,
+        config.get(LuaConfigParameter.JOBS_HISTORY_COUNT.toString()));
   }
 
   @Test
-  public void clear() {
-    Assert.fail("Not yet implemented: ");
+  public void setGetUnset() throws IOException {
+    final String itemName = "testing";
+    this.client.getConfig().update(itemName, this.testKey);
+    Assert.assertEquals(this.testKey, this.client.getConfig().get(itemName));
+    Assert.assertEquals(this.testKey, this.client.getConfig().getAll().get(itemName));
+
+    this.client.getConfig().clear(itemName);
+    Assert.assertEquals(null, this.client.getConfig().get(itemName));
   }
 
   @Test
-  public void attributeError() {
-    Assert.fail("Not yet implemented: ");
+  public void clear() throws IOException {
+    final Map<String, Object> originalConfig = this.client.getConfig().getAll();
+    for (final String key : originalConfig.keySet()) {
+      this.client.getConfig().update(key, this.testKeyValue);
+    }
+
+    this.client.getConfig().clear();
+    Assert.assertEquals(originalConfig, this.client.getConfig().getAll());
   }
 
   @Test
-  public void len() {
-    Assert.fail("Not yet implemented: ");
+  public void len() throws IOException {
+    Assert.assertEquals(7, this.client.getConfig().getAll().size());
   }
 
   @Test
-  public void contains() {
-    Assert.fail("Not yet implemented: ");
+  public void contains() throws IOException {
+    Assert.assertFalse(this.client.getConfig().getAll().containsKey(this.testKey));
+    this.client.getConfig().update(this.testKey, this.testKeyValue);
+    Assert.assertTrue(this.client.getConfig().getAll().containsKey(this.testKey));
   }
 
   @Test
-  public void iter() {
-    Assert.fail("Not yet implemented: ");
+  public void get() throws IOException {
+    this.client.getConfig().update(this.testKey, this.testKeyValue);
+    Assert.assertEquals(this.testKeyValue, this.client.getConfig().get(this.testKey));
   }
 
   @Test
-  public void get() {
-    Assert.fail("Not yet implemented: ");
+  public void pop() throws IOException {
+    this.client.getConfig().update(this.testKey, this.testKeyValue);
+    Assert.assertEquals(this.testKeyValue, this.client.getConfig().pop(this.testKey));
+    Assert.assertFalse(this.client.getConfig().getAll().containsKey(this.testKey));
   }
 
   @Test
-  public void pop() {
-    Assert.fail("Not yet implemented: ");
-  }
-
-  @Test
-  public void update() {
-    Assert.fail("Not yet implemented: ");
+  public void update() throws IOException {
+    this.client.getConfig().update(this.testKey, this.testKeyValue);
+    Assert.assertEquals(this.testKeyValue, this.client.getConfig().pop(this.testKey));
+    this.client.getConfig().update(this.testKey, "2");
+    Assert.assertEquals("2", this.client.getConfig().pop(this.testKey));
   }
 }
