@@ -18,7 +18,7 @@ public class LuaScript {
   private static final String SCRIPT = "qless.lua";
   private final JedisPool jedisPool;
   private byte[] scriptContents;
-  private byte[] sha1;
+  private String encodedSha1;
 
   public LuaScript(final JedisPool jedisPool) {
     this.jedisPool = jedisPool;
@@ -28,7 +28,7 @@ public class LuaScript {
       throws IOException {
     final Jedis jedis = this.jedisPool.getResource();
     try {
-      return jedis.evalsha(SafeEncoder.encode(this.sha1(jedis)), keys, args);
+      return jedis.evalsha(this.calculateSha1(jedis), keys, args);
     } finally {
       this.jedisPool.returnResource(jedis);
     }
@@ -43,17 +43,17 @@ public class LuaScript {
     return this.scriptContents;
   }
 
-  private byte[] sha1(final Jedis jedis) throws IOException {
-    if (null == this.sha1) {
+  private String calculateSha1(final Jedis jedis) throws IOException {
+    if (null == this.encodedSha1) {
       final byte[] script = this.scriptContents();
-      this.sha1 = jedis.scriptLoad(script);
+      this.encodedSha1 = SafeEncoder.encode(jedis.scriptLoad(script));
       LuaScript.LOGGER.info(
           "{} ({} bytes) uploaded to redis, sha1={}",
           LuaScript.SCRIPT,
           new DecimalFormat("#,##0.#").format(script.length),
-          SafeEncoder.encode(this.sha1));
+          this.encodedSha1);
     }
 
-    return this.sha1;
+    return this.encodedSha1;
   }
 }

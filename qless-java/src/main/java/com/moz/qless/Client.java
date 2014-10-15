@@ -33,6 +33,16 @@ public class Client {
   private final LuaScript luaScript;
   private final Queues queues;
 
+  private static final List<String> KEYS_LIST = new ArrayList<String>();
+
+  public Client() {
+    this(new JedisPool(ClientHelper.DEFAULT_HOSTNAME));
+  }
+
+  public Client(final String url) {
+    this(new JedisPool(url));
+  }
+
   public Client(final JedisPool jedisPool) {
     this.jedisPool = jedisPool;
     this.luaScript = new LuaScript(this.jedisPool);
@@ -51,21 +61,13 @@ public class Client {
       argsList.add(arg);
     }
 
-    final List<String> keysList = new ArrayList<String>();
-    if (Client.LOGGER.isDebugEnabled()) {
-      Client.LOGGER.debug("{}", argsList);
-    }
+    Client.LOGGER.debug("{}", argsList);
 
-    return this.luaScript.call(keysList, argsList);
+    return this.luaScript.call(Client.KEYS_LIST, argsList);
   }
 
   public Object call(final String command, final String... args) throws IOException {
-    final List<String> argsList = new ArrayList<String>();
-    for (final String arg : args) {
-      argsList.add(arg);
-    }
-
-    return this.call(command, argsList);
+    return this.call(command, Arrays.asList(args));
   }
 
   public Config getConfig() {
