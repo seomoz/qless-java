@@ -33,7 +33,7 @@ public class ConfigTest {
 
   @Test
   public void getAll() throws IOException {
-    final Map<String, Object> config = this.client.getConfig().getAll();
+    final Map<String, Object> config = this.client.getConfig().getMap();
 
     Assert.assertEquals(ClientHelper.DEFAULT_HEARTBEAT,
         config.get(LuaConfigParameter.HEARTBEAT.toString()));
@@ -54,9 +54,9 @@ public class ConfigTest {
   @Test
   public void setGetUnset() throws IOException {
     final String itemName = "testing";
-    this.client.getConfig().update(itemName, this.testKey);
+    this.client.getConfig().put(itemName, this.testKey);
     Assert.assertEquals(this.testKey, this.client.getConfig().get(itemName));
-    Assert.assertEquals(this.testKey, this.client.getConfig().getAll().get(itemName));
+    Assert.assertEquals(this.testKey, this.client.getConfig().getMap().get(itemName));
 
     this.client.getConfig().clear(itemName);
     Assert.assertEquals(null, this.client.getConfig().get(itemName));
@@ -64,45 +64,45 @@ public class ConfigTest {
 
   @Test
   public void clear() throws IOException {
-    final Map<String, Object> originalConfig = this.client.getConfig().getAll();
+    final Map<String, Object> originalConfig = this.client.getConfig().getMap();
     for (final String key : originalConfig.keySet()) {
-      this.client.getConfig().update(key, this.testKeyValue);
+      this.client.getConfig().put(key, this.testKeyValue);
     }
 
     this.client.getConfig().clear();
-    Assert.assertEquals(originalConfig, this.client.getConfig().getAll());
+    Assert.assertEquals(originalConfig, this.client.getConfig().getMap());
   }
 
   @Test
   public void len() throws IOException {
-    Assert.assertEquals(7, this.client.getConfig().getAll().size());
+    Assert.assertEquals(7, this.client.getConfig().getMap().size());
   }
 
   @Test
   public void contains() throws IOException {
-    Assert.assertFalse(this.client.getConfig().getAll().containsKey(this.testKey));
-    this.client.getConfig().update(this.testKey, this.testKeyValue);
-    Assert.assertTrue(this.client.getConfig().getAll().containsKey(this.testKey));
+    Assert.assertFalse(this.client.getConfig().getMap().containsKey(this.testKey));
+    this.client.getConfig().put(this.testKey, this.testKeyValue);
+    Assert.assertTrue(this.client.getConfig().getMap().containsKey(this.testKey));
   }
 
   @Test
   public void get() throws IOException {
-    this.client.getConfig().update(this.testKey, this.testKeyValue);
+    this.client.getConfig().put(this.testKey, this.testKeyValue);
     Assert.assertEquals(this.testKeyValue, this.client.getConfig().get(this.testKey));
   }
 
   @Test
   public void pop() throws IOException {
-    this.client.getConfig().update(this.testKey, this.testKeyValue);
+    this.client.getConfig().put(this.testKey, this.testKeyValue);
     Assert.assertEquals(this.testKeyValue, this.client.getConfig().pop(this.testKey));
-    Assert.assertFalse(this.client.getConfig().getAll().containsKey(this.testKey));
+    Assert.assertFalse(this.client.getConfig().getMap().containsKey(this.testKey));
   }
 
   @Test
   public void update() throws IOException {
-    this.client.getConfig().update(this.testKey, this.testKeyValue);
+    this.client.getConfig().put(this.testKey, this.testKeyValue);
     Assert.assertEquals(this.testKeyValue, this.client.getConfig().pop(this.testKey));
-    this.client.getConfig().update(this.testKey, "2");
+    this.client.getConfig().put(this.testKey, "2");
     Assert.assertEquals("2", this.client.getConfig().pop(this.testKey));
   }
 }

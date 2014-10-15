@@ -19,7 +19,7 @@ public class Config {
     this.client = client;
   }
 
-  public Map<String, Object> items() throws IOException {
+  public Map<String, Object> getMap() throws IOException {
     final Object result = this.client.call(LuaCommand.CONFIG_GET.toString());
 
     final JavaType javaType = new ObjectMapper().getTypeFactory().constructMapType(
@@ -27,13 +27,13 @@ public class Config {
     return JsonUtils.parse(result.toString(), javaType);
   }
 
-  public List<String> keys() throws IOException {
-    final Map<String, Object> items = this.items();
+  public List<String> keySet() throws IOException {
+    final Map<String, Object> items = this.getMap();
     return new ArrayList<String>(items.keySet());
   }
 
   public List<Object> values() throws IOException {
-    final Map<String, Object> items = this.items();
+    final Map<String, Object> items = this.getMap();
     return new ArrayList<Object>(items.values());
   }
 
@@ -43,17 +43,7 @@ public class Config {
         key);
   }
 
-  @SuppressWarnings("unchecked")
-  public Map<String, Object> getAll() throws IOException {
-    final Object result = this.client.call(
-        LuaCommand.CONFIG_GET.toString());
-
-    final JavaType javaType = new ObjectMapper().getTypeFactory().constructMapType(
-        HashMap.class, String.class, Object.class);
-    return (Map<String, Object>) JsonUtils.parse(result.toString(), javaType);
-  }
-
-  public void update(final String key, final Object value) throws IOException {
+  public void put(final String key, final Object value) throws IOException {
     this.client.call(
         LuaCommand.CONFIG_SET.toString(),
         key,
@@ -74,7 +64,7 @@ public class Config {
   }
 
   public void clear() throws IOException {
-    for (final String key : this.keys()) {
+    for (final String key : this.keySet()) {
       this.clear(key);
     }
   }
