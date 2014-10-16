@@ -58,7 +58,7 @@ public class ConfigTest {
     Assert.assertEquals(this.testKey, this.client.getConfig().get(itemName));
     Assert.assertEquals(this.testKey, this.client.getConfig().getMap().get(itemName));
 
-    this.client.getConfig().clear(itemName);
+    this.client.getConfig().remove(itemName);
     Assert.assertEquals(null, this.client.getConfig().get(itemName));
   }
 

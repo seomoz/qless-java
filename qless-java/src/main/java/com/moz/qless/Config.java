@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.moz.qless.lua.LuaCommand;
 import com.moz.qless.utils.JsonUtils;
@@ -27,9 +28,9 @@ public class Config {
     return JsonUtils.parse(result.toString(), javaType);
   }
 
-  public List<String> keySet() throws IOException {
+  public Set<String> keySet() throws IOException {
     final Map<String, Object> items = this.getMap();
-    return new ArrayList<String>(items.keySet());
+    return items.keySet();
   }
 
   public List<Object> values() throws IOException {
@@ -52,12 +53,12 @@ public class Config {
 
   public Object pop(final String key) throws IOException {
     final Object value = this.get(key);
-    this.clear(key);
+    this.remove(key);
 
     return value;
   }
 
-  public void clear(final String key) throws IOException {
+  public void remove(final String key) throws IOException {
     this.client.call(
         LuaCommand.CONFIG_UNSET.toString(),
         key);
@@ -65,7 +66,7 @@ public class Config {
 
   public void clear() throws IOException {
     for (final String key : this.keySet()) {
-      this.clear(key);
+      this.remove(key);
     }
   }
 }
