@@ -1,6 +1,7 @@
 package com.moz.qless;
 
 import com.google.common.base.Objects;
+import com.moz.qless.lua.LuaJobStatus;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 
@@ -65,13 +66,13 @@ public class QueueCounts {
   public String toString() {
       return Objects.toStringHelper(this)
               .add("name", this.name)
-              .add("paused", this.paused)
-              .add("running", this.running)
-              .add("waiting", this.waiting)
-              .add("recurring", this.recurring)
-              .add("depends", this.depends)
-              .add("stalled", this.stalled)
-              .add("scheduled", this.scheduled)
+              .add(LuaJobStatus.PAUSED.toString(), this.paused)
+              .add(LuaJobStatus.RUNNING.toString(), this.running)
+              .add(LuaJobStatus.WAITING.toString(), this.waiting)
+              .add(LuaJobStatus.RECURRING.toString(), this.recurring)
+              .add(LuaJobStatus.DEPENDS.toString(), this.depends)
+              .add(LuaJobStatus.STALLED.toString(), this.stalled)
+              .add(LuaJobStatus.SCHEDULED.toString(), this.scheduled)
               .toString();
   }
 }
