@@ -15,7 +15,6 @@ import org.codehaus.jackson.map.InjectableValues;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.JavaType;
 
-@SuppressWarnings("unchecked")
 public class Jobs {
   private final Client client;
 
@@ -30,6 +29,7 @@ public class Jobs {
   /**
    * Return the paginated job objects of complete jobs
    */
+  @SuppressWarnings("unchecked")
   public List<String> complete(final int offset, final int count) throws IOException {
     final Object result = this.client.call(
         LuaCommand.JOBS.toString(),

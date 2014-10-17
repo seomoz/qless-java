@@ -101,7 +101,7 @@ public class JobsTest {
 
   @Test
   public void tagged() throws IOException {
-    Assert.assertEquals(null, this.client.getJobs().tagged(JobsTest.DEFAULT_NAME));
+    Assert.assertNull(this.client.getJobs().tagged(JobsTest.DEFAULT_NAME));
 
     final Map<String, Object> opts1 = new HashMap<>();
     opts1.put(LuaConfigParameter.TAGS.toString(), Arrays.asList(JobsTest.DEFAULT_NAME));
