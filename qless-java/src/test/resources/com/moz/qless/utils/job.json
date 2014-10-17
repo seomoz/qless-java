@@ -1,0 +1,33 @@
+{
+  "jid": "8fbb94d60c3249f9a466c74ef57740fc",
+  "retries": 3,
+  "data": "{}",
+  "failure": {
+    
+  },
+  "expires": 0,
+  "remaining": 5,
+  "spawned_from_jid": false,
+  "dependencies": {
+    
+  },
+  "klass": "foo",
+  "tracked": false,
+  "tags": {
+    
+  },
+  "queue": "foo",
+  "state": "waiting",
+  "history": [
+    {
+      "when": 152681526,
+      "q": "foo",
+      "what": "put"
+    }
+  ],
+  "dependents": {
+    
+  },
+  "priority": 1,
+  "worker": "johnzhu_mac-7288"
+}
