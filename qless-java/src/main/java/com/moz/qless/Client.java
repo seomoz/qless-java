@@ -123,4 +123,8 @@ public class Client {
   public String workerName() {
     return ClientHelper.getHostName() + "-" + ClientHelper.getPid();
   }
+
+  public Queues getQueues() {
+    return this.queues;
+  }
 }
