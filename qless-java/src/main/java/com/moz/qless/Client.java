@@ -52,7 +52,7 @@ public class Client {
     this.queues = new Queues(this);
   }
 
-  Object call(final String command, final List<String> args) throws IOException {
+  public Object call(final String command, final List<String> args) throws IOException {
     final List<String> argsList = new ArrayList<String>();
     argsList.add(command);
     argsList.add(ClientHelper.getCurrentSeconds());
@@ -122,5 +122,9 @@ public class Client {
 
   public String workerName() {
     return ClientHelper.getHostName() + "-" + ClientHelper.getPid();
+  }
+
+  public Queues getQueues() {
+    return this.queues;
   }
 }
