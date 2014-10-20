@@ -4,13 +4,13 @@ import java.io.IOException;
 import java.util.List;
 
 import com.moz.qless.Client;
+import com.moz.qless.ClientCreation;
 import com.moz.qless.QueueCounts;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
 public class QueuesTest {
@@ -20,14 +20,7 @@ public class QueuesTest {
 
   @Before
   public void before() throws IOException {
-    final Jedis jedis = this.jedisPool.getResource();
-    try {
-      jedis.flushDB();
-    } finally {
-      this.jedisPool.returnResource(jedis);
-    }
-
-    this.client = new Client(this.jedisPool);
+    this.client = ClientCreation.create(this.jedisPool);
   }
 
   @Test

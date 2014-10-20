@@ -11,7 +11,6 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
 public class ClientTest {
@@ -23,14 +22,7 @@ public class ClientTest {
 
   @Before
   public void before() throws IOException {
-    final Jedis jedis = this.jedisPool.getResource();
-    try {
-      jedis.flushDB();
-    } finally {
-      this.jedisPool.returnResource(jedis);
-    }
-
-    this.client = new Client(this.jedisPool);
+    this.client = ClientCreation.create(this.jedisPool);
     this.queue = new Queue(this.client, this.defaultName);
   }
 

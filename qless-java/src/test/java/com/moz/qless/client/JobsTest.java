@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.moz.qless.Client;
+import com.moz.qless.ClientCreation;
 import com.moz.qless.lua.LuaConfigParameter;
 import com.moz.qless.Queue;
 
@@ -15,7 +16,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
 public class JobsTest {
@@ -26,15 +26,8 @@ public class JobsTest {
 
   @Before
   public void before() throws IOException {
-      final Jedis jedis = this.jedisPool.getResource();
-      try {
-          jedis.flushDB();
-      } finally {
-          this.jedisPool.returnResource(jedis);
-      }
-
-      this.client = new Client(this.jedisPool);
-      this.queue = new Queue(this.client, JobsTest.DEFAULT_NAME);
+    this.client = ClientCreation.create(this.jedisPool);
+    this.queue = new Queue(this.client, JobsTest.DEFAULT_NAME);
   }
 
   @Test

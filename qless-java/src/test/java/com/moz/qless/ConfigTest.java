@@ -10,7 +10,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
 public class ConfigTest {
@@ -21,14 +20,7 @@ public class ConfigTest {
 
   @Before
   public void before() throws IOException {
-      final Jedis jedis = this.jedisPool.getResource();
-      try {
-          jedis.flushDB();
-      } finally {
-          this.jedisPool.returnResource(jedis);
-      }
-
-      this.client = new Client(this.jedisPool);
+    this.client = ClientCreation.create(this.jedisPool);
   }
 
   @Test
