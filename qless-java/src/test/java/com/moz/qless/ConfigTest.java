@@ -3,6 +3,9 @@ package com.moz.qless;
 import java.io.IOException;
 import java.util.Map;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+
 import com.moz.qless.client.ClientHelper;
 import com.moz.qless.lua.LuaConfigParameter;
 
@@ -27,31 +30,35 @@ public class ConfigTest {
   public void getAll() throws IOException {
     final Map<String, Object> config = this.client.getConfig().getMap();
 
-    Assert.assertEquals(ClientHelper.DEFAULT_HEARTBEAT,
-        config.get(LuaConfigParameter.HEARTBEAT.toString()));
-    Assert.assertEquals(ClientHelper.DEFAULT_APPLICATION,
-        config.get(LuaConfigParameter.APPLICATION.toString()));
-    Assert.assertEquals(ClientHelper.DEFAULT_GRACE_PERIOD,
-        config.get(LuaConfigParameter.GRACE_PERIOD.toString()));
-    Assert.assertEquals(ClientHelper.DEFAULT_JOBS_HISTORY,
-        config.get(LuaConfigParameter.JOBS_HISTORY.toString()));
-    Assert.assertEquals(ClientHelper.DEFAULT_STATS_HISTORY,
-        config.get(LuaConfigParameter.STATS_HISTORY.toString()));
-    Assert.assertEquals(ClientHelper.DEFAULT_HISTOGRAM_HISTORY,
-        config.get(LuaConfigParameter.HISTOGRAM_HISTORY.toString()));
-    Assert.assertEquals(ClientHelper.DEFAULT_JOBS_HISTORY_COUNT,
-        config.get(LuaConfigParameter.JOBS_HISTORY_COUNT.toString()));
+    assertThat((int) config.get(LuaConfigParameter.HEARTBEAT.toString()),
+        equalTo(ClientHelper.DEFAULT_HEARTBEAT));
+    assertThat((String) config.get(LuaConfigParameter.APPLICATION.toString()),
+        equalTo(ClientHelper.DEFAULT_APPLICATION));
+    assertThat((int) config.get(LuaConfigParameter.GRACE_PERIOD.toString()),
+        equalTo(ClientHelper.DEFAULT_GRACE_PERIOD));
+    assertThat((int) config.get(LuaConfigParameter.JOBS_HISTORY.toString()),
+        equalTo(ClientHelper.DEFAULT_JOBS_HISTORY));
+    assertThat((int) config.get(LuaConfigParameter.STATS_HISTORY.toString()),
+        equalTo(ClientHelper.DEFAULT_STATS_HISTORY));
+    assertThat((int) config.get(LuaConfigParameter.HISTOGRAM_HISTORY.toString()),
+        equalTo(ClientHelper.DEFAULT_HISTOGRAM_HISTORY));
+    assertThat((int) config.get(LuaConfigParameter.JOBS_HISTORY_COUNT.toString()),
+        equalTo(ClientHelper.DEFAULT_JOBS_HISTORY_COUNT));
   }
 
   @Test
   public void setGetUnset() throws IOException {
     final String itemName = "testing";
     this.client.getConfig().put(itemName, this.testKey);
-    Assert.assertEquals(this.testKey, this.client.getConfig().get(itemName));
-    Assert.assertEquals(this.testKey, this.client.getConfig().getMap().get(itemName));
+
+    assertThat((String) this.client.getConfig().get(itemName),
+        equalTo(this.testKey));
+    assertThat((String) this.client.getConfig().getMap().get(itemName),
+        equalTo(this.testKey));
 
     this.client.getConfig().remove(itemName);
-    Assert.assertEquals(null, this.client.getConfig().get(itemName));
+    assertThat(this.client.getConfig().get(itemName),
+        nullValue());
   }
 
   @Test
@@ -62,17 +69,20 @@ public class ConfigTest {
     }
 
     this.client.getConfig().clear();
-    Assert.assertEquals(originalConfig, this.client.getConfig().getMap());
+    assertThat(this.client.getConfig().getMap(),
+        equalTo(originalConfig));
   }
 
   @Test
   public void len() throws IOException {
-    Assert.assertEquals(7, this.client.getConfig().getMap().size());
+    assertThat(this.client.getConfig().getMap().keySet(),
+        hasSize(7));
   }
 
   @Test
   public void contains() throws IOException {
     Assert.assertFalse(this.client.getConfig().getMap().containsKey(this.testKey));
+
     this.client.getConfig().put(this.testKey, this.testKeyValue);
     Assert.assertTrue(this.client.getConfig().getMap().containsKey(this.testKey));
   }
@@ -80,21 +90,27 @@ public class ConfigTest {
   @Test
   public void get() throws IOException {
     this.client.getConfig().put(this.testKey, this.testKeyValue);
-    Assert.assertEquals(this.testKeyValue, this.client.getConfig().get(this.testKey));
+    assertThat((String) this.client.getConfig().get(this.testKey),
+        equalTo(this.testKeyValue));
   }
 
   @Test
   public void pop() throws IOException {
     this.client.getConfig().put(this.testKey, this.testKeyValue);
-    Assert.assertEquals(this.testKeyValue, this.client.getConfig().pop(this.testKey));
+
+    assertThat((String) this.client.getConfig().pop(this.testKey),
+        equalTo(this.testKeyValue));
     Assert.assertFalse(this.client.getConfig().getMap().containsKey(this.testKey));
   }
 
   @Test
   public void update() throws IOException {
     this.client.getConfig().put(this.testKey, this.testKeyValue);
-    Assert.assertEquals(this.testKeyValue, this.client.getConfig().pop(this.testKey));
+    assertThat((String) this.client.getConfig().pop(this.testKey),
+        equalTo(this.testKeyValue));
+
     this.client.getConfig().put(this.testKey, "2");
-    Assert.assertEquals("2", this.client.getConfig().pop(this.testKey));
+    assertThat((String) this.client.getConfig().pop(this.testKey),
+        equalTo("2"));
   }
 }

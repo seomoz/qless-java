@@ -5,6 +5,9 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+
 import com.google.common.io.Resources;
 import com.moz.qless.Client;
 import com.moz.qless.Job;
@@ -13,7 +16,6 @@ import org.codehaus.jackson.map.InjectableValues;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.JavaType;
 import org.easymock.EasyMock;
-import org.junit.Assert;
 import org.junit.Test;
 
 public class JsonUtilsTest {
@@ -27,33 +29,60 @@ public class JsonUtilsTest {
         EasyMock.createNiceMock(Client.class));
     final Job job = JsonUtils.parse(json, Job.class, injectables);
 
-    Assert.assertEquals("8fbb94d60c3249f9a466c74ef57740fc", job.getJid());
-    Assert.assertEquals(3, job.getRetries());
-    Assert.assertNotNull(job.getData());
-    Assert.assertEquals(true, job.getData().isEmpty());
-    Assert.assertNotNull(job.getFailure());
-    Assert.assertEquals(true, job.getFailure().isEmpty());
-    Assert.assertEquals(0, job.getExpires());
-    Assert.assertEquals(5, job.getRemaining());
-    Assert.assertNotNull(job.getDependencies());
-    Assert.assertEquals(0, job.getDependencies().size());
-    Assert.assertEquals("false", job.getSpawnedFromJid());
-    Assert.assertEquals("foo", job.getKlassName());
-    Assert.assertEquals(false, job.getTracked());
-    Assert.assertNotNull(job.getTags());
-    Assert.assertEquals(0, job.getTags().size());
-    Assert.assertEquals("foo", job.getQueueName());
-    Assert.assertEquals("waiting", job.getState());
-    Assert.assertNotNull(job.getHistory());
-    Assert.assertEquals(1, job.getHistory().size());
-    Assert.assertNotNull(job.getHistory().get(0).when());
-    Assert.assertEquals(152681526, job.getHistory().get(0).when().longValue());
-    Assert.assertEquals("foo", job.getHistory().get(0).queueName());
-    Assert.assertEquals("put", job.getHistory().get(0).what());
-    Assert.assertNotNull(job.getDependencies());
-    Assert.assertEquals(0, job.getDependencies().size());
-    Assert.assertEquals(1, job.getPriority());
-    Assert.assertEquals("johnzhu_mac-7288", job.getWorker());
+    assertThat(job.getJid(),
+        equalTo("8fbb94d60c3249f9a466c74ef57740fc"));
+    assertThat(job.getRetries(),
+        equalTo(3));
+    assertThat(job.getData(),
+        notNullValue());
+    assertThat(job.getData().keySet(),
+        is(empty()));
+    assertThat(job.getFailure(),
+        notNullValue());
+    assertThat(job.getFailure().keySet(),
+        is(empty()));
+    assertThat(job.getExpires(),
+        is((long) 0));
+    assertThat(job.getRemaining(),
+        is(5));
+    assertThat(job.getDependencies(),
+        notNullValue());
+    assertThat(job.getDependencies(),
+        hasSize(0));
+    assertThat(job.getSpawnedFromJid(),
+        equalTo("false"));
+    assertThat(job.getKlassName(),
+        equalTo("foo"));
+    assertThat(job.getTracked(),
+        equalTo(false));
+    assertThat(job.getTags(),
+        notNullValue());
+    assertThat(job.getTags(),
+        hasSize(0));
+    assertThat(job.getQueueName(),
+        equalTo("foo"));
+    assertThat(job.getState(),
+        equalTo("waiting"));
+    assertThat(job.getHistory(),
+        notNullValue());
+    assertThat(job.getHistory(),
+        hasSize(1));
+    assertThat(job.getHistory().get(0).when(),
+        notNullValue());
+    assertThat(job.getHistory().get(0).when().longValue(),
+        equalTo((long) 152681526));
+    assertThat(job.getHistory().get(0).queueName(),
+        equalTo("foo"));
+    assertThat(job.getHistory().get(0).what().toString(),
+        equalTo("put"));
+    assertThat(job.getDependencies(),
+        notNullValue());
+    assertThat(job.getDependencies(),
+        hasSize(0));
+    assertThat(job.getPriority(),
+        equalTo(1));
+    assertThat(job.getWorker(),
+        equalTo("johnzhu_mac-7288"));
   }
 
   @Test
@@ -68,10 +97,18 @@ public class JsonUtilsTest {
         .constructCollectionType(ArrayList.class, Job.class);
     final List<Job> jobs = JsonUtils.parse(json, javaType, injectables);
 
-    Assert.assertNotNull(jobs);
-    Assert.assertEquals(2, jobs.size());
-    Assert.assertEquals("8fbb94d60c3249f9a466c74ef57740f1", jobs.get(0).getJid());
-    Assert.assertEquals("8fbb94d60c3249f9a466c74ef57740f2", jobs.get(1).getJid());
+    assertThat(jobs,
+        notNullValue());
+    assertThat(jobs,
+        hasSize(2));
+
+    final List<String> jobIds = new ArrayList<String>();
+    jobIds.add(jobs.get(0).getJid());
+    jobIds.add(jobs.get(1).getJid());
+
+    assertThat(jobIds,
+        containsInAnyOrder("8fbb94d60c3249f9a466c74ef57740f1",
+                           "8fbb94d60c3249f9a466c74ef57740f2"));
   }
 
 }

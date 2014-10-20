@@ -1,12 +1,13 @@
 package com.moz.qless;
 
 import java.io.IOException;
-import java.util.Arrays;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 
 import com.moz.qless.client.ClientHelper;
 import com.moz.qless.lua.LuaJobStatus;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -30,17 +31,21 @@ public class ClientTest {
   public void track() throws IOException {
     final String jid = this.queue.put(this.defaultName, null, null);
     this.client.track(jid);
-    Assert.assertEquals(jid, this.client.getJobs().tracked().get(0).getJid());
+
+    assertThat(this.client.getJobs().tracked().get(0).getJid(),
+        equalTo(jid));
   }
 
   @Test
   public void unTrack() throws IOException {
     final String jid = this.queue.put(this.defaultName, null, null);
     this.client.track(jid);
-    Assert.assertEquals(jid, this.client.getJobs().tracked().get(0).getJid());
+    assertThat(this.client.getJobs().tracked().get(0).getJid(),
+        equalTo(jid));
 
     this.client.untrack(jid);
-    Assert.assertEquals(null, this.client.getJobs().tracked());
+    assertThat(this.client.getJobs().tracked(),
+        nullValue());
   }
 
   @Test
@@ -50,22 +55,23 @@ public class ClientTest {
    * https://github.com/seomoz/qless-core/issues/55
    */
   public void tags() throws IOException {
-    Assert.assertEquals(null, this.client.tags());
+    assertThat(this.client.tags(), nullValue());
 
     final String jid = this.queue.put(this.defaultName, null, null);
     this.client.getJobs().get(jid).tag("tag1", "tag2");
-    Assert.assertEquals(Arrays.asList("tag1", "tag2"), this.client.tags());
+    assertThat(this.client.tags(),
+        containsInAnyOrder("tag1", "tag2"));
   }
 
   @Test
   public void unfail() throws IOException {
     final String jid = this.queue.put(this.defaultName, null, null);
     this.queue.pop().fail(this.defaultName, this.defaultName);
-    Assert.assertEquals(LuaJobStatus.FAILED.toString(),
-        this.client.getJobs().get(jid).getState());
+    assertThat(this.client.getJobs().get(jid).getState(),
+        equalTo(LuaJobStatus.FAILED.toString()));
 
     this.client.unfail(this.defaultName, this.defaultName);
-    Assert.assertEquals(LuaJobStatus.WAITING.toString(),
-        this.client.getJobs().get(jid).getState());
+    assertThat(this.client.getJobs().get(jid).getState(),
+        equalTo(LuaJobStatus.WAITING.toString()));
   }
 }
