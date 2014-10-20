@@ -2,7 +2,10 @@ package com.moz.qless.client;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.moz.qless.Client;
 import com.moz.qless.Job;
@@ -40,11 +43,13 @@ public class Jobs {
     return (List<String>) result;
   }
 
-  public String failed() throws IOException {
+  public Map<String, Long> failed() throws IOException {
     final Object result = this.client.call(
         LuaCommand.FAILED.toString());
 
-    return result.toString();
+    final JavaType javaType = new ObjectMapper().getTypeFactory().constructMapType(
+        HashMap.class, String.class, Long.class);
+    return JsonUtils.parse(result.toString(), javaType);
   }
 
   public List<String> failed(final String group) throws IOException {
@@ -76,12 +81,24 @@ public class Jobs {
    * Return the list of job object for the given jids
    */
   public List<Job> get(final List<String> jids) throws IOException {
-    final List<Job> jobList = new ArrayList<>();
-    for (final String jid : jids) {
-      jobList.add(this.get(jid));
-    }
+    final Object result = this.client.call(
+        LuaCommand.MULTIGET.toString(),
+        jids);
 
-    return jobList;
+    final InjectableValues inject = new InjectableValues.Std().addValue(
+        "client",
+        this.client);
+
+    final JavaType javaType = new ObjectMapper().getTypeFactory()
+        .constructCollectionType(ArrayList.class, Job.class);
+    return JsonUtils.parse(result.toString(), javaType, inject);
+  }
+
+  /**
+   * Return the list of job object for the given jids
+   */
+  public List<Job> get(final String... jids) throws IOException {
+    return this.get(Arrays.asList(jids));
   }
 
   /**

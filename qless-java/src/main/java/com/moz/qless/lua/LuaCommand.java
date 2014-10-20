@@ -13,6 +13,7 @@ public enum LuaCommand {
   HEARTBEAT("heartbeat"),
   JOBS("jobs"),
   LOG("log"),
+  MULTIGET("multiget"),
   PAUSE("pause"),
   PEEK("peek"),
   POP("pop"),

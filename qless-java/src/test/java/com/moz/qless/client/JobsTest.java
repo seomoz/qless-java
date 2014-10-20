@@ -38,7 +38,7 @@ public class JobsTest {
   }
 
   @Test
-  public void basic() throws IOException {
+  public void getSingleJob() throws IOException {
     final Map<String, Object> opts = new HashMap<>();
     final String expectedJid = ClientHelper.generateJid();
     opts.put("jid", expectedJid);
@@ -46,6 +46,15 @@ public class JobsTest {
     Assert.assertNull(this.client.getJobs().get(expectedJid));
     this.queue.put(JobsTest.DEFAULT_NAME, null, opts);
     Assert.assertNotNull(this.client.getJobs().get(expectedJid));
+  }
+
+  @Test
+  public void getMultiJobs() throws IOException {
+    final String jid1 = this.queue.put("job1", null, null);
+    final String jid2 = this.queue.put("job2", null, null);
+    final String jid3 = this.queue.put("job3", null, null);
+
+    Assert.assertTrue(3 == this.client.getJobs().get(jid1, jid2, jid3).size());
   }
 
   @Test
@@ -131,7 +140,7 @@ public class JobsTest {
 
   @Test
   public void failures() throws IOException {
-    Assert.assertEquals("{}", this.client.getJobs().failed());
+    Assert.assertEquals(null, this.client.getJobs().failed());
 
     this.queue.put(JobsTest.DEFAULT_NAME, null, null);
     this.queue.pop().fail("group1", "message1");
@@ -139,7 +148,10 @@ public class JobsTest {
     this.queue.put(JobsTest.DEFAULT_NAME, null, null);
     this.queue.pop().fail("group2", "message2");
 
-    Assert.assertEquals("{\"group2\":1,\"group1\":1}",
-        this.client.getJobs().failed());
+    final Map<String, Long> expected = new HashMap<String, Long>();
+    expected.put("group1", (long) 1);
+    expected.put("group2", (long) 1);
+
+    Assert.assertEquals(expected, this.client.getJobs().failed());
   }
 }
