@@ -9,7 +9,7 @@ import static org.hamcrest.Matchers.*;
 import com.moz.qless.client.ClientHelper;
 import com.moz.qless.lua.LuaConfigParameter;
 
-import org.junit.Assert;
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -81,10 +81,12 @@ public class ConfigTest {
 
   @Test
   public void contains() throws IOException {
-    Assert.assertFalse(this.client.getConfig().getMap().containsKey(this.testKey));
+    assertThat(this.client.getConfig().getMap().keySet(),
+        not(Matchers.contains(this.testKey)));
 
     this.client.getConfig().put(this.testKey, this.testKeyValue);
-    Assert.assertTrue(this.client.getConfig().getMap().containsKey(this.testKey));
+    assertThat(this.client.getConfig().getMap().keySet(),
+        not(Matchers.contains(this.testKey)));
   }
 
   @Test
@@ -100,7 +102,8 @@ public class ConfigTest {
 
     assertThat((String) this.client.getConfig().pop(this.testKey),
         equalTo(this.testKeyValue));
-    Assert.assertFalse(this.client.getConfig().getMap().containsKey(this.testKey));
+    assertThat(this.client.getConfig().getMap().keySet(),
+        not(Matchers.contains(this.testKey)));
   }
 
   @Test

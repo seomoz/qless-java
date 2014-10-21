@@ -102,7 +102,7 @@ public class JsonUtilsTest {
     assertThat(jobs,
         hasSize(2));
 
-    final List<String> jobIds = new ArrayList<String>();
+    final List<String> jobIds = new ArrayList<>();
     jobIds.add(jobs.get(0).getJid());
     jobIds.add(jobs.get(1).getJid());
 
