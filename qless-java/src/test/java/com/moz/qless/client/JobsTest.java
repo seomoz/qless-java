@@ -1,21 +1,24 @@
 package com.moz.qless.client;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.hamcrest.core.IsNull.notNullValue;
+import static org.hamcrest.core.IsNull.nullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+
 import com.moz.qless.Client;
+import com.moz.qless.ClientCreation;
 import com.moz.qless.lua.LuaConfigParameter;
 import com.moz.qless.Queue;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
 public class JobsTest {
@@ -26,15 +29,8 @@ public class JobsTest {
 
   @Before
   public void before() throws IOException {
-      final Jedis jedis = this.jedisPool.getResource();
-      try {
-          jedis.flushDB();
-      } finally {
-          this.jedisPool.returnResource(jedis);
-      }
-
-      this.client = new Client(this.jedisPool);
-      this.queue = new Queue(this.client, JobsTest.DEFAULT_NAME);
+    this.client = ClientCreation.create(this.jedisPool);
+    this.queue = new Queue(this.client, JobsTest.DEFAULT_NAME);
   }
 
   @Test
@@ -43,9 +39,11 @@ public class JobsTest {
     final String expectedJid = ClientHelper.generateJid();
     opts.put("jid", expectedJid);
 
-    Assert.assertNull(this.client.getJobs().get(expectedJid));
+    assertThat(this.client.getJobs().get(expectedJid),
+        nullValue());
     this.queue.put(JobsTest.DEFAULT_NAME, null, opts);
-    Assert.assertNotNull(this.client.getJobs().get(expectedJid));
+    assertThat(this.client.getJobs().get(expectedJid),
+        notNullValue());
   }
 
   @Test
@@ -54,7 +52,8 @@ public class JobsTest {
     final String jid2 = this.queue.put("job2", null, null);
     final String jid3 = this.queue.put("job3", null, null);
 
-    Assert.assertTrue(3 == this.client.getJobs().get(jid1, jid2, jid3).size());
+    assertThat(this.client.getJobs().get(jid1, jid2, jid3),
+        hasSize(3));
   }
 
   @Test
@@ -63,54 +62,61 @@ public class JobsTest {
     final String expectedJid = ClientHelper.generateJid();
     opts.put("jid", expectedJid);
 
-    Assert.assertNull(this.client.getJobs().get(expectedJid));
+    assertThat(this.client.getJobs().get(expectedJid),
+        nullValue());
     this.queue.recur(JobsTest.DEFAULT_NAME, null, 60, opts);
-    Assert.assertNotNull(this.client.getJobs().get(expectedJid));
+    assertThat(this.client.getJobs().get(expectedJid),
+        notNullValue());
   }
 
   @Test
   public void complete() throws IOException {
-    Assert.assertEquals(new ArrayList<String>(), this.client.getJobs().complete());
+    assertThat(this.client.getJobs().complete(), is(empty()));
 
     final String jid1 = this.queue.put(JobsTest.DEFAULT_NAME, null, null);
     final String jid2 = this.queue.put(JobsTest.DEFAULT_NAME, null, null);
 
-    Assert.assertNotNull(this.client.getJobs().get(jid1));
-    Assert.assertNotNull(this.client.getJobs().get(jid2));
+    assertThat(this.client.getJobs().get(jid1),
+        notNullValue());
+    assertThat(this.client.getJobs().get(jid2),
+        notNullValue());
 
     this.queue.pop().complete();
     this.queue.pop().complete();
 
-    Assert.assertEquals(2, this.client.getJobs().complete().size());
-    Assert.assertTrue(this.client.getJobs().complete().contains(jid1));
-    Assert.assertTrue(this.client.getJobs().complete().contains(jid2));
+    assertThat(this.client.getJobs().complete(),
+        containsInAnyOrder(jid1, jid2));
   }
 
   @Test
   public void tracked() throws IOException {
-    Assert.assertEquals(null, this.client.getJobs().tracked());
+    assertThat(this.client.getJobs().tracked(),
+        nullValue());
 
     final String jid1 = this.queue.put(JobsTest.DEFAULT_NAME, null, null);
     final String jid2 = this.queue.put(JobsTest.DEFAULT_NAME, null, null);
 
-    Assert.assertNotNull(this.client.getJobs().get(jid1));
-    Assert.assertNotNull(this.client.getJobs().get(jid2));
+    assertThat(this.client.getJobs().get(jid1),
+        notNullValue());
+    assertThat(this.client.getJobs().get(jid2),
+        notNullValue());
 
     this.client.track(jid1);
     this.client.track(jid2);
 
-    Assert.assertEquals(2, this.client.getJobs().tracked().size());
+    assertThat(this.client.getJobs().tracked(),
+        hasSize(2));
+
     final List<String> trackedJids = Arrays.asList(
         this.client.getJobs().tracked().get(0).getJid(),
         this.client.getJobs().tracked().get(1).getJid());
-
-    Assert.assertTrue(trackedJids.contains(jid1));
-    Assert.assertTrue(trackedJids.contains(jid2));
+    assertThat(trackedJids,
+        containsInAnyOrder(jid1, jid2));
   }
 
   @Test
   public void tagged() throws IOException {
-    Assert.assertNull(this.client.getJobs().tagged(JobsTest.DEFAULT_NAME));
+    assertThat(this.client.getJobs().tagged(JobsTest.DEFAULT_NAME), nullValue());
 
     final Map<String, Object> opts1 = new HashMap<>();
     opts1.put(LuaConfigParameter.TAGS.toString(), Arrays.asList(JobsTest.DEFAULT_NAME));
@@ -120,27 +126,34 @@ public class JobsTest {
     opts2.put(LuaConfigParameter.TAGS.toString(), Arrays.asList(JobsTest.DEFAULT_NAME));
     final String jid2 = this.queue.put(JobsTest.DEFAULT_NAME, null, opts2);
 
-    Assert.assertNotNull(this.client.getJobs().get(jid1));
-    Assert.assertNotNull(this.client.getJobs().get(jid2));
+    assertThat(this.client.getJobs().get(jid1),
+        notNullValue());
+    assertThat(this.client.getJobs().get(jid2),
+        notNullValue());
 
-    Assert.assertEquals(2, this.client.getJobs().tagged(JobsTest.DEFAULT_NAME).size());
-    Assert.assertTrue(this.client.getJobs().tagged(JobsTest.DEFAULT_NAME).contains(jid1));
-    Assert.assertTrue(this.client.getJobs().tagged(JobsTest.DEFAULT_NAME).contains(jid2));
+    assertThat(this.client.getJobs().tagged(JobsTest.DEFAULT_NAME),
+        hasSize(2));
+    assertThat(this.client.getJobs().tagged(JobsTest.DEFAULT_NAME),
+        containsInAnyOrder(jid1, jid2));
   }
 
   @Test
   public void failed() throws IOException {
-    Assert.assertEquals(null, this.client.getJobs().failed("foo"));
+    assertThat(this.client.getJobs().failed("foo"),
+        nullValue());
 
     final String jid = this.queue.put(JobsTest.DEFAULT_NAME, null, null);
     this.queue.pop().fail("group", "message");
-    Assert.assertEquals(1, this.client.getJobs().failed("group").size());
-    Assert.assertEquals(jid, this.client.getJobs().failed("group").get(0));
+    assertThat(this.client.getJobs().failed("group"),
+        hasSize(1));
+    assertThat(this.client.getJobs().failed("group"),
+        contains(jid));
   }
 
   @Test
   public void failures() throws IOException {
-    Assert.assertEquals(null, this.client.getJobs().failed());
+    assertThat(null, this.client.getJobs().failed(),
+        nullValue());
 
     this.queue.put(JobsTest.DEFAULT_NAME, null, null);
     this.queue.pop().fail("group1", "message1");
@@ -152,6 +165,11 @@ public class JobsTest {
     expected.put("group1", (long) 1);
     expected.put("group2", (long) 1);
 
-    Assert.assertEquals(expected, this.client.getJobs().failed());
+    assertThat(
+        this.client.getJobs().failed().keySet(),
+        containsInAnyOrder("group1", "group2"));
+    assertThat(
+        this.client.getJobs().failed().values(),
+        containsInAnyOrder((long) 1, (long) 1));
   }
 }
