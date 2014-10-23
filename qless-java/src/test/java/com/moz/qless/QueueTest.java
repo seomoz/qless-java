@@ -11,6 +11,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 import com.moz.qless.client.ClientHelper;
+import com.moz.qless.lua.LuaConfigParameter;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -106,6 +107,10 @@ public class QueueTest {
     this.client.getQueues().get(QueueTest.DEFAULT_NAME).setHeartbeat(10);
     assertThat(this.client.getQueues().get(QueueTest.DEFAULT_NAME).getHeartbeat(),
         equalTo(10));
+
+    assertThat(
+        this.client.getConfig().get(LuaConfigParameter.HEARTBEAT).toString(),
+        equalTo("60"));
   }
 
   @Test

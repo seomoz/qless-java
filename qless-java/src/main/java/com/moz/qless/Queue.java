@@ -2,6 +2,8 @@ package com.moz.qless;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,15 +39,24 @@ public class Queue {
     return JsonUtils.parse(result.toString(), QueueCounts.class);
   }
 
+  private String getHeartbeatConfigName() {
+    return this.name + "-" + LuaConfigParameter.HEARTBEAT.toString();
+  }
+
   public int getHeartbeat() throws IOException {
-    return Integer.parseInt(
-        this.client.getConfig().get(LuaCommand.HEARTBEAT.toString())
-        .toString());
+    Object heartbeat = this.client.getConfig()
+        .get(this.getHeartbeatConfigName());
+
+    if (null == heartbeat) {
+      heartbeat = this.client.getConfig()
+          .get(LuaConfigParameter.HEARTBEAT);
+    }
+    return Integer.parseInt(heartbeat.toString());
   }
 
   public int getMaxConcurrency() throws IOException {
     return Integer.parseInt(
-        this.client.getConfig().get(LuaConfigParameter.MAX_CONCURRENCY.toString())
+        this.client.getConfig().get(LuaConfigParameter.MAX_CONCURRENCY)
         .toString());
   }
 
@@ -54,10 +65,14 @@ public class Queue {
   }
 
   public Map<String, Object> getStats() throws IOException {
+    return this.getStats(new Date());
+  }
+
+  public Map<String, Object> getStats(final Date date) throws IOException {
     final Object result = this.client.call(
         LuaCommand.STATS.toString(),
         this.name,
-        ClientHelper.getCurrentSeconds());
+        String.valueOf(date.getTime() / 1000));
 
     final JavaType javaType = new ObjectMapper().getTypeFactory().constructMapType(
         HashMap.class, String.class, Object.class);
@@ -88,12 +103,19 @@ public class Queue {
   }
 
   public void pause() throws IOException {
+    this.pause(true);
+  }
+
+  public void pause(final boolean timeoutRunningJobs) throws IOException {
     this.client.call(
         LuaCommand.PAUSE.toString(),
         this.name);
+
+    if (timeoutRunningJobs) {
     this.client.call(
         LuaCommand.TIMEOUT.toString(),
         this.jobs().running(0, -1));
+    }
   }
 
   public boolean paused() throws IOException {
@@ -102,7 +124,7 @@ public class Queue {
 
   public Job peek() throws IOException {
     final List<Job> jobs = this.peek(1);
-    return (null != jobs) && (jobs.size() > 0) ? jobs.get(0) : null;
+    return (null != jobs) && (!jobs.isEmpty()) ? jobs.get(0) : null;
   }
 
   public List<Job> peek(final int count) throws IOException {
@@ -127,7 +149,7 @@ public class Queue {
 
   public Job pop() throws IOException {
     final List<Job> jobs = this.pop(1);
-    return (null != jobs) && (jobs.size() > 0) ? jobs.get(0) : null;
+    return (null != jobs) && (!jobs.isEmpty()) ? jobs.get(0) : null;
   }
 
   public List<Job> pop(final int count) throws IOException {
@@ -138,7 +160,7 @@ public class Queue {
         Integer.toString(count));
 
     if (result.equals(ClientHelper.EMPTY_RESULT)) {
-      return new ArrayList<Job>();
+      return Collections.emptyList();
     }
 
     final InjectableValues injectables = new InjectableValues.Std().addValue("client",
@@ -236,7 +258,7 @@ public class Queue {
 
   public void setHeartbeat(final int heartbeat) throws IOException {
     this.client.getConfig().put(
-        LuaCommand.HEARTBEAT.toString(),
+        this.getHeartbeatConfigName(),
         heartbeat);
   }
 
