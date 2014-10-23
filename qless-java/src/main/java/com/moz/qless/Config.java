@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.moz.qless.lua.LuaCommand;
+import com.moz.qless.lua.LuaConfigParameter;
 import com.moz.qless.utils.JsonUtils;
 
 import org.codehaus.jackson.map.ObjectMapper;
@@ -39,9 +40,13 @@ public class Config {
   }
 
   public Object get(final String key) throws IOException {
-    return this.client.call(
-        LuaCommand.CONFIG_GET.toString(),
-        key);
+      return this.client.call(
+          LuaCommand.CONFIG_GET.toString(),
+          key);
+  }
+
+  public Object get(final LuaConfigParameter key) throws IOException {
+    return this.get(key.toString());
   }
 
   public void put(final String key, final Object value) throws IOException {
