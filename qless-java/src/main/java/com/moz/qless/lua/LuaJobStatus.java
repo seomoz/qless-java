@@ -2,7 +2,7 @@ package com.moz.qless.lua;
 
 public enum LuaJobStatus {
   CANCELED("canceled"),
-  COMPLETED("completed"),
+  COMPLETE("complete"),
   DEPENDS("depends"),
   FAILED("failed"),
   PAUSED("paused"),
