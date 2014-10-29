@@ -1,11 +1,8 @@
 package com.moz.qless;
 
-/**
- * Our customized QlessException
- *
- */
-@SuppressWarnings("serial")
 public class QlessException extends RuntimeException {
+  private static final long serialVersionUID = -772350861057729943L;
+
   public QlessException() {
   }
 

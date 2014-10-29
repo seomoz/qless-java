@@ -23,6 +23,8 @@ public class ClientHelper {
   public static final int DEFAULT_HISTOGRAM_HISTORY = 7;
   public static final int DEFAULT_JOBS_HISTORY_COUNT = 50000;
 
+  public static final String DEFAULT_JOB_METHOD = "process";
+
   public static String generateJid() {
     return UUID.randomUUID().toString().replaceAll("-", "");
   }
