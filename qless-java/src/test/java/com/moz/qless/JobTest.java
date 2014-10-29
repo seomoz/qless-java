@@ -272,11 +272,14 @@ public class JobTest {
     this.queue.pop().process();
   }
 
-  @Test(expected = QlessException.class)
-  public void runJobMissingMethod() throws IOException {
-    final Queue queue = new Queue(this.client, "testFoo");
+  @Test
+  public void runJobDefaultMethod() throws IOException {
+    final Queue queue = new Queue(this.client, "none");
     queue.put("com.moz.qless.IntegrationTestJob", null, null);
     queue.pop().process();
+
+    assertThat(IntegrationTestJob.runningHistory,
+        contains("com.moz.qless.IntegrationTestJob." + ClientHelper.DEFAULT_JOB_METHOD));
   }
 
   @Test

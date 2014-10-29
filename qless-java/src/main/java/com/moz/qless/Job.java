@@ -6,6 +6,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -317,7 +318,7 @@ public class Job {
    * For example, if this job was popped from the queue "testing", then this
    * would invoke the "testing" method of your class.
    */
-  public void process() {
+  public void process() throws IOException {
     Class<?> cls;
     try {
       cls = this.getKlass();
@@ -333,14 +334,15 @@ public class Job {
     Method method;
     try {
       method = cls.getMethod(this.queueName, Job.class);
-    } catch (NoSuchMethodException | SecurityException e) {
+    } catch (final NoSuchMethodException e) {
       try {
-        this.fail(e.getMessage(), this.klass + ":"
+        method = cls.getMethod(ClientHelper.DEFAULT_JOB_METHOD, Job.class);
+      } catch (NoSuchMethodException | SecurityException ex) {
+        this.fail(ex.getMessage(), this.klass + ":"
             + this.queueName);
-      } catch (final IOException ex) {
-        throw new QlessException(ex);
+        throw new QlessException("method not found: "
+            + this.queueName, e);
       }
-      throw new QlessException("method not found: " + this.queueName, e);
     }
 
     try {
@@ -429,13 +431,11 @@ public class Job {
   }
 
   public void tag(final String... tags) throws IOException {
-    final List<String> args = new ArrayList<String>();
+    final List<String> args = new ArrayList<>();
     args.add("add");
     args.add(this.jid);
 
-    for (final String tag : tags) {
-      args.add(tag);
-    }
+    Collections.addAll(args, tags);
 
     this.client.call(
         LuaCommand.TAG.toString(),
@@ -471,9 +471,7 @@ public class Job {
     args.add(this.jid);
     args.add("off");
 
-    for (final String jid : jids) {
-      args.add(jid);
-    }
+    Collections.addAll(args, jids);
 
     final String[] array = new String[args.size()];
     args.toArray(array);
@@ -484,13 +482,11 @@ public class Job {
   }
 
   public void untag(final String... tags) throws IOException {
-    final List<String> args = new ArrayList<String>();
+    final List<String> args = new ArrayList<>();
     args.add("remove");
     args.add(this.jid);
 
-    for (final String tag: tags) {
-      args.add(tag);
-    }
+    Collections.addAll(args, tags);
 
     this.client.call(
         LuaCommand.TAG.toString(),
@@ -517,7 +513,7 @@ public class Job {
 
     public Integer when() {
       final Object value = this.get("when");
-      return (null != value) ? new Integer(value.toString()) : null;
+      return (null != value) ? Integer.valueOf((int) value) : null;
     }
   }
 
