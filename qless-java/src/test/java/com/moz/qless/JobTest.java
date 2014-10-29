@@ -282,6 +282,13 @@ public class JobTest {
         contains("com.moz.qless.IntegrationTestJob." + ClientHelper.DEFAULT_JOB_METHOD));
   }
 
+  @Test(expected = QlessException.class)
+  public void runJobMissingMethod() throws IOException {
+    final Queue queue = new Queue(this.client, "none");
+    queue.put("com.moz.qless.EmptyJob", null, null);
+    queue.pop().process();
+  }
+
   @Test
   public void history() throws IOException {
       final String jid = this.queue.put(JobTest.DEFAULT_NAME, null, null);
