@@ -512,8 +512,7 @@ public class Job {
     }
 
     public Integer when() {
-      final Object value = this.get("when");
-      return (null != value) ? Integer.valueOf((int) value) : null;
+      return (Integer) this.get("when");
     }
   }
 
