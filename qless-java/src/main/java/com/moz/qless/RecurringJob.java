@@ -2,6 +2,7 @@ package com.moz.qless;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -168,12 +169,10 @@ public class RecurringJob extends Job {
 
   @Override
   public void tag(final String... tags) throws IOException {
-      final List<String> args = new ArrayList<String>();
+      final List<String> args = new ArrayList<>();
       args.add(this.jid);
 
-      for (final String tag: tags) {
-          args.add(tag);
-      }
+      Collections.addAll(args, tags);
 
       this.client.call(
           LuaCommand.RECUR_TAG.toString(),
@@ -182,12 +181,10 @@ public class RecurringJob extends Job {
 
   @Override
   public void untag(final String... tags) throws IOException {
-      final List<String> args = new ArrayList<String>();
+      final List<String> args = new ArrayList<>();
       args.add(this.jid);
 
-      for (final String tag: tags) {
-          args.add(tag);
-      }
+      Collections.addAll(args, tags);
 
       this.client.call(
           LuaCommand.RECUR_UNTAG.toString(),
