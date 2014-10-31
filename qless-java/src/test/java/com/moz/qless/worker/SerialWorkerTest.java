@@ -1,17 +1,17 @@
 package com.moz.qless.worker;
 
-import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class SerialWorkerTest {
 
   @Test
+  @Ignore
   public void basic() {
-    Assert.fail("Not yet implemented");
   }
 
   @Test
+  @Ignore
   public void queueRotation() {
-    Assert.fail("Not yet implemented");
   }
 }
