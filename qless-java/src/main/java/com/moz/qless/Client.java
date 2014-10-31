@@ -21,11 +21,23 @@ import redis.clients.jedis.JedisPool;
 
 public class Client {
   private static final Logger LOGGER = LoggerFactory.getLogger(Client.class);
-  private final Config config;
-  private final Events events;
-  private final JedisPool jedisPool;
 
-  private final Jobs jobs;
+  private final JedisPool jedisPool;
+  public JedisPool getJedisPool() {
+    return this.jedisPool;
+  }
+
+  private final Config config;
+  public Config getConfig() {
+    return this.config;
+  }
+
+  private final Events events;
+  public Events getEvents() {
+    return this.events;
+  }
+
+   private final Jobs jobs;
   public Jobs getJobs() {
     return this.jobs;
   }
@@ -68,14 +80,6 @@ public class Client {
 
   public Object call(final String command, final String... args) throws IOException {
     return this.call(command, Arrays.asList(args));
-  }
-
-  public Config getConfig() {
-    return this.config;
-  }
-
-  public JedisPool getJedisPool() {
-    return this.jedisPool;
   }
 
   public List<String> tags(final int offset, final int count) throws IOException {
