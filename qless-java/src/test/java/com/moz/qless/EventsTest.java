@@ -52,9 +52,9 @@ public class EventsTest {
       final EventCapture eventCapture = new EventCapture();
 
       this.client
-      .getEvents()
-      .on("none")
-      .fire(eventCapture);
+        .getEvents()
+        .on("none")
+        .fire(eventCapture);
 
       Thread.sleep(100);
 
@@ -67,9 +67,9 @@ public class EventsTest {
       final EventCapture eventCapture = new EventCapture();
 
       this.client
-      .getEvents()
-      .on(LuaJobStatus.CANCELED.toString())
-      .fire(eventCapture);
+        .getEvents()
+        .on(LuaJobStatus.CANCELED.toString())
+        .fire(eventCapture);
 
       this.tracked.cancel();
       this.untracked.cancel();
@@ -91,7 +91,7 @@ public class EventsTest {
         .on(LuaJobStatus.COMPLETED.toString())
         .fire(eventCapture);
 
-      for (final Job job: this.queue.pop(10)) {
+      for (final Job job : this.queue.pop(10)) {
           job.complete();
       }
 
@@ -112,7 +112,7 @@ public class EventsTest {
         .on(LuaJobStatus.FAILED.toString())
         .fire(eventCapture);
 
-      for (final Job job: this.queue.pop(10)) {
+      for (final Job job : this.queue.pop(10)) {
           job.fail("foo", "bar");
       }
 

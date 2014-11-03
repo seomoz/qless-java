@@ -37,7 +37,7 @@ public class Client {
     return this.events;
   }
 
-   private final Jobs jobs;
+  private final Jobs jobs;
   public Jobs getJobs() {
     return this.jobs;
   }
