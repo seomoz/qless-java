@@ -27,7 +27,7 @@ public class QueuesTest {
 
   @Test
   public void countsBasic() {
-    assertThat(this.client.getQueues().get(QueuesTest.DEFAULT_NAME),
+    assertThat(this.client.getQueue(QueuesTest.DEFAULT_NAME),
         notNullValue());
   }
 

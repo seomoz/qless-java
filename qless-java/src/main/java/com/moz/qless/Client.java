@@ -11,7 +11,6 @@ import com.moz.qless.client.Queues;
 import com.moz.qless.lua.LuaCommand;
 import com.moz.qless.lua.LuaScript;
 import com.moz.qless.utils.JsonUtils;
-
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.JavaType;
 import org.slf4j.Logger;
@@ -130,5 +129,9 @@ public class Client {
 
   public Queues getQueues() {
     return this.queues;
+  }
+
+  public Queue getQueue(final String queueName) {
+    return new Queue(this, queueName);
   }
 }

@@ -4,4 +4,9 @@ services:
 before_install:
   - git submodule update --init --recursive
   - make -C qless-java/src/qless-core/
+script: cd qless-java/
+script: mvn clean test
+script: cd bin/target/
+script: mvn install:install-file -Dfile=qless-java-0.0.1-SNAPSHOT.jar -DgroupId=com.zimbra.qless -DartifactId=qless-java -Dversion=0.0.1-SNAPSHOT -Dpackaging=jar -DgeneratePom=true
+script: cd ../../../
 script: mvn clean test

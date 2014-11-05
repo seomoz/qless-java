@@ -101,11 +101,11 @@ public class QueueTest {
 
   @Test
   public void heartbeat() throws IOException {
-    assertThat(this.client.getQueues().get(QueueTest.DEFAULT_NAME).getHeartbeat(),
+    assertThat(this.client.getQueue(QueueTest.DEFAULT_NAME).getHeartbeat(),
         equalTo(60));
 
-    this.client.getQueues().get(QueueTest.DEFAULT_NAME).setHeartbeat(10);
-    assertThat(this.client.getQueues().get(QueueTest.DEFAULT_NAME).getHeartbeat(),
+    this.client.getQueue(QueueTest.DEFAULT_NAME).setHeartbeat(10);
+    assertThat(this.client.getQueue(QueueTest.DEFAULT_NAME).getHeartbeat(),
         equalTo(10));
 
     assertThat(
