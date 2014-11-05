@@ -45,6 +45,11 @@
       <artifactId>args4j</artifactId>
       <version>2.0.29</version>
     </dependency>
+    <dependency>
+      <groupId>com.moz.qless</groupId>
+      <artifactId>qless-java</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+    </dependency>
   </dependencies>
 
   <properties>
