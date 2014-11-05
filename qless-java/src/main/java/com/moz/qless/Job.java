@@ -287,7 +287,7 @@ public class Job {
     opts.put("depends", this.getDependencies());
 
     final Object result =
-        this.client.getQueues().get(queueName).put(
+        this.client.getQueue(queueName).put(
             this.klass,
             this.data,
             opts);

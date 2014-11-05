@@ -19,7 +19,7 @@ import redis.clients.jedis.JedisPool;
 
 public class SerialWorkerTest {
   private static final String DEFAULT_QUEUE_NAME = "test";
-  private static final String DEFAULT_JOB_NAME = "com.moz.qless.IntegrationTestJob";
+  private static final String DEFAULT_JOB_NAME = IntegrationTestJob.class.getName();
   private final JedisPool jedisPool = new JedisPool(ClientHelper.DEFAULT_HOSTNAME);
   private Client client;
 
@@ -28,27 +28,32 @@ public class SerialWorkerTest {
     this.client = ClientCreation.create(this.jedisPool);
   }
 
-  @Test
-  public void workerMeta() throws IOException, InterruptedException {
-    final Queue queue = this.client.getQueues().get(SerialWorkerTest.DEFAULT_QUEUE_NAME);
-    final String jid = queue.put(SerialWorkerTest.DEFAULT_JOB_NAME, null, null);
-
-    final SerialWorker worker = new SerialWorker(
-        Arrays.asList(new String[] {SerialWorkerTest.DEFAULT_QUEUE_NAME}),
-        this.client, null, 10);
-    IntegrationTestJob.runningHistory.clear();
-
-    final Thread signal = new Thread() {
+  private Thread getWorkerThread(final SerialWorker worker,
+      final int intervalInSeconds) {
+    return new Thread(new Runnable() {
       @Override
       public void run() {
         try {
-          Thread.sleep(2000);
+          Thread.sleep(intervalInSeconds * 1000);
           worker.shutDown();
         } catch (final InterruptedException v) {
           System.out.println(v);
         }
       }
-    };
+    });
+  }
+
+  @Test
+  public void workerMeta() throws IOException, InterruptedException {
+    final Queue queue = this.client.getQueue(SerialWorkerTest.DEFAULT_QUEUE_NAME);
+    final String jid = queue.put(SerialWorkerTest.DEFAULT_JOB_NAME, null, null);
+
+    final SerialWorker worker = new SerialWorker(
+        Arrays.asList(SerialWorkerTest.DEFAULT_QUEUE_NAME),
+        this.client, null, 10);
+    IntegrationTestJob.runningHistory.clear();
+
+    final Thread signal = this.getWorkerThread(worker, 2);
 
     signal.start();
     worker.run();
@@ -61,25 +66,15 @@ public class SerialWorkerTest {
 
   @Test
   public void singleQueue() throws IOException, InterruptedException {
-    final Queue queue = this.client.getQueues().get(SerialWorkerTest.DEFAULT_QUEUE_NAME);
+    final Queue queue = this.client.getQueue(SerialWorkerTest.DEFAULT_QUEUE_NAME);
     queue.put(SerialWorkerTest.DEFAULT_JOB_NAME, null, null);
 
     final SerialWorker worker = new SerialWorker(
-        Arrays.asList(new String[] {SerialWorkerTest.DEFAULT_QUEUE_NAME}),
+        Arrays.asList(SerialWorkerTest.DEFAULT_QUEUE_NAME),
         this.client, null, 10);
     IntegrationTestJob.runningHistory.clear();
 
-    final Thread signal = new Thread() {
-      @Override
-      public void run() {
-        try {
-          Thread.sleep(2000);
-          worker.shutDown();
-        } catch (final InterruptedException v) {
-          System.out.println(v);
-        }
-      }
-    };
+    final Thread signal = this.getWorkerThread(worker, 2);
 
     signal.start();
     worker.run();
@@ -90,25 +85,15 @@ public class SerialWorkerTest {
 
   @Test
   public void notExisitQueue() throws IOException, InterruptedException {
-    final Queue queue = this.client.getQueues().get("foo");
+    final Queue queue = this.client.getQueue("foo");
     queue.put(SerialWorkerTest.DEFAULT_JOB_NAME, null, null);
 
     final SerialWorker worker = new SerialWorker(
-        Arrays.asList(new String[] {"foo"}),
+        Arrays.asList("foo"),
         this.client, null, 10);
     IntegrationTestJob.runningHistory.clear();
 
-    final Thread signal = new Thread() {
-      @Override
-      public void run() {
-        try {
-          Thread.sleep(2000);
-          worker.shutDown();
-        } catch (final InterruptedException v) {
-          System.out.println(v);
-        }
-      }
-    };
+    final Thread signal = this.getWorkerThread(worker, 2);
 
     signal.start();
     worker.run();
@@ -119,9 +104,9 @@ public class SerialWorkerTest {
 
   @Test
   public void multiQueuesRotation() throws IOException, InterruptedException {
-    final Queue queueA = this.client.getQueues().get("testA");
-    final Queue queueB = this.client.getQueues().get("testB");
-    final Queue queueC = this.client.getQueues().get("testC");
+    final Queue queueA = this.client.getQueue("testA");
+    final Queue queueB = this.client.getQueue("testB");
+    final Queue queueC = this.client.getQueue("testC");
 
     queueA.put(SerialWorkerTest.DEFAULT_JOB_NAME, null, null);
     queueA.put(SerialWorkerTest.DEFAULT_JOB_NAME, null, null);
@@ -130,21 +115,11 @@ public class SerialWorkerTest {
     queueC.put(SerialWorkerTest.DEFAULT_JOB_NAME, null, null);
 
     final SerialWorker worker = new SerialWorker(
-        Arrays.asList(new String[] {"testA", "testB", "testC"}),
+        Arrays.asList("testA", "testB", "testC"),
         this.client, null, 10);
     IntegrationTestJob.runningHistory.clear();
 
-    final Thread signal = new Thread() {
-      @Override
-      public void run() {
-        try {
-          Thread.sleep(5000);
-          worker.shutDown();
-        } catch (final InterruptedException v) {
-          System.out.println(v);
-        }
-      }
-    };
+    final Thread signal = this.getWorkerThread(worker, 3);
 
     signal.start();
     worker.run();
