@@ -49,7 +49,6 @@ public class QlessJavaWorker {
 
       serialWorker.run();
     } catch (InterruptedException | IOException e) {
-      System.err.println(e.getMessage());
       e.printStackTrace();
     }
   }
