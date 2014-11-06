@@ -48,7 +48,7 @@
       <property name="max" value="150" />
     </module>
     <module name="ParameterNumber">
-      <property name="max" value="7" />
+      <property name="max" value="10" />
     </module>
 
     <!-- See http://checkstyle.sourceforge.net/config_whitespace.html -->
