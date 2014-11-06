@@ -124,7 +124,12 @@ public class JobTest {
     final Map<String, Object> data = new HashMap<>();
     data.put("foo", "bar");
 
-    final String jid = this.queue.put(JobTest.DEFAULT_NAME, data, null);
+    final String jid = this.queue
+        .newJobPutter()
+        .data(data)
+        .build()
+        .put(JobTest.DEFAULT_NAME);
+
     assertThat((String) this.client.getJobs().get(jid).getDataField("foo"),
         equalTo("bar"));
   }

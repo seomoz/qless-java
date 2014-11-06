@@ -15,6 +15,7 @@ public class ClientHelper {
   public static final String DEFAULT_OFFSET = ClientHelper.ZERO_VALUE;
   public static final String DEFAULT_PRIORITY = ClientHelper.ZERO_VALUE;
   public static final String DEFAULT_RETRIES = "5";
+  public static final int DEFAULT_INTERVAL = 60;
   public static final int DEFAULT_HEARTBEAT = 60;
   public static final String DEFAULT_APPLICATION = "qless";
   public static final int DEFAULT_GRACE_PERIOD = 10;
