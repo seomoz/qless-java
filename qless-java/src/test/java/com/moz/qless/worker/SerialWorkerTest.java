@@ -46,7 +46,10 @@ public class SerialWorkerTest {
   @Test
   public void workerMeta() throws IOException, InterruptedException {
     final Queue queue = this.client.getQueue(SerialWorkerTest.DEFAULT_QUEUE_NAME);
-    final String jid = queue.put(SerialWorkerTest.DEFAULT_JOB_NAME, null, null);
+    final String jid = queue
+        .newJobPutter()
+        .build()
+        .put(SerialWorkerTest.DEFAULT_JOB_NAME);
 
     final SerialWorker worker = new SerialWorker(
         Arrays.asList(SerialWorkerTest.DEFAULT_QUEUE_NAME),
@@ -67,7 +70,9 @@ public class SerialWorkerTest {
   @Test
   public void singleQueue() throws IOException, InterruptedException {
     final Queue queue = this.client.getQueue(SerialWorkerTest.DEFAULT_QUEUE_NAME);
-    queue.put(SerialWorkerTest.DEFAULT_JOB_NAME, null, null);
+    queue.newJobPutter()
+        .build()
+        .put(SerialWorkerTest.DEFAULT_JOB_NAME);
 
     final SerialWorker worker = new SerialWorker(
         Arrays.asList(SerialWorkerTest.DEFAULT_QUEUE_NAME),
@@ -86,7 +91,10 @@ public class SerialWorkerTest {
   @Test
   public void notExisitQueue() throws IOException, InterruptedException {
     final Queue queue = this.client.getQueue("foo");
-    queue.put(SerialWorkerTest.DEFAULT_JOB_NAME, null, null);
+    queue
+        .newJobPutter()
+        .build()
+        .put(SerialWorkerTest.DEFAULT_JOB_NAME);
 
     final SerialWorker worker = new SerialWorker(
         Arrays.asList("foo"),
@@ -108,11 +116,25 @@ public class SerialWorkerTest {
     final Queue queueB = this.client.getQueue("testB");
     final Queue queueC = this.client.getQueue("testC");
 
-    queueA.put(SerialWorkerTest.DEFAULT_JOB_NAME, null, null);
-    queueA.put(SerialWorkerTest.DEFAULT_JOB_NAME, null, null);
-    queueB.put(SerialWorkerTest.DEFAULT_JOB_NAME, null, null);
-    queueC.put(SerialWorkerTest.DEFAULT_JOB_NAME, null, null);
-    queueC.put(SerialWorkerTest.DEFAULT_JOB_NAME, null, null);
+    queueA.newJobPutter()
+        .build()
+        .put(SerialWorkerTest.DEFAULT_JOB_NAME);
+
+    queueA.newJobPutter()
+        .build()
+        .put(SerialWorkerTest.DEFAULT_JOB_NAME);
+
+    queueB.newJobPutter()
+        .build()
+        .put(SerialWorkerTest.DEFAULT_JOB_NAME);
+
+    queueC.newJobPutter()
+        .build()
+        .put(SerialWorkerTest.DEFAULT_JOB_NAME);
+
+    queueC.newJobPutter()
+        .build()
+        .put(SerialWorkerTest.DEFAULT_JOB_NAME);
 
     final SerialWorker worker = new SerialWorker(
         Arrays.asList("testA", "testB", "testC"),

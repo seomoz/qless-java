@@ -34,8 +34,11 @@ public class QueuesTest {
   @Test
   public void countsSingleJob() throws IOException {
     assertThat(this.client.getQueues().counts(), nullValue());
-    this.client.getQueues().get(QueuesTest.DEFAULT_NAME)
-        .put(QueuesTest.DEFAULT_NAME, null, null);
+
+    this.client.getQueue(QueuesTest.DEFAULT_NAME)
+        .newJobPutter()
+        .build()
+        .put(QueuesTest.DEFAULT_NAME);
 
     final List<QueueCounts> counts = this.client.getQueues().counts();
     assertThat(counts,
@@ -64,10 +67,16 @@ public class QueuesTest {
   public void countsMultiJobs() throws IOException {
     assertThat(this.client.getQueues().counts(),
         nullValue());
-    this.client.getQueues().get(QueuesTest.DEFAULT_NAME)
-        .put(QueuesTest.DEFAULT_NAME, null, null);
-    this.client.getQueues().get(QueuesTest.DEFAULT_NAME)
-        .put("foo2", null, null);
+
+    this.client.getQueue(QueuesTest.DEFAULT_NAME)
+        .newJobPutter()
+        .build()
+        .put(QueuesTest.DEFAULT_NAME);
+
+    this.client.getQueue(QueuesTest.DEFAULT_NAME)
+        .newJobPutter()
+        .build()
+        .put("foo2");
 
     final List<QueueCounts> counts = this.client.getQueues().counts();
     assertThat(counts,
@@ -95,10 +104,16 @@ public class QueuesTest {
   @Test
   public void countsMultiQueues() throws IOException {
     assertThat(this.client.getQueues().counts(), nullValue());
-    this.client.getQueues().get(QueuesTest.DEFAULT_NAME)
-        .put(QueuesTest.DEFAULT_NAME, null, null);
-    this.client.getQueues().get("foo2")
-        .put("foo2", null, null);
+
+    this.client.getQueue(QueuesTest.DEFAULT_NAME)
+        .newJobPutter()
+        .build()
+        .put(QueuesTest.DEFAULT_NAME);
+
+    this.client.getQueue("foo2")
+        .newJobPutter()
+        .build()
+        .put("foo2");
 
     assertThat(this.client.getQueues().counts(),
         hasSize(2));
@@ -108,8 +123,10 @@ public class QueuesTest {
   public void countsAdvanced() throws IOException {
     assertThat(this.client.getQueues().counts(),
         nullValue());
-    final String jid = this.client.getQueues().get(QueuesTest.DEFAULT_NAME)
-        .put(QueuesTest.DEFAULT_NAME, null, null);
+    final String jid = this.client.getQueue(QueuesTest.DEFAULT_NAME)
+        .newJobPutter()
+        .build()
+        .put(QueuesTest.DEFAULT_NAME);
 
     this.client.getQueues().get(QueuesTest.DEFAULT_NAME).pop();
     List<QueueCounts> counts = this.client.getQueues().counts();

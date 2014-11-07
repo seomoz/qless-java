@@ -26,7 +26,10 @@ public class QueueJobsTest {
 
   @Test
   public void regularJobStatus() throws IOException {
-    final String jid = this.queue.put(QueueJobsTest.DEFAULT_NAME, null, null);
+    final String jid = this.queue
+        .newJobPutter()
+        .build()
+        .put(QueueJobsTest.DEFAULT_NAME);
 
     assertThat(this.queue.jobs().depends(),
         is(empty()));
@@ -46,7 +49,11 @@ public class QueueJobsTest {
 
   @Test
   public void recurringJobStatus() throws IOException {
-    final String jid = this.queue.recur(QueueJobsTest.DEFAULT_NAME, null, 60, null);
+    final String jid = this.queue
+        .newRecurJobPutter()
+        .interval(60)
+        .build()
+        .recur(QueueJobsTest.DEFAULT_NAME);
 
     assertThat(this.queue.jobs().depends(),
         is(empty()));

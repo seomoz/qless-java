@@ -24,6 +24,7 @@ public final class RecurJobPutter {
   private final String offset;
   private final String retries;
   private final String backlog;
+  private final List<String> depends;
   private final List<String> tags;
 
   private RecurJobPutter(final Builder builder) {
@@ -37,6 +38,7 @@ public final class RecurJobPutter {
     this.retries = builder.retries;
     this.backlog = builder.backlog;
     this.tags = builder.tags;
+    this.depends = builder.depends;
   }
 
   public String recur(final String klassName) throws IOException {
@@ -72,6 +74,7 @@ public final class RecurJobPutter {
     private String offset = ClientHelper.DEFAULT_OFFSET;
     private String retries = ClientHelper.DEFAULT_RETRIES;
     private String backlog = ClientHelper.DEFAULT_BACKLOG;
+    private List<String> depends = new ArrayList<>();
     private List<String> tags = new ArrayList<>();
 
     public Builder(final Client client, final String queueName) {
@@ -116,6 +119,15 @@ public final class RecurJobPutter {
 
     public Builder tags(final String... tags) {
       return this.tags(Arrays.asList(tags));
+    }
+
+    public Builder depends(final List<String> depends) {
+      this.depends = depends;
+      return this;
+    }
+
+    public Builder depends(final String... depends) {
+      return this.depends(Arrays.asList(depends));
     }
 
     public Builder interval(final int interval) {

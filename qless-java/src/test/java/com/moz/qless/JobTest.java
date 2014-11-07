@@ -34,12 +34,15 @@ public class JobTest {
 
   @Test
   public void setPriority() throws IOException {
-    final Map<String, Object> opts = new HashMap<>();
     final String jid = ClientHelper.generateJid();
-    opts.put("jid", jid);
-    opts.put("priority", 0);
 
-    this.queue.put(JobTest.DEFAULT_NAME, null, opts);
+    this.queue
+        .newJobPutter()
+        .jid(jid)
+        .priority("0")
+        .build()
+        .put(JobTest.DEFAULT_NAME);
+
     assertThat(this.client.getJobs().get(jid).priority,
         equalTo(0));
 
@@ -50,21 +53,33 @@ public class JobTest {
 
   @Test
   public void queue() throws IOException {
-    final String jid = this.queue.put(JobTest.DEFAULT_NAME, null, null);
+    final String jid = this.queue
+        .newJobPutter()
+        .build()
+        .put(JobTest.DEFAULT_NAME);
+
     assertThat(this.client.getJobs().get(jid).getQueueName(),
         equalTo(JobTest.DEFAULT_NAME));
   }
 
   @Test
   public void klass() throws IOException, ClassNotFoundException {
-    final String jid = this.queue.put("com.moz.qless.Job", null, null);
+    final String jid = this.queue
+        .newJobPutter()
+        .build()
+        .put("com.moz.qless.Job");
+
     assertThat(this.client.getJobs().get(jid).getKlass().getName(),
         equalTo("com.moz.qless.Job"));
   }
 
   @Test
   public void klassName() throws IOException, ClassNotFoundException {
-    final String jid = this.queue.put("com.moz.qless.JobTest", null, null);
+    final String jid = this.queue
+        .newJobPutter()
+        .build()
+        .put("com.moz.qless.JobTest");
+
     assertThat(this.client.getJobs().get(jid).getKlassName(),
         equalTo("com.moz.qless.JobTest"));
   }
@@ -72,7 +87,10 @@ public class JobTest {
   @Test
   public void ttl() throws IOException {
     this.client.getConfig().put(LuaConfigParameter.HEARTBEAT.toString(), 10);
-    final String jid = this.queue.put(JobTest.DEFAULT_NAME, null, null);
+    final String jid = this.queue
+        .newJobPutter()
+        .build()
+        .put(JobTest.DEFAULT_NAME);
 
     this.queue.pop();
     Assert.assertTrue(this.client.getJobs().get(jid).getTtl() <= 10);
@@ -81,7 +99,11 @@ public class JobTest {
 
   @Test
   public void cancel() throws IOException {
-    final String jid = this.queue.put(JobTest.DEFAULT_NAME, null, null);
+    final String jid = this.queue
+        .newJobPutter()
+        .build()
+        .put(JobTest.DEFAULT_NAME);
+
     this.client.getJobs().get(jid).cancel();
 
     assertThat(this.client.getJobs().get(jid),
@@ -90,7 +112,11 @@ public class JobTest {
 
   @Test(expected = QlessException.class)
   public void cancelAndRequeue() throws IOException {
-    final String jid = this.queue.put(JobTest.DEFAULT_NAME, null, null);
+    final String jid = this.queue
+        .newJobPutter()
+        .build()
+        .put(JobTest.DEFAULT_NAME);
+
     final Job job = this.client.getJobs().get(jid);
 
     job.cancel();
@@ -102,14 +128,21 @@ public class JobTest {
 
   @Test
   public void repr() throws IOException {
-      final String jid = this.queue.put(JobTest.DEFAULT_NAME, null, null);
+      final String jid = this.queue
+          .newJobPutter()
+          .build()
+          .put(JobTest.DEFAULT_NAME);
+
       final String str = this.client.getJobs().get(jid).toString();
       Assert.assertTrue(str.contains("foo (" + jid + " / foo / waiting)"));
   }
 
   @Test
   public void tagUntag() throws IOException {
-    final String jid = this.queue.put(JobTest.DEFAULT_NAME, null, null);
+    final String jid = this.queue
+        .newJobPutter()
+        .build()
+        .put(JobTest.DEFAULT_NAME);
 
     this.client.getJobs().get(jid).tag(JobTest.DEFAULT_NAME);
     assertThat(this.client.getJobs().get(jid).getTags(),
@@ -140,7 +173,12 @@ public class JobTest {
     final Map<String, Object> data = new HashMap<>();
     data.put(JobTest.DEFAULT_NAME, "bar1");
 
-    final String jid = this.queue.put(JobTest.DEFAULT_NAME, data, null);
+    final String jid = this.queue
+        .newJobPutter()
+        .data(data)
+        .build()
+        .put(JobTest.DEFAULT_NAME);
+
     final Job job = this.client.getJobs().get(jid);
     assertThat((String) job.getDataField(JobTest.DEFAULT_NAME),
         equalTo("bar1"));
@@ -158,7 +196,13 @@ public class JobTest {
     final Map<String, Object> opts = new HashMap<>();
     opts.put(LuaConfigParameter.DEPENDS.toString(), Arrays.asList("jid2"));
 
-    final String jid1 = this.queue.put(JobTest.DEFAULT_NAME, data, opts);
+    final String jid1 = this.queue
+        .newJobPutter()
+        .depends("jid2")
+        .data(data)
+        .build()
+        .put(JobTest.DEFAULT_NAME);
+
     final Job job1 = this.client.getJobs().get(jid1);
     assertThat(job1.getJid(),
         equalTo(jid1));
@@ -176,7 +220,11 @@ public class JobTest {
 
   @Test
   public void complete() throws IOException {
-    final String jid = this.queue.put(JobTest.DEFAULT_NAME, null, null);
+    final String jid = this.queue
+        .newJobPutter()
+        .build()
+        .put(JobTest.DEFAULT_NAME);
+
     this.queue.pop().complete();
 
     assertThat(this.client.getJobs().get(jid).getState(),
@@ -185,7 +233,11 @@ public class JobTest {
 
   @Test
   public void advance() throws IOException {
-    final String jid = this.queue.put(JobTest.DEFAULT_NAME, null, null);
+    final String jid = this.queue
+        .newJobPutter()
+        .build()
+        .put(JobTest.DEFAULT_NAME);
+
     this.queue.pop().complete("q2");
 
     assertThat(this.client.getJobs().get(jid).getQueueName(),
@@ -197,7 +249,12 @@ public class JobTest {
   @Test
   public void heartBeat() throws IOException {
     this.client.getConfig().put(LuaConfigParameter.HEARTBEAT.toString(), 10);
-    this.queue.put(JobTest.DEFAULT_NAME, null, null);
+
+    this.queue
+        .newJobPutter()
+        .build()
+        .put(JobTest.DEFAULT_NAME);
+
     final Job job = this.queue.pop();
     final long before = job.getTtl();
     this.client.getConfig().put(LuaConfigParameter.HEARTBEAT.toString(), 20);
@@ -208,13 +265,21 @@ public class JobTest {
 
   @Test(expected = QlessException.class)
   public void heartBeatFail() throws IOException {
-    final String jid = this.queue.put(JobTest.DEFAULT_NAME, null, null);
+    final String jid = this.queue
+        .newJobPutter()
+        .build()
+        .put(JobTest.DEFAULT_NAME);
+
     this.client.getJobs().get(jid).heartbeat();
   }
 
   @Test
   public void trackUntrack() throws IOException {
-    final String jid = this.queue.put(JobTest.DEFAULT_NAME, null, null);
+    final String jid = this.queue
+        .newJobPutter()
+        .build()
+        .put(JobTest.DEFAULT_NAME);
+
     assertThat(this.client.getJobs().get(jid).getTracked(),
         equalTo(false));
 
@@ -229,15 +294,25 @@ public class JobTest {
 
   @Test
   public void dependUndepend() throws IOException {
-    final String jidA = this.queue.put(JobTest.DEFAULT_NAME, null, null);
+    final String jidA = this.queue
+        .newJobPutter()
+        .build()
+        .put(JobTest.DEFAULT_NAME);
 
-    final String jidB = this.queue.put(JobTest.DEFAULT_NAME, null, null);
+    final String jidB = this.queue
+        .newJobPutter()
+        .build()
+        .put(JobTest.DEFAULT_NAME);
+
     assertThat(this.client.getJobs().get(jidB).getDependencies(),
         is(empty()));
 
-    final Map<String, Object> opts = new HashMap<>();
-    opts.put(LuaConfigParameter.DEPENDS.toString(), Arrays.asList(jidA));
-    final String jidC = this.queue.put(JobTest.DEFAULT_NAME, null, opts);
+    final String jidC = this.queue
+        .newJobPutter()
+        .depends(jidA)
+        .build()
+        .put(JobTest.DEFAULT_NAME);
+
     assertThat(this.client.getJobs().get(jidC).getDependencies(),
         contains(jidA));
 
@@ -256,14 +331,22 @@ public class JobTest {
 
   @Test(expected = QlessException.class)
   public void retryFail() throws IOException {
-    final String jid = this.queue.put(JobTest.DEFAULT_NAME, null, null);
+    final String jid = this.queue
+        .newJobPutter()
+        .build()
+        .put(JobTest.DEFAULT_NAME);
+
     this.client.getJobs().get(jid).retry();
   }
 
   @Test
   public void runJobBasic() throws IOException {
     final Queue queue = new Queue(this.client, "test");
-    queue.put("com.moz.qless.IntegrationTestJob", null, null);
+
+    queue.newJobPutter()
+        .build()
+        .put("com.moz.qless.IntegrationTestJob");
+
     queue.pop().process();
 
     assertThat(IntegrationTestJob.runningHistory,
@@ -272,14 +355,21 @@ public class JobTest {
 
   @Test(expected = QlessException.class)
   public void runJobMissingKlass() throws IOException {
-    this.queue.put(JobTest.DEFAULT_NAME, null, null);
+    this.queue
+        .newJobPutter()
+        .build()
+        .put(JobTest.DEFAULT_NAME);
+
     this.queue.pop().process();
   }
 
   @Test
   public void runJobDefaultMethod() throws IOException {
     final Queue queue = new Queue(this.client, "none");
-    queue.put("com.moz.qless.IntegrationTestJob", null, null);
+    queue.newJobPutter()
+        .build()
+        .put("com.moz.qless.IntegrationTestJob");
+
     queue.pop().process();
 
     assertThat(IntegrationTestJob.runningHistory,
@@ -289,13 +379,20 @@ public class JobTest {
   @Test(expected = QlessException.class)
   public void runJobMissingMethod() throws IOException {
     final Queue queue = new Queue(this.client, "none");
-    queue.put("com.moz.qless.EmptyJob", null, null);
+    queue.newJobPutter()
+        .build()
+        .put("com.moz.qless.EmptyJob");
+
     queue.pop().process();
   }
 
   @Test
   public void history() throws IOException {
-      final String jid = this.queue.put(JobTest.DEFAULT_NAME, null, null);
+      final String jid = this.queue
+          .newJobPutter()
+          .build()
+          .put(JobTest.DEFAULT_NAME);
+
       this.client.getJobs().get(jid).log("log1");
 
       final Map<String, Object> data = new HashMap<>();

@@ -1,7 +1,6 @@
 package com.moz.qless;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,8 +8,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 import com.moz.qless.client.ClientHelper;
-import com.moz.qless.lua.LuaConfigParameter;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,7 +28,12 @@ public class RecurringJobTest {
 
   @Test
   public void recurringJobAttributes() throws IOException {
-    final String jid = this.queue.recur(RecurringJobTest.DEFAULT_NAME, null, 60, null);
+    final String jid = this.queue
+        .newRecurJobPutter()
+        .interval(60)
+        .build()
+        .recur(RecurringJobTest.DEFAULT_NAME);
+
     final RecurringJob job = (RecurringJob) this.client.getJobs().get(jid);
 
     assertThat(job.getJid(),
@@ -50,12 +52,16 @@ public class RecurringJobTest {
 
   @Test
   public void setPriority() throws IOException {
-    final Map<String, Object> opts = new HashMap<>();
     final String jid = ClientHelper.generateJid();
-    opts.put("jid", jid);
-    opts.put(LuaConfigParameter.PRIORITY.toString(), 0);
 
-    this.queue.recur(RecurringJobTest.DEFAULT_NAME, null, 60, opts);
+    this.queue
+        .newRecurJobPutter()
+        .interval(60)
+        .jid(jid)
+        .priority("0")
+        .build()
+        .recur(RecurringJobTest.DEFAULT_NAME);
+
     assertThat(this.client.getJobs().get(jid).priority,
         equalTo(0));
 
@@ -66,12 +72,16 @@ public class RecurringJobTest {
 
   @Test
   public void setRetries() throws IOException {
-    final Map<String, Object> opts = new HashMap<>();
     final String jid = ClientHelper.generateJid();
-    opts.put("jid", jid);
-    opts.put(LuaConfigParameter.RETRIES.toString(), 2);
 
-    this.queue.recur(RecurringJobTest.DEFAULT_NAME, null, 60, opts);
+    this.queue
+        .newRecurJobPutter()
+        .interval(60)
+        .jid(jid)
+        .retries("2")
+        .build()
+        .recur(RecurringJobTest.DEFAULT_NAME);
+
     final RecurringJob job = (RecurringJob) this.client.getJobs().get(jid);
     assertThat(job.getRetries(),
         equalTo(2));
@@ -83,7 +93,12 @@ public class RecurringJobTest {
 
   @Test
   public void setInterval() throws IOException {
-    final String jid = this.queue.recur(RecurringJobTest.DEFAULT_NAME, null, 60, null);
+    final String jid = this.queue
+        .newRecurJobPutter()
+        .interval(60)
+        .build()
+        .recur(RecurringJobTest.DEFAULT_NAME);
+
     final RecurringJob job = (RecurringJob) this.client.getJobs().get(jid);
 
     assertThat(job.getInterval(),
@@ -96,7 +111,12 @@ public class RecurringJobTest {
 
   @Test
   public void setData() throws IOException {
-    final String jid = this.queue.recur(RecurringJobTest.DEFAULT_NAME, null, 60, null);
+    final String jid = this.queue
+        .newRecurJobPutter()
+        .interval(60)
+        .build()
+        .recur(RecurringJobTest.DEFAULT_NAME);
+
     final RecurringJob job = (RecurringJob) this.client.getJobs().get(jid);
 
     assertThat(job.getData().keySet(),
@@ -113,7 +133,12 @@ public class RecurringJobTest {
 
   @Test
   public void setKlass() throws IOException {
-    final String jid = this.queue.recur(RecurringJobTest.DEFAULT_NAME, null, 60, null);
+    final String jid = this.queue
+        .newRecurJobPutter()
+        .interval(60)
+        .build()
+        .recur(RecurringJobTest.DEFAULT_NAME);
+
     final RecurringJob job = (RecurringJob) this.client.getJobs().get(jid);
 
     assertThat(job.getKlassName(),
@@ -126,7 +151,12 @@ public class RecurringJobTest {
 
   @Test
   public void getNext() throws IOException {
-    final String jid = this.queue.recur(RecurringJobTest.DEFAULT_NAME, null, 60, null);
+    final String jid = this.queue
+        .newRecurJobPutter()
+        .interval(60)
+        .build()
+        .recur(RecurringJobTest.DEFAULT_NAME);
+
     final RecurringJob job = (RecurringJob) this.client.getJobs().get(jid);
 
     final double next = job.next();
@@ -140,10 +170,14 @@ public class RecurringJobTest {
     final Map<String, Object> data = new HashMap<>();
     data.put("key", "value");
 
-    final Map<String, Object> opts = new HashMap<>();
-    opts.put(LuaConfigParameter.DEPENDS.toString(), Arrays.asList("jid2"));
+    final String jid = this.queue
+        .newRecurJobPutter()
+        .interval(60)
+        .data(data)
+        .depends("jid2")
+        .build()
+        .recur(RecurringJobTest.DEFAULT_NAME);
 
-    final String jid = this.queue.recur(RecurringJobTest.DEFAULT_NAME, data, 60, opts);
     final RecurringJob job = (RecurringJob) this.client.getJobs().get(jid);
     assertThat(job.getJid(),
         equalTo(jid));
@@ -158,7 +192,12 @@ public class RecurringJobTest {
 
   @Test
   public void cancel() throws IOException {
-    final String jid = this.queue.recur(RecurringJobTest.DEFAULT_NAME, null, 60, null);
+    final String jid = this.queue
+        .newRecurJobPutter()
+        .interval(60)
+        .build()
+        .recur(RecurringJobTest.DEFAULT_NAME);
+
     final RecurringJob job = (RecurringJob) this.client.getJobs().get(jid);
 
     job.cancel();
@@ -167,7 +206,11 @@ public class RecurringJobTest {
 
   @Test
   public void tagUntag() throws IOException {
-    final String jid = this.queue.recur(RecurringJobTest.DEFAULT_NAME, null, 60, null);
+    final String jid = this.queue
+        .newRecurJobPutter()
+        .interval(60)
+        .build()
+        .recur(RecurringJobTest.DEFAULT_NAME);
 
     this.client.getJobs().get(jid).tag(RecurringJobTest.DEFAULT_NAME);
     assertThat(this.client.getJobs().get(jid).getTags(),
