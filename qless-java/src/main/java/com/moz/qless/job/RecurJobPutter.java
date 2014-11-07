@@ -12,7 +12,7 @@ import com.moz.qless.lua.LuaCommand;
 import com.moz.qless.lua.LuaConfigParameter;
 import com.moz.qless.utils.JsonUtils;
 
-public class RecurJobPutter {
+public final class RecurJobPutter {
   private final Client client;
   private final String queueName;
 
@@ -25,7 +25,7 @@ public class RecurJobPutter {
   private final String backlog;
   private final List<String> tags;
 
-  public RecurJobPutter(final Builder builder) {
+  private RecurJobPutter(final Builder builder) {
     this.client = builder.client;
     this.queueName = builder.queueName;
     this.data = builder.data;

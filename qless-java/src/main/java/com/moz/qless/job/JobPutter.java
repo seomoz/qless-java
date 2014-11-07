@@ -11,7 +11,7 @@ import com.moz.qless.client.ClientHelper;
 import com.moz.qless.lua.LuaCommand;
 import com.moz.qless.utils.JsonUtils;
 
-public class JobPutter {
+public final class JobPutter {
   private final Client client;
   private final String queueName;
 
@@ -23,8 +23,7 @@ public class JobPutter {
   private final List<String> depends;
   private final List<String> tags;
 
-  private JobPutter(
-      final Builder builder) {
+  private JobPutter(final Builder builder) {
     this.client = builder.client;
     this.queueName = builder.queueName;
     this.data = builder.data;
