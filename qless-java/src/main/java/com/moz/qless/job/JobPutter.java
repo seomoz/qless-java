@@ -23,25 +23,17 @@ public class JobPutter {
   private final List<String> depends;
   private final List<String> tags;
 
-  public JobPutter(
-      final Client client,
-      final String queueName,
-      final Map<String, Object> data,
-      final String jid,
-      final String priority,
-      final String delay,
-      final String retries,
-      final List<String> depends,
-      final List<String> tags) {
-    this.client = client;
-    this.queueName = queueName;
-    this.data = data;
-    this.jid = jid;
-    this.priority = priority;
-    this.delay = delay;
-    this.retries = retries;
-    this.depends = depends;
-    this.tags = tags;
+  private JobPutter(
+      final Builder builder) {
+    this.client = builder.client;
+    this.queueName = builder.queueName;
+    this.data = builder.data;
+    this.jid = builder.jid;
+    this.priority = builder.priority;
+    this.delay = builder.delay;
+    this.retries = builder.retries;
+    this.depends = builder.depends;
+    this.tags = builder.tags;
   }
 
   public String put(final String klassName) throws IOException {
@@ -118,16 +110,7 @@ public class JobPutter {
     }
 
     public JobPutter build() {
-      return new JobPutter(
-          this.client,
-          this.queueName,
-          this.data,
-          this.jid,
-          this.priority,
-          this.delay,
-          this.retries,
-          this.depends,
-          this.tags);
+      return new JobPutter(this);
     }
   }
 }

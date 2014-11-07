@@ -25,27 +25,17 @@ public class RecurJobPutter {
   private final String backlog;
   private final List<String> tags;
 
-  public RecurJobPutter(
-      final Client client,
-      final String queueName,
-      final Map<String, Object> data,
-      final String jid,
-      final int interval,
-      final String priority,
-      final String offset,
-      final String retries,
-      final String backlog,
-      final List<String> tags) {
-    this.client = client;
-    this.queueName = queueName;
-    this.data = data;
-    this.jid = jid;
-    this.interval = interval;
-    this.priority = priority;
-    this.offset = offset;
-    this.retries = retries;
-    this.backlog = backlog;
-    this.tags = tags;
+  public RecurJobPutter(final Builder builder) {
+    this.client = builder.client;
+    this.queueName = builder.queueName;
+    this.data = builder.data;
+    this.jid = builder.jid;
+    this.interval = builder.interval;
+    this.priority = builder.priority;
+    this.offset = builder.offset;
+    this.retries = builder.retries;
+    this.backlog = builder.backlog;
+    this.tags = builder.tags;
   }
 
   public String recur(final String klassName) throws IOException {
@@ -129,17 +119,7 @@ public class RecurJobPutter {
     }
 
     public RecurJobPutter build() {
-      return new RecurJobPutter(
-          this.client,
-          this.queueName,
-          this.data,
-          this.jid,
-          this.interval,
-          this.priority,
-          this.offset,
-          this.retries,
-          this.backlog,
-          this.tags);
+      return new RecurJobPutter(this);
     }
   }
 }
