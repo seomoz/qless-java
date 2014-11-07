@@ -29,6 +29,7 @@ public class JobTest {
   public void before() throws IOException {
     this.client = ClientCreation.create(this.jedisPool);
     this.queue = new Queue(this.client, JobTest.DEFAULT_NAME);
+    IntegrationTestJob.runningHistory.clear();
   }
 
   @Test
@@ -124,7 +125,12 @@ public class JobTest {
     final Map<String, Object> data = new HashMap<>();
     data.put("foo", "bar");
 
-    final String jid = this.queue.put(JobTest.DEFAULT_NAME, data, null);
+    final String jid = this.queue
+        .newJobPutter()
+        .data(data)
+        .build()
+        .put(JobTest.DEFAULT_NAME);
+
     assertThat((String) this.client.getJobs().get(jid).getDataField("foo"),
         equalTo("bar"));
   }
@@ -256,8 +262,6 @@ public class JobTest {
 
   @Test
   public void runJobBasic() throws IOException {
-    IntegrationTestJob.runningHistory.clear();
-
     final Queue queue = new Queue(this.client, "test");
     queue.put("com.moz.qless.IntegrationTestJob", null, null);
     queue.pop().process();

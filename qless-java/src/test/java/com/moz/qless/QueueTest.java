@@ -63,7 +63,12 @@ public class QueueTest {
 
   @Test
   public void jobsRecur() throws IOException {
-    final String jid = this.queue.recur(QueueTest.DEFAULT_NAME, null, 60, null);
+    final String jid = this.queue
+        .newRecurJobPutter()
+        .interval(60)
+        .build()
+        .recur(QueueTest.DEFAULT_NAME);
+
     assertThat(this.queue.jobs().depends(),
         is(empty()));
     assertThat(this.queue.jobs().running(),
