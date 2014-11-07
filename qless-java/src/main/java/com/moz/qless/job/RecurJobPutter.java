@@ -2,6 +2,7 @@ package com.moz.qless.job;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -111,6 +112,10 @@ public final class RecurJobPutter {
     public Builder tags(final List<String> tags) {
       this.tags = tags;
       return this;
+    }
+
+    public Builder tags(final String... tags) {
+      return this.tags(Arrays.asList(tags));
     }
 
     public Builder interval(final int interval) {

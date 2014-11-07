@@ -29,6 +29,7 @@ public class JobTest {
   public void before() throws IOException {
     this.client = ClientCreation.create(this.jedisPool);
     this.queue = new Queue(this.client, JobTest.DEFAULT_NAME);
+    IntegrationTestJob.runningHistory.clear();
   }
 
   @Test
@@ -261,8 +262,6 @@ public class JobTest {
 
   @Test
   public void runJobBasic() throws IOException {
-    IntegrationTestJob.runningHistory.clear();
-
     final Queue queue = new Queue(this.client, "test");
     queue.put("com.moz.qless.IntegrationTestJob", null, null);
     queue.pop().process();
