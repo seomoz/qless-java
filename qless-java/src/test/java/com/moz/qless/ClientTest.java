@@ -29,7 +29,11 @@ public class ClientTest {
 
   @Test
   public void track() throws IOException {
-    final String jid = this.queue.put(this.defaultName, null, null);
+    final String jid = this.queue
+        .newJobPutter()
+        .build()
+        .put(this.defaultName);
+
     this.client.track(jid);
 
     assertThat(this.client.getJobs().tracked().get(0).getJid(),
@@ -38,7 +42,11 @@ public class ClientTest {
 
   @Test
   public void unTrack() throws IOException {
-    final String jid = this.queue.put(this.defaultName, null, null);
+    final String jid = this.queue
+        .newJobPutter()
+        .build()
+        .put(this.defaultName);
+
     this.client.track(jid);
     assertThat(this.client.getJobs().tracked().get(0).getJid(),
         equalTo(jid));
@@ -57,7 +65,11 @@ public class ClientTest {
   public void tags() throws IOException {
     assertThat(this.client.tags(), nullValue());
 
-    final String jid = this.queue.put(this.defaultName, null, null);
+    final String jid = this.queue
+        .newJobPutter()
+        .build()
+        .put(this.defaultName);
+
     this.client.getJobs().get(jid).tag("tag1", "tag2");
     assertThat(this.client.tags(),
         containsInAnyOrder("tag1", "tag2"));
@@ -65,7 +77,11 @@ public class ClientTest {
 
   @Test
   public void unfail() throws IOException {
-    final String jid = this.queue.put(this.defaultName, null, null);
+    final String jid = this.queue
+        .newJobPutter()
+        .build()
+        .put(this.defaultName);
+
     this.queue.pop().fail(this.defaultName, this.defaultName);
     assertThat(this.client.getJobs().get(jid).getState(),
         equalTo(LuaJobStatus.FAILED.toString()));

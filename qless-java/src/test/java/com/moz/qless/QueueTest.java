@@ -35,20 +35,28 @@ public class QueueTest {
     final Map<String, Object> data = new HashMap<>();
     data.put("key1", "value1");
 
-    final Map<String, Object> opts = new HashMap<>();
     final String expectedJid = ClientHelper.generateJid();
-    opts.put("jid", expectedJid);
-    opts.put("tags", Arrays.asList("tag1", "tag2"));
-    opts.put("retries", "3");
 
-    final String actualJid = this.queue.put(QueueTest.DEFAULT_NAME, data, opts);
+    final String actualJid = this.queue
+        .newJobPutter()
+        .data(data)
+        .jid(expectedJid)
+        .retries("3")
+        .tags("tag1", "tag2")
+        .build()
+        .put(QueueTest.DEFAULT_NAME);
+
     assertThat(expectedJid,
         equalTo(actualJid));
   }
 
   @Test
   public void jobs() throws IOException {
-    this.queue.put(QueueTest.DEFAULT_NAME, null, null);
+    this.queue
+        .newJobPutter()
+        .build()
+        .put(QueueTest.DEFAULT_NAME);
+
     assertThat(this.queue.jobs().depends(),
         is(empty()));
     assertThat(this.queue.jobs().running(),
@@ -83,7 +91,10 @@ public class QueueTest {
 
   @Test
   public void counts() throws IOException {
-    this.queue.put(QueueTest.DEFAULT_NAME, null, null);
+    this.queue
+      .newJobPutter()
+      .build()
+      .put(QueueTest.DEFAULT_NAME);
 
     final QueueCounts count = this.queue.getCounts();
     assertThat(count.getScheduled(),
@@ -120,7 +131,10 @@ public class QueueTest {
 
   @Test
   public void pop() throws IOException {
-    final String jid = this.queue.put(QueueTest.DEFAULT_NAME, null, null);
+    final String jid = this.queue
+        .newJobPutter()
+        .build()
+        .put(QueueTest.DEFAULT_NAME);
 
     assertThat(this.queue.pop().getJid(),
         is(jid));
@@ -130,8 +144,15 @@ public class QueueTest {
 
   @Test
   public void multiPop() throws IOException {
-    final String jid1 = this.queue.put(QueueTest.DEFAULT_NAME, null, null);
-    final String jid2 = this.queue.put(QueueTest.DEFAULT_NAME, null, null);
+    final String jid1 = this.queue
+        .newJobPutter()
+        .build()
+        .put(QueueTest.DEFAULT_NAME);
+
+    final String jid2 = this.queue
+        .newJobPutter()
+        .build()
+        .put(QueueTest.DEFAULT_NAME);
 
     final List<Job> jobs = this.queue.pop(10);
     final List<String> jids = new ArrayList<>();
@@ -147,7 +168,10 @@ public class QueueTest {
 
   @Test
   public void peek() throws IOException {
-    final String jid = this.queue.put(QueueTest.DEFAULT_NAME, null, null);
+    final String jid = this.queue
+        .newJobPutter()
+        .build()
+        .put(QueueTest.DEFAULT_NAME);
 
     assertThat(this.queue.peek().getJid(),
         is(jid));
@@ -157,8 +181,15 @@ public class QueueTest {
 
   @Test
   public void multiPeek() throws IOException {
-    final String jid1 = this.queue.put(QueueTest.DEFAULT_NAME, null, null);
-    final String jid2 = this.queue.put(QueueTest.DEFAULT_NAME, null, null);
+    final String jid1 = this.queue
+        .newJobPutter()
+        .build()
+        .put(QueueTest.DEFAULT_NAME);
+
+    final String jid2 = this.queue
+        .newJobPutter()
+        .build()
+        .put(QueueTest.DEFAULT_NAME);
 
     final List<Job> jobs = this.queue.peek(10);
     final List<String> jids = new ArrayList<>();
@@ -174,7 +205,11 @@ public class QueueTest {
 
   @Test
   public void stats() throws IOException {
-    this.queue.put(QueueTest.DEFAULT_NAME, null, null);
+    this.queue
+        .newJobPutter()
+        .build()
+        .put(QueueTest.DEFAULT_NAME);
+
     final Map<String, Object> stats = this.queue.getStats();
 
     assertThat(stats,
@@ -191,7 +226,11 @@ public class QueueTest {
 
   @Test
   public void len() throws IOException {
-    this.queue.put(QueueTest.DEFAULT_NAME, null, null);
+    this.queue
+        .newJobPutter()
+        .build()
+        .put(QueueTest.DEFAULT_NAME);
+
     assertThat(this.queue.length(),
         equalTo(1));
   }

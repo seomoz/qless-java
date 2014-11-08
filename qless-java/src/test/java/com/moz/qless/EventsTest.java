@@ -39,11 +39,18 @@ public class EventsTest {
 
     this.untracked = this.client
         .getJobs()
-        .get(this.queue.put("untracked", null, null));
+        .get(this.queue
+            .newJobPutter()
+            .build()
+            .put("untracked"));
 
     this.tracked = this.client
         .getJobs()
-        .get(this.queue.put("tracked", null, null));
+        .get(this.queue
+            .newJobPutter()
+            .build()
+            .put("untracked"));
+
     this.tracked.track();
   }
 

@@ -13,7 +13,6 @@ import static org.hamcrest.Matchers.*;
 
 import com.moz.qless.Client;
 import com.moz.qless.ClientCreation;
-import com.moz.qless.lua.LuaConfigParameter;
 import com.moz.qless.Queue;
 
 import org.junit.Before;
@@ -35,22 +34,37 @@ public class JobsTest {
 
   @Test
   public void getSingleJob() throws IOException {
-    final Map<String, Object> opts = new HashMap<>();
     final String expectedJid = ClientHelper.generateJid();
-    opts.put("jid", expectedJid);
 
     assertThat(this.client.getJobs().get(expectedJid),
         nullValue());
-    this.queue.put(JobsTest.DEFAULT_NAME, null, opts);
+
+    this.queue
+        .newJobPutter()
+        .jid(expectedJid)
+        .build()
+        .put(JobsTest.DEFAULT_NAME);
+
     assertThat(this.client.getJobs().get(expectedJid),
         notNullValue());
   }
 
   @Test
   public void getMultiJobs() throws IOException {
-    final String jid1 = this.queue.put("job1", null, null);
-    final String jid2 = this.queue.put("job2", null, null);
-    final String jid3 = this.queue.put("job3", null, null);
+    final String jid1 = this.queue
+        .newJobPutter()
+        .build()
+        .put("job1");
+
+    final String jid2 = this.queue
+        .newJobPutter()
+        .build()
+        .put("job2");
+
+    final String jid3 = this.queue
+        .newJobPutter()
+        .build()
+        .put("job3");
 
     assertThat(this.client.getJobs().get(jid1, jid2, jid3),
         hasSize(3));
@@ -58,13 +72,18 @@ public class JobsTest {
 
   @Test
   public void recurring() throws IOException {
-    final Map<String, Object> opts = new HashMap<>();
     final String expectedJid = ClientHelper.generateJid();
-    opts.put("jid", expectedJid);
 
     assertThat(this.client.getJobs().get(expectedJid),
         nullValue());
-    this.queue.recur(JobsTest.DEFAULT_NAME, null, 60, opts);
+
+    this.queue
+        .newRecurJobPutter()
+        .interval(60)
+        .jid(expectedJid)
+        .build()
+        .recur(JobsTest.DEFAULT_NAME);
+
     assertThat(this.client.getJobs().get(expectedJid),
         notNullValue());
   }
@@ -73,8 +92,15 @@ public class JobsTest {
   public void complete() throws IOException {
     assertThat(this.client.getJobs().complete(), is(empty()));
 
-    final String jid1 = this.queue.put(JobsTest.DEFAULT_NAME, null, null);
-    final String jid2 = this.queue.put(JobsTest.DEFAULT_NAME, null, null);
+    final String jid1 = this.queue
+        .newJobPutter()
+        .build()
+        .put(JobsTest.DEFAULT_NAME);
+
+    final String jid2 = this.queue
+        .newJobPutter()
+        .build()
+        .put(JobsTest.DEFAULT_NAME);
 
     assertThat(this.client.getJobs().get(jid1),
         notNullValue());
@@ -93,8 +119,15 @@ public class JobsTest {
     assertThat(this.client.getJobs().tracked(),
         nullValue());
 
-    final String jid1 = this.queue.put(JobsTest.DEFAULT_NAME, null, null);
-    final String jid2 = this.queue.put(JobsTest.DEFAULT_NAME, null, null);
+    final String jid1 = this.queue
+        .newJobPutter()
+        .build()
+        .put(JobsTest.DEFAULT_NAME);
+
+    final String jid2 = this.queue
+        .newJobPutter()
+        .build()
+        .put(JobsTest.DEFAULT_NAME);
 
     assertThat(this.client.getJobs().get(jid1),
         notNullValue());
@@ -118,13 +151,17 @@ public class JobsTest {
   public void tagged() throws IOException {
     assertThat(this.client.getJobs().tagged(JobsTest.DEFAULT_NAME), nullValue());
 
-    final Map<String, Object> opts1 = new HashMap<>();
-    opts1.put(LuaConfigParameter.TAGS.toString(), Arrays.asList(JobsTest.DEFAULT_NAME));
-    final String jid1 = this.queue.put(JobsTest.DEFAULT_NAME, null, opts1);
+    final String jid1 = this.queue
+        .newJobPutter()
+        .tags(JobsTest.DEFAULT_NAME)
+        .build()
+        .put(JobsTest.DEFAULT_NAME);
 
-    final Map<String, Object> opts2 = new HashMap<>();
-    opts2.put(LuaConfigParameter.TAGS.toString(), Arrays.asList(JobsTest.DEFAULT_NAME));
-    final String jid2 = this.queue.put(JobsTest.DEFAULT_NAME, null, opts2);
+    final String jid2 = this.queue
+        .newJobPutter()
+        .tags(JobsTest.DEFAULT_NAME)
+        .build()
+        .put(JobsTest.DEFAULT_NAME);
 
     assertThat(this.client.getJobs().get(jid1),
         notNullValue());
@@ -142,7 +179,11 @@ public class JobsTest {
     assertThat(this.client.getJobs().failed("foo"),
         nullValue());
 
-    final String jid = this.queue.put(JobsTest.DEFAULT_NAME, null, null);
+    final String jid = this.queue
+        .newJobPutter()
+        .build()
+        .put(JobsTest.DEFAULT_NAME);
+
     this.queue.pop().fail("group", "message");
     assertThat(this.client.getJobs().failed("group"),
         hasSize(1));
@@ -155,10 +196,18 @@ public class JobsTest {
     assertThat(null, this.client.getJobs().failed(),
         nullValue());
 
-    this.queue.put(JobsTest.DEFAULT_NAME, null, null);
+    this.queue
+        .newJobPutter()
+        .build()
+        .put(JobsTest.DEFAULT_NAME);
+
     this.queue.pop().fail("group1", "message1");
 
-    this.queue.put(JobsTest.DEFAULT_NAME, null, null);
+    this.queue
+        .newJobPutter()
+        .build()
+        .put(JobsTest.DEFAULT_NAME);
+
     this.queue.pop().fail("group2", "message2");
 
     final Map<String, Long> expected = new HashMap<String, Long>();

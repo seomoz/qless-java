@@ -15,8 +15,6 @@ import com.moz.qless.job.RecurJobPutter;
 import com.moz.qless.lua.LuaCommand;
 import com.moz.qless.lua.LuaConfigParameter;
 import com.moz.qless.utils.JsonUtils;
-import com.moz.qless.utils.MapUtils;
-
 import org.codehaus.jackson.map.InjectableValues;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.JavaType;
@@ -182,42 +180,6 @@ public class Queue {
    *  JSON array of the tags associated with the instance and the "valid after" argument
    *  should be in how many seconds the instance should be considered actionable.
    */
-  public String put(final String klass, final Object data, final Map<String, Object> opts)
-      throws IOException {
-    final String dataJson = (data == null) ? ClientHelper.EMPTY_RESULT : JsonUtils
-        .stringify(data);
-    final String jid = MapUtils.get(opts, LuaConfigParameter.JID.toString(),
-        ClientHelper.generateJid());
-    final String priority = MapUtils.get(opts, LuaConfigParameter.PRIORITY.toString(),
-        ClientHelper.DEFAULT_PRIORITY);
-    final String delay = MapUtils.get(opts, LuaConfigParameter.DELAY.toString(),
-        ClientHelper.DEFAULT_DELAY);
-    final String retries = MapUtils.get(opts, LuaConfigParameter.RETRIES.toString(),
-        ClientHelper.DEFAULT_RETRIES);
-    final List<String> tags = MapUtils.getList(opts, LuaConfigParameter.TAGS.toString());
-    final List<String> depends = MapUtils.getList(opts,
-        LuaConfigParameter.DEPENDS.toString());
-
-    final Object result = this.client.call(
-        LuaCommand.PUT.toString(),
-        this.client.workerName(),
-        this.name,
-        jid,
-        klass,
-        dataJson,
-        delay,
-        "priority",
-        priority,
-        "tags",
-        JsonUtils.stringify(tags),
-        "retries",
-        retries,
-        "depends",
-        JsonUtils.stringify(depends));
-
-    return result.toString();
-  }
-
   public JobPutter.Builder newJobPutter() throws IOException {
     return new JobPutter.Builder(this.client, this.name);
   }
@@ -225,43 +187,6 @@ public class Queue {
   /**
    * Place a recurring job in this queue
    */
-  public String recur(final String klass, final Object data, final int interval,
-      final Map<String, Object> opts) throws IOException {
-    final String dataJson = (data == null) ? ClientHelper.EMPTY_RESULT : JsonUtils
-        .stringify(data);
-    final String jid = MapUtils.get(opts, LuaConfigParameter.JID.toString(),
-        ClientHelper.generateJid());
-    final String priority = MapUtils.get(opts, LuaConfigParameter.PRIORITY.toString(),
-        ClientHelper.DEFAULT_PRIORITY);
-    final String offset = MapUtils.get(opts, LuaConfigParameter.OFFSET.toString(),
-        ClientHelper.DEFAULT_OFFSET);
-    final String retries = MapUtils.get(opts, LuaConfigParameter.RETRIES.toString(),
-        ClientHelper.DEFAULT_RETRIES);
-    final String backlog = MapUtils.get(opts, LuaConfigParameter.BACKLOG.toString(),
-        ClientHelper.DEFAULT_BACKLOG);
-    final List<String> tags = MapUtils.getList(opts, LuaConfigParameter.TAGS.toString());
-
-    final Object result = this.client.call(
-        LuaCommand.RECUR.toString(),
-        this.name,
-        jid,
-        klass,
-        dataJson,
-        LuaConfigParameter.INTERVAL.toString(),
-        Integer.toString(interval),
-        offset,
-        LuaConfigParameter.PRIORITY.toString(),
-        priority,
-        LuaConfigParameter.TAGS.toString(),
-        JsonUtils.stringify(tags),
-        LuaConfigParameter.RETRIES.toString(),
-        retries,
-        LuaConfigParameter.BACKLOG.toString(),
-        backlog);
-
-    return result.toString();
-  }
-
   public RecurJobPutter.Builder newRecurJobPutter() throws IOException {
     return new RecurJobPutter.Builder(this.client, this.name);
   }

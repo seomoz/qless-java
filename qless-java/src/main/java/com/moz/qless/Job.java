@@ -282,15 +282,14 @@ public class Job {
     this.queueName = queueName;
     this.queue = null;
 
-    final Map<String, Object> opts = new HashMap<>();
-    opts.put("jid", this.jid);
-    opts.put("depends", this.getDependencies());
-
     final Object result =
-        this.client.getQueue(queueName).put(
-            this.klass,
-            this.data,
-            opts);
+        this.client.getQueue(queueName)
+          .newJobPutter()
+          .data(this.data)
+          .jid(this.jid)
+          .depends(this.getDependencies())
+          .build()
+          .put(this.klass);
 
     return result.toString();
   }
