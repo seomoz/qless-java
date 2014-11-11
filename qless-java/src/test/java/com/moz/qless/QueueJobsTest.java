@@ -5,25 +5,9 @@ import java.io.IOException;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-import com.moz.qless.client.ClientHelper;
-
-import org.junit.Before;
 import org.junit.Test;
 
-import redis.clients.jedis.JedisPool;
-
-public class QueueJobsTest {
-  private final JedisPool jedisPool = new JedisPool(ClientHelper.DEFAULT_HOSTNAME);
-  private Client client;
-  private Queue queue;
-  private static final String DEFAULT_NAME = "foo";
-
-  @Before
-  public void before() throws IOException {
-    this.client = ClientCreation.create(this.jedisPool);
-    this.queue = new Queue(this.client, QueueJobsTest.DEFAULT_NAME);
-  }
-
+public class QueueJobsTest extends IntegrationTest {
   @Test
   public void regularJobStatus() throws IOException {
     final String jid = this.queue

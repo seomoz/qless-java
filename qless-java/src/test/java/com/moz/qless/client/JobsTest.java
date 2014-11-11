@@ -11,27 +11,11 @@ import static org.hamcrest.core.IsNull.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-import com.moz.qless.Client;
-import com.moz.qless.ClientCreation;
-import com.moz.qless.Queue;
+import com.moz.qless.IntegrationTest;
 
-import org.junit.Before;
 import org.junit.Test;
 
-import redis.clients.jedis.JedisPool;
-
-public class JobsTest {
-  private final JedisPool jedisPool = new JedisPool(ClientHelper.DEFAULT_HOSTNAME);
-  private Client client;
-  private Queue queue;
-  private static final String DEFAULT_NAME = "foo";
-
-  @Before
-  public void before() throws IOException {
-    this.client = ClientCreation.create(this.jedisPool);
-    this.queue = new Queue(this.client, JobsTest.DEFAULT_NAME);
-  }
-
+public class JobsTest extends IntegrationTest {
   @Test
   public void getSingleJob() throws IOException {
     final String expectedJid = ClientHelper.generateJid();

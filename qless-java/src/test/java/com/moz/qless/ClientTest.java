@@ -5,34 +5,18 @@ import java.io.IOException;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-import com.moz.qless.client.ClientHelper;
 import com.moz.qless.lua.LuaJobStatus;
 
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import redis.clients.jedis.JedisPool;
-
-public class ClientTest {
-  private final String defaultName = "foo";
-
-  private final JedisPool jedisPool = new JedisPool(ClientHelper.DEFAULT_HOSTNAME);
-  private Client client;
-  private Queue queue;
-
-  @Before
-  public void before() throws IOException {
-    this.client = ClientCreation.create(this.jedisPool);
-    this.queue = new Queue(this.client, this.defaultName);
-  }
-
+public class ClientTest extends IntegrationTest {
   @Test
   public void track() throws IOException {
     final String jid = this.queue
         .newJobPutter()
         .build()
-        .put(this.defaultName);
+        .put(ClientTest.DEFAULT_NAME);
 
     this.client.track(jid);
 
@@ -45,7 +29,7 @@ public class ClientTest {
     final String jid = this.queue
         .newJobPutter()
         .build()
-        .put(this.defaultName);
+        .put(ClientTest.DEFAULT_NAME);
 
     this.client.track(jid);
     assertThat(this.client.getJobs().tracked().get(0).getJid(),
@@ -68,7 +52,7 @@ public class ClientTest {
     final String jid = this.queue
         .newJobPutter()
         .build()
-        .put(this.defaultName);
+        .put(ClientTest.DEFAULT_NAME);
 
     this.client.getJobs().get(jid).tag("tag1", "tag2");
     assertThat(this.client.tags(),
@@ -80,13 +64,15 @@ public class ClientTest {
     final String jid = this.queue
         .newJobPutter()
         .build()
-        .put(this.defaultName);
+        .put(ClientTest.DEFAULT_NAME);
 
-    this.queue.pop().fail(this.defaultName, this.defaultName);
+    this.queue.pop().fail(ClientTest.DEFAULT_NAME, ClientTest.DEFAULT_NAME);
+
     assertThat(this.client.getJobs().get(jid).getState(),
         equalTo(LuaJobStatus.FAILED.toString()));
 
-    this.client.unfail(this.defaultName, this.defaultName);
+    this.client.unfail(ClientTest.DEFAULT_NAME, ClientTest.DEFAULT_NAME);
+
     assertThat(this.client.getJobs().get(jid).getState(),
         equalTo(LuaJobStatus.WAITING.toString()));
   }

@@ -6,25 +6,13 @@ import java.util.List;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-import com.moz.qless.Client;
-import com.moz.qless.ClientCreation;
+import com.moz.qless.IntegrationTest;
 import com.moz.qless.QueueCounts;
 
-import org.junit.Before;
 import org.junit.Test;
 
-import redis.clients.jedis.JedisPool;
 
-public class QueuesTest {
-  private final JedisPool jedisPool = new JedisPool(ClientHelper.DEFAULT_HOSTNAME);
-  private Client client;
-  private static final String DEFAULT_NAME = "foo";
-
-  @Before
-  public void before() throws IOException {
-    this.client = ClientCreation.create(this.jedisPool);
-  }
-
+public class QueuesTest extends IntegrationTest {
   @Test
   public void countsBasic() {
     assertThat(this.client.getQueue(QueuesTest.DEFAULT_NAME),

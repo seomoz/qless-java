@@ -9,23 +9,9 @@ import static org.hamcrest.Matchers.*;
 
 import com.moz.qless.client.ClientHelper;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
-import redis.clients.jedis.JedisPool;
-
-public class RecurringJobTest {
-  private final JedisPool jedisPool = new JedisPool(ClientHelper.DEFAULT_HOSTNAME);
-  private Client client;
-  private Queue queue;
-  private static final String DEFAULT_NAME = "foo";
-
-  @Before
-  public void before() throws IOException {
-    this.client = ClientCreation.create(this.jedisPool);
-    this.queue = new Queue(this.client, RecurringJobTest.DEFAULT_NAME);
-  }
-
+public class RecurringJobTest extends IntegrationTest {
   @Test
   public void recurringJobAttributes() throws IOException {
     final String jid = this.queue

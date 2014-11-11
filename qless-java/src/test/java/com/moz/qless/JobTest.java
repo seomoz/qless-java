@@ -14,24 +14,9 @@ import com.moz.qless.lua.LuaConfigParameter;
 import com.moz.qless.lua.LuaJobStatus;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
-import redis.clients.jedis.JedisPool;
-
-public class JobTest {
-  private final JedisPool jedisPool = new JedisPool(ClientHelper.DEFAULT_HOSTNAME);
-  private Client client;
-  private Queue queue;
-  private static final String DEFAULT_NAME = "foo";
-
-  @Before
-  public void before() throws IOException {
-    this.client = ClientCreation.create(this.jedisPool);
-    this.queue = new Queue(this.client, JobTest.DEFAULT_NAME);
-    IntegrationTestJob.runningHistory.clear();
-  }
-
+public class JobTest extends IntegrationTest {
   @Test
   public void setPriority() throws IOException {
     final String jid = ClientHelper.generateJid();
