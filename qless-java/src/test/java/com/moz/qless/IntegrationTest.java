@@ -16,7 +16,7 @@ public class IntegrationTest {
   protected static final String DEFAULT_NAME = "foo";
 
   @Before
-  public void before() throws IOException {
+  public void setupQueues() throws IOException {
     this.client = this.create();
     this.queue = new Queue(this.client, IntegrationTest.DEFAULT_NAME);
     IntegrationTestJob.runningHistory.clear();

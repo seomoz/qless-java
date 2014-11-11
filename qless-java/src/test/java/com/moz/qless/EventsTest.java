@@ -24,11 +24,8 @@ public class EventsTest extends IntegrationTest {
   private static final Logger LOGGER = LoggerFactory.getLogger(EventsTest.class);
   private Job untracked, tracked;
 
-  @Override
   @Before
   public void before() throws IOException {
-    super.before();
-
     this.untracked = this.client
         .getJobs()
         .get(this.queue
