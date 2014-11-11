@@ -6,27 +6,16 @@ import java.util.Arrays;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-import com.moz.qless.Client;
-import com.moz.qless.client.ClientHelper;
-import com.moz.qless.ClientCreation;
+import com.moz.qless.IntegrationTest;
 import com.moz.qless.IntegrationTestJob;
 import com.moz.qless.Queue;
 import com.moz.qless.workers.SerialWorker;
 
-import org.junit.Before;
 import org.junit.Test;
-import redis.clients.jedis.JedisPool;
 
-public class SerialWorkerTest {
+public class SerialWorkerTest extends IntegrationTest {
   private static final String DEFAULT_QUEUE_NAME = "test";
   private static final String DEFAULT_JOB_NAME = IntegrationTestJob.class.getName();
-  private final JedisPool jedisPool = new JedisPool(ClientHelper.DEFAULT_HOSTNAME);
-  private Client client;
-
-  @Before
-  public void before() throws IOException {
-    this.client = ClientCreation.create(this.jedisPool);
-  }
 
   private Thread getWorkerThread(final SerialWorker worker,
       final int intervalInSeconds) {

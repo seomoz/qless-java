@@ -10,21 +10,11 @@ import com.moz.qless.client.ClientHelper;
 import com.moz.qless.lua.LuaConfigParameter;
 
 import org.hamcrest.Matchers;
-import org.junit.Before;
 import org.junit.Test;
 
-import redis.clients.jedis.JedisPool;
-
-public class ConfigTest {
-  private final JedisPool jedisPool = new JedisPool(ClientHelper.DEFAULT_HOSTNAME);
-  private Client client;
+public class ConfigTest extends IntegrationTest {
   private final String testKey = "foo";
   private final String testKeyValue = "1";
-
-  @Before
-  public void before() throws IOException {
-    this.client = ClientCreation.create(this.jedisPool);
-  }
 
   @Test
   public void getAll() throws IOException {

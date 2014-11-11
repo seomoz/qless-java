@@ -13,23 +13,9 @@ import static org.hamcrest.Matchers.*;
 import com.moz.qless.client.ClientHelper;
 import com.moz.qless.lua.LuaConfigParameter;
 
-import org.junit.Before;
 import org.junit.Test;
 
-import redis.clients.jedis.JedisPool;
-
-public class QueueTest {
-  private final JedisPool jedisPool = new JedisPool(ClientHelper.DEFAULT_HOSTNAME);
-  private Client client;
-  private Queue queue;
-  private static final String DEFAULT_NAME = "foo";
-
-  @Before
-  public void before() throws IOException {
-    this.client = ClientCreation.create(this.jedisPool);
-    this.queue = new Queue(this.client, QueueTest.DEFAULT_NAME);
-  }
-
+public class QueueTest extends IntegrationTest {
   @Test
   public void put() throws IOException {
     final Map<String, Object> data = new HashMap<>();

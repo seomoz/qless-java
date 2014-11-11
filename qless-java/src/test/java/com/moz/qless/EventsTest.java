@@ -11,7 +11,6 @@ import static org.hamcrest.Matchers.*;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 
-import com.moz.qless.client.ClientHelper;
 import com.moz.qless.event.QlessEventListener;
 import com.moz.qless.lua.LuaConfigParameter;
 import com.moz.qless.lua.LuaJobStatus;
@@ -21,21 +20,14 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import redis.clients.jedis.JedisPool;
-
-public class EventsTest {
+public class EventsTest extends IntegrationTest {
   private static final Logger LOGGER = LoggerFactory.getLogger(EventsTest.class);
-
-  private final JedisPool jedisPool = new JedisPool(ClientHelper.DEFAULT_HOSTNAME);
-  private Client client;
-  private Queue queue;
-  private static final String DEFAULT_NAME = "foo";
   private Job untracked, tracked;
 
+  @Override
   @Before
   public void before() throws IOException {
-    this.client = ClientCreation.create(this.jedisPool);
-    this.queue = new Queue(this.client, EventsTest.DEFAULT_NAME);
+    super.before();
 
     this.untracked = this.client
         .getJobs()
