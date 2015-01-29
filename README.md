@@ -5,20 +5,4 @@ in-house qless java binding
 
 Quick Start:
 
-```bash
-git clone git@github.com:seomoz/qless-java.git
-
-cd ../qless-java
-
-git submodule init
-
-git submodule update
-
-cd ../qless-java/qless-java/src/qless-core
-
-make qless.lua
-
-cd ../../..
-
-mvn clean test
-```
+Run `quick_start.sh`.  This will build the qless Lua script and also build the project defined in `pom.xml`
