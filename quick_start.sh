@@ -1,11 +1,7 @@
 #!/bin/bash
 
-git submodule init
-git submodule update
+git submodule update --init --recursive
 
-cd qless-java/src/qless-core
-make qless.lua
-
-cd ../../../
+make -C qless-java/src/qless-core
 
 mvn clean test
