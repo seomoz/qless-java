@@ -5,7 +5,7 @@ in-house qless java binding
 
 Quick Start:
 
-<code>
+```bash
 git clone git@github.com:seomoz/qless-java.git
 
 cd ../qless-java
@@ -21,4 +21,4 @@ make qless.lua
 cd ../../..
 
 mvn clean test
-</code>
+```
