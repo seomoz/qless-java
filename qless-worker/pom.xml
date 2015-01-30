@@ -9,7 +9,7 @@
     <version>0.0.1-SNAPSHOT</version>
   </parent>
   <artifactId>qless-worker</artifactId>
-  <name>a binary wrapper for qless serial worker</name>
+  <name>Binary wrapper for qless workers</name>
   <packaging>jar</packaging>
   <url>http://maven.apache.org</url>
 

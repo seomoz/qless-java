@@ -10,7 +10,7 @@
   </parent>
 
   <artifactId>qless-java</artifactId>
-  <name>qless java binding</name>
+  <name>Java bindings for qless</name>
   <packaging>jar</packaging>
 
   <build>
