@@ -1,5 +1,6 @@
 .DS_Store
 .dump.rdb
+.vagrant
 
 #maven 
 target/
