@@ -6,12 +6,43 @@
   <parent>
     <groupId>com.moz.qless</groupId>
     <artifactId>qless-parent</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1-rc1</version>
   </parent>
 
   <artifactId>qless-java</artifactId>
-  <name>Java bindings for qless</name>
+  <name>${project.groupId}:${project.artifactId}</name>
+  <description>Java bindings to qless</description>
+  <url>http://github.com/seomoz/qless-java</url>
   <packaging>jar</packaging>
+
+  <licenses>
+    <license>
+      <name>MIT License</name>
+      <url>http://www.opensource.org/licenses/mit-license.php</url>
+    </license>
+  </licenses>
+
+  <developers>
+    <developer>
+      <name>John Zhu</name>
+      <email>john.zhu@moz.com</email>
+      <organization>Moz</organization>
+      <organizationUrl>http://moz.com</organizationUrl>
+    </developer>
+
+    <developer>
+      <name>Dan Lecocq</name>
+      <email>dan@moz.com</email>
+      <organization>Moz</organization>
+      <organizationUrl>http://moz.com</organizationUrl>
+    </developer>
+  </developers>
+
+  <scm>
+    <connection>scm:git:git@github.com:seomoz/qless-java.git</connection>
+    <developerConnection>scm:git:git@github.com:seomoz/qless-java.git</developerConnection>
+    <url>git@github.com:seomoz/qless-java.git</url>
+  </scm>
 
   <build>
     <pluginManagement>
@@ -74,7 +105,6 @@
     </resources>
   </build>
 
-  <url>http://maven.apache.org</url>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
