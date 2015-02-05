@@ -98,7 +98,7 @@ public class Job {
 
   public void cancel() throws IOException {
     this.client.call(
-        LuaCommand.CANCEL.toString(),
+        LuaCommand.CANCEL,
         this.jid);
   }
 
@@ -114,24 +114,24 @@ public class Job {
       throws IOException {
     if (null == nextQueueName) {
       this.client.call(
-          LuaCommand.COMPLETE.toString(),
+          LuaCommand.COMPLETE,
           this.jid,
           this.client.workerName(),
           this.queueName,
           JsonUtils.stringify(this.data));
     } else {
       this.client.call(
-          LuaCommand.COMPLETE.toString(),
+          LuaCommand.COMPLETE,
           this.jid,
           this.client.workerName(),
           this.queueName,
           JsonUtils.stringify(this.data),
-          LuaConfigParameter.NEXT.toString(),
+          LuaConfigParameter.NEXT,
           nextQueueName,
-          LuaConfigParameter.DELAY.toString(), MapUtils.get(opts,
+          LuaConfigParameter.DELAY, MapUtils.get(opts,
               LuaConfigParameter.DELAY.toString(),
               ClientHelper.DEFAULT_DELAY),
-          LuaConfigParameter.DEPENDS.toString(),
+          LuaConfigParameter.DEPENDS,
           JsonUtils.stringify(MapUtils.getList(opts,
               LuaConfigParameter.DEPENDS.toString())));
     }
@@ -157,13 +157,13 @@ public class Job {
     args.toArray(array);
 
     this.client.call(
-        LuaCommand.DEPENDS.toString(),
+        LuaCommand.DEPENDS,
         array);
   }
 
   public void fail(final String group, final String message) throws IOException {
     this.client.call(
-        LuaCommand.FAIL.toString(),
+        LuaCommand.FAIL,
         this.jid,
         this.client.workerName(),
         group,
@@ -260,7 +260,7 @@ public class Job {
 
   public long heartbeat() throws IOException {
     try {
-      this.expires = (Long) this.client.call(LuaCommand.HEARTBEAT.toString(), this.jid,
+      this.expires = (Long) this.client.call(LuaCommand.HEARTBEAT, this.jid,
           this.worker, JsonUtils.stringify(this.data));
       return this.expires;
     } catch (final JedisDataException ex) {
@@ -274,7 +274,7 @@ public class Job {
 
   public void log(final String message) throws IOException {
     this.client.call(
-        LuaCommand.LOG.toString(),
+        LuaCommand.LOG,
         this.jid,
         message);
   }
@@ -299,7 +299,7 @@ public class Job {
   public void log(final String message, final Map<String, Object> data)
       throws IOException {
     this.client.call(
-        LuaCommand.LOG.toString(),
+        LuaCommand.LOG,
         this.jid,
         message,
         JsonUtils.stringify(data));
@@ -307,9 +307,9 @@ public class Job {
 
   public void priority(final int priority) throws IOException {
     this.client.call(
-        LuaCommand.PRIORITY.toString(),
+        LuaCommand.PRIORITY,
         this.jid,
-        Integer.toString(priority));
+        priority);
     this.priority = priority;
   }
 
@@ -371,7 +371,7 @@ public class Job {
       throws IOException {
     try {
     this.client.call(
-        LuaCommand.REQUEUE.toString(),
+        LuaCommand.REQUEUE,
         this.client.workerName(),
         queueName,
         this.jid,
@@ -379,17 +379,17 @@ public class Job {
         JsonUtils.stringify(this.data),
         MapUtils.get(
             opts, LuaConfigParameter.DELAY.toString(), ClientHelper.DEFAULT_DELAY),
-        LuaConfigParameter.PRIORITY.toString(),
+        LuaConfigParameter.PRIORITY,
         MapUtils.get(
             opts, LuaConfigParameter.PRIORITY.toString(),
             Integer.toString(this.priority)),
-        LuaConfigParameter.TAGS.toString(),
+        LuaConfigParameter.TAGS,
         JsonUtils.stringify(
             MapUtils.getList(opts, LuaConfigParameter.TAGS.toString(), this.tags)),
-        LuaConfigParameter.RETRIES.toString(),
+        LuaConfigParameter.RETRIES,
         MapUtils.get(
             opts, LuaConfigParameter.RETRIES.toString(), ClientHelper.DEFAULT_RETRIES),
-        LuaConfigParameter.DEPENDS.toString(),
+        LuaConfigParameter.DEPENDS,
         JsonUtils.stringify(MapUtils.getList(
             opts, LuaConfigParameter.DEPENDS.toString(), this.getDependencies())));
     } catch (final JedisDataException ex) {
@@ -413,18 +413,18 @@ public class Job {
       throws IOException {
     if (Strings.isNullOrEmpty(group)) {
       this.client.call(
-          LuaCommand.RETRY.toString(),
+          LuaCommand.RETRY,
           this.jid,
           this.queueName,
           this.worker,
-          Integer.toString(delay));
+          delay);
     } else {
       this.client.call(
-          LuaCommand.RETRY.toString(),
+          LuaCommand.RETRY,
           this.jid,
           this.queueName,
           this.worker,
-          Integer.toString(delay),
+          delay,
           group,
           message);
     }
@@ -438,7 +438,7 @@ public class Job {
     Collections.addAll(args, tags);
 
     this.client.call(
-        LuaCommand.TAG.toString(),
+        LuaCommand.TAG,
         args);
   }
 
@@ -460,8 +460,8 @@ public class Job {
 
   public void track() throws IOException {
     this.client.call(
-        LuaCommand.TRACK.toString(),
-        LuaCommand.TRACK.toString(),
+        LuaCommand.TRACK,
+        LuaCommand.TRACK,
         this.jid);
     this.tracked = true;
   }
@@ -477,7 +477,7 @@ public class Job {
     args.toArray(array);
 
     this.client.call(
-        LuaCommand.DEPENDS.toString(),
+        LuaCommand.DEPENDS,
         array);
   }
 
@@ -489,14 +489,14 @@ public class Job {
     Collections.addAll(args, tags);
 
     this.client.call(
-        LuaCommand.TAG.toString(),
+        LuaCommand.TAG,
         args);
   }
 
   public void untrack() throws IOException {
     this.client.call(
-        LuaCommand.TRACK.toString(),
-        LuaCommand.UNTRACK.toString(),
+        LuaCommand.TRACK,
+        LuaCommand.UNTRACK,
         this.jid);
     this.tracked = false;
   }

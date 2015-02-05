@@ -33,14 +33,14 @@ public class Queue {
 
   public QueueCounts getCounts() throws IOException {
     final Object result = this.client.call(
-        LuaCommand.QUEUES.toString(),
+        LuaCommand.QUEUES,
         this.name);
 
     return JsonUtils.parse(result.toString(), QueueCounts.class);
   }
 
   private String getHeartbeatConfigName() {
-    return this.name + "-" + LuaConfigParameter.HEARTBEAT.toString();
+    return this.name + "-" + LuaConfigParameter.HEARTBEAT;
   }
 
   public int getHeartbeat() throws IOException {
@@ -70,7 +70,7 @@ public class Queue {
 
   public Map<String, Object> getStats(final Date date) throws IOException {
     final Object result = this.client.call(
-        LuaCommand.STATS.toString(),
+        LuaCommand.STATS,
         this.name,
         String.valueOf(date.getTime() / 1000));
 
@@ -108,12 +108,12 @@ public class Queue {
 
   public void pause(final boolean timeoutRunningJobs) throws IOException {
     this.client.call(
-        LuaCommand.PAUSE.toString(),
+        LuaCommand.PAUSE,
         this.name);
 
     if (timeoutRunningJobs) {
     this.client.call(
-        LuaCommand.TIMEOUT.toString(),
+        LuaCommand.TIMEOUT,
         this.jobs().running(0, -1));
     }
   }
@@ -131,9 +131,9 @@ public class Queue {
     Preconditions.checkArgument(count > 0, "Negative job count");
 
     final Object result = this.client.call(
-        LuaCommand.PEEK.toString(),
+        LuaCommand.PEEK,
         this.name,
-        Integer.toString(count));
+        count);
     if (result.equals(ClientHelper.EMPTY_RESULT)) {
       return new ArrayList<Job>();
     }
@@ -154,10 +154,10 @@ public class Queue {
 
   public List<Job> pop(final int count) throws IOException {
     final Object result = this.client.call(
-        LuaCommand.POP.toString(),
+        LuaCommand.POP,
         this.name,
         this.client.workerName(),
-        Integer.toString(count));
+        count);
 
     if (result.equals(ClientHelper.EMPTY_RESULT)) {
       return Collections.emptyList();
@@ -199,13 +199,13 @@ public class Queue {
 
   public void setMaxConcurrency(final int maxConcurrency) throws IOException {
     this.client.getConfig().put(
-        LuaConfigParameter.MAX_CONCURRENCY.toString(),
+        LuaConfigParameter.MAX_CONCURRENCY,
         maxConcurrency);
   }
 
   public void unpause() throws IOException {
     this.client.call(
-        LuaCommand.UNPAUSE.toString(),
+        LuaCommand.UNPAUSE,
         this.name);
   }
 }

@@ -38,7 +38,7 @@ public final class JobPutter {
 
   public String put(final String klassName) throws IOException {
     final Object result = this.client.call(
-        LuaCommand.PUT.toString(),
+        LuaCommand.PUT,
         this.client.workerName(),
         this.queueName,
         this.jid,

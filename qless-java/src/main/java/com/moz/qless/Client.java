@@ -63,13 +63,19 @@ public class Client {
     this.queues = new Queues(this);
   }
 
-  public Object call(final String command, final List<String> args) throws IOException {
+  public Object call(final String command, final List<Object> args) throws IOException {
     final List<String> argsList = new ArrayList<String>();
     argsList.add(command);
     argsList.add(ClientHelper.getCurrentSeconds());
 
-    for (final String arg : args) {
-      argsList.add(arg);
+    for (final Object arg : args) {
+      if (arg instanceof List) {
+        for (final Object subArg : (List<Object>) arg) {
+          argsList.add(subArg.toString());
+        }
+      } else {
+        argsList.add(arg.toString());
+      }
     }
 
     Client.LOGGER.debug("{}", argsList);
@@ -77,8 +83,17 @@ public class Client {
     return this.luaScript.call(Client.KEYS_LIST, argsList);
   }
 
-  public Object call(final String command, final String... args) throws IOException {
+  public Object call(final String command, final Object... args) throws IOException {
     return this.call(command, Arrays.asList(args));
+  }
+
+  public Object call(final LuaCommand command, final Object... args) throws IOException {
+    return this.call(command.toString(), args);
+  }
+
+  public Object call(final LuaCommand command, final List<Object> args)
+    throws IOException {
+    return this.call(command.toString(), args);
   }
 
   public List<String> tags(final int offset, final int count) throws IOException {
@@ -88,7 +103,7 @@ public class Client {
         String.valueOf(count));
 
     final Object result = this.call(
-        LuaCommand.TAG.toString(),
+        LuaCommand.TAG,
         params);
 
     final JavaType javaType = new ObjectMapper().getTypeFactory()
@@ -102,15 +117,15 @@ public class Client {
 
   public void track(final String jid) throws IOException {
     this.call(
-        LuaCommand.TRACK.toString(),
-        LuaCommand.TRACK.toString(),
+        LuaCommand.TRACK,
+        LuaCommand.TRACK,
         jid);
   }
 
   public void untrack(final String jid) throws IOException {
     this.call(
-        LuaCommand.TRACK.toString(),
-        LuaCommand.UNTRACK.toString(),
+        LuaCommand.TRACK,
+        LuaCommand.UNTRACK,
         jid);
   }
 
@@ -120,7 +135,7 @@ public class Client {
 
   public void unfail(final String group, final String queue, final int count)
       throws IOException {
-    this.call(LuaCommand.UNFAIL.toString(), queue, group, String.valueOf(count));
+    this.call(LuaCommand.UNFAIL, queue, group, String.valueOf(count));
   }
 
   public String workerName() {

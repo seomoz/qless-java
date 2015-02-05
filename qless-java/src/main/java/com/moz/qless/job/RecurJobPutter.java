@@ -43,21 +43,21 @@ public final class RecurJobPutter {
 
   public String recur(final String klassName) throws IOException {
     final Object result = this.client.call(
-        LuaCommand.RECUR.toString(),
+        LuaCommand.RECUR,
         this.queueName,
         this.jid,
         klassName,
         JsonUtils.stringify(this.data),
-        LuaConfigParameter.INTERVAL.toString(),
+        LuaConfigParameter.INTERVAL,
         String.valueOf(this.interval),
         this.offset,
-        LuaConfigParameter.PRIORITY.toString(),
+        LuaConfigParameter.PRIORITY,
         this.priority,
-        LuaConfigParameter.TAGS.toString(),
+        LuaConfigParameter.TAGS,
         JsonUtils.stringify(this.tags),
-        LuaConfigParameter.RETRIES.toString(),
+        LuaConfigParameter.RETRIES,
         this.retries,
-        LuaConfigParameter.BACKLOG.toString(),
+        LuaConfigParameter.BACKLOG,
         this.backlog);
 
     return result.toString();

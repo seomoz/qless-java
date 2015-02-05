@@ -20,11 +20,11 @@ public class QueueJobs {
   @SuppressWarnings("unchecked")
   public List<String> running(final int offset, final int count) throws IOException {
     final Object result = this.client.call(
-        LuaCommand.JOBS.toString(),
-        LuaCommand.RUNNING.toString(),
+        LuaCommand.JOBS,
+        LuaCommand.RUNNING,
         this.name,
-        Integer.toString(offset),
-        Integer.toString(count));
+        offset,
+        count);
 
      return (List<String>) result;
   }
@@ -39,11 +39,11 @@ public class QueueJobs {
   @SuppressWarnings("unchecked")
   public List<String> stalled(final int offset, final int count) throws IOException {
     final Object result = this.client.call(
-        LuaCommand.JOBS.toString(),
-        LuaCommand.STALLED.toString(),
+        LuaCommand.JOBS,
+        LuaCommand.STALLED,
         this.name,
-        Integer.toString(offset),
-        Integer.toString(count));
+        offset,
+        count);
 
     return (List<String>) result;
   }
@@ -58,11 +58,11 @@ public class QueueJobs {
   @SuppressWarnings("unchecked")
   public List<String> scheduled(final int offset, final int count) throws IOException {
     final Object result = this.client.call(
-        LuaCommand.JOBS.toString(),
-        LuaCommand.SCHEDULED.toString(),
+        LuaCommand.JOBS,
+        LuaCommand.SCHEDULED,
         this.name,
-        Integer.toString(offset),
-        Integer.toString(count));
+        offset,
+        count);
 
     return (List<String>) result;
   }
@@ -77,11 +77,11 @@ public class QueueJobs {
   @SuppressWarnings("unchecked")
   public List<String> depends(final int offset, final int count) throws IOException {
     final Object result = this.client.call(
-        LuaCommand.JOBS.toString(),
-        LuaCommand.DEPENDS.toString(),
+        LuaCommand.JOBS,
+        LuaCommand.DEPENDS,
         this.name,
-        Integer.toString(offset),
-        Integer.toString(count));
+        offset,
+        count);
 
     return (List<String>) result;
   }
@@ -96,11 +96,11 @@ public class QueueJobs {
   @SuppressWarnings("unchecked")
   public List<String> recurring(final int offset, final int count) throws IOException {
     final Object result = this.client.call(
-        LuaCommand.JOBS.toString(),
-        LuaCommand.RECURRING.toString(),
+        LuaCommand.JOBS,
+        LuaCommand.RECURRING,
         this.name,
-        Integer.toString(offset),
-        Integer.toString(count));
+        offset,
+        count);
 
     return (List<String>) result;
   }
