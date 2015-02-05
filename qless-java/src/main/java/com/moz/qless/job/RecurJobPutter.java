@@ -102,6 +102,11 @@ public final class RecurJobPutter {
       return this;
     }
 
+    public Builder data(final String key, final Object value) {
+      this.data.put(key, value);
+      return this;
+    }
+
     public Builder retries(final String retires) {
       this.retries = retires;
       return this;

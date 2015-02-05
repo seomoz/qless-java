@@ -118,6 +118,18 @@ public class RecurringJobTest extends IntegrationTest {
   }
 
   @Test
+  public void addData() throws IOException {
+    final String jid = this.queue
+      .newRecurJobPutter()
+      .data("hello", "world")
+      .build()
+      .recur(RecurringJobTest.DEFAULT_NAME);
+
+    final Job job = this.client.getJobs().get(jid);
+    assertThat((String) job.getDataField("hello"), equalTo("world"));
+  }
+
+  @Test
   public void setKlass() throws IOException {
     final String jid = this.queue
         .newRecurJobPutter()

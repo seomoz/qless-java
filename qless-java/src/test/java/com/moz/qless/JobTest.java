@@ -174,6 +174,18 @@ public class JobTest extends IntegrationTest {
   }
 
   @Test
+  public void addData() throws IOException {
+    final String jid = this.queue
+      .newJobPutter()
+      .data("hello", "world")
+      .build()
+      .put(JobTest.DEFAULT_NAME);
+
+    final Job job = this.client.getJobs().get(jid);
+    assertThat((String) job.getDataField("hello"), equalTo("world"));
+  }
+
+  @Test
   public void move() throws IOException {
     final Map<String, Object> data = new HashMap<>();
     data.put("key1", "value1");
