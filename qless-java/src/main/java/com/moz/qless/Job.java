@@ -130,7 +130,7 @@ public class Job {
           nextQueueName,
           LuaConfigParameter.DELAY, MapUtils.get(opts,
               LuaConfigParameter.DELAY.toString(),
-              ClientHelper.DEFAULT_DELAY),
+              ClientHelper.DEFAULT_DELAY.toString()),
           LuaConfigParameter.DEPENDS,
           JsonUtils.stringify(MapUtils.getList(opts,
               LuaConfigParameter.DEPENDS.toString())));
@@ -377,18 +377,20 @@ public class Job {
         this.jid,
         this.klass,
         JsonUtils.stringify(this.data),
-        MapUtils.get(
-            opts, LuaConfigParameter.DELAY.toString(), ClientHelper.DEFAULT_DELAY),
+        MapUtils.get(opts,
+          LuaConfigParameter.DELAY.toString(),
+          ClientHelper.DEFAULT_DELAY.toString()),
         LuaConfigParameter.PRIORITY,
-        MapUtils.get(
-            opts, LuaConfigParameter.PRIORITY.toString(),
-            Integer.toString(this.priority)),
+        MapUtils.get(opts,
+          LuaConfigParameter.PRIORITY.toString(),
+          Integer.toString(this.priority)),
         LuaConfigParameter.TAGS,
         JsonUtils.stringify(
-            MapUtils.getList(opts, LuaConfigParameter.TAGS.toString(), this.tags)),
+          MapUtils.getList(opts, LuaConfigParameter.TAGS.toString(), this.tags)),
         LuaConfigParameter.RETRIES,
-        MapUtils.get(
-            opts, LuaConfigParameter.RETRIES.toString(), ClientHelper.DEFAULT_RETRIES),
+        MapUtils.get(opts,
+          LuaConfigParameter.RETRIES.toString(),
+          ClientHelper.DEFAULT_RETRIES.toString()),
         LuaConfigParameter.DEPENDS,
         JsonUtils.stringify(MapUtils.getList(
             opts, LuaConfigParameter.DEPENDS.toString(), this.getDependencies())));

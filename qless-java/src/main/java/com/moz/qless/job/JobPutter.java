@@ -18,9 +18,9 @@ public final class JobPutter {
 
   private final Map<String, Object> data;
   private final String jid;
-  private final String priority;
-  private final String delay;
-  private final String retries;
+  private final int priority;
+  private final int delay;
+  private final int retries;
   private final List<String> depends;
   private final List<String> tags;
 
@@ -63,9 +63,9 @@ public final class JobPutter {
 
     private Map<String, Object> data = new HashMap<>();
     private String jid = ClientHelper.generateJid();
-    private String priority = ClientHelper.DEFAULT_PRIORITY;
-    private String delay = ClientHelper.DEFAULT_DELAY;
-    private String retries = ClientHelper.DEFAULT_RETRIES;
+    private int priority = ClientHelper.DEFAULT_PRIORITY;
+    private int delay = ClientHelper.DEFAULT_DELAY;
+    private int retries = ClientHelper.DEFAULT_RETRIES;
     private List<String> depends = new ArrayList<>();
     private List<String> tags = new ArrayList<>();
 
@@ -79,12 +79,12 @@ public final class JobPutter {
       return this;
     }
 
-    public Builder priority(final String priority) {
+    public Builder priority(final int priority) {
       this.priority = priority;
       return this;
     }
 
-    public Builder delay(final String delay) {
+    public Builder delay(final int delay) {
       this.delay = delay;
       return this;
     }
@@ -99,7 +99,7 @@ public final class JobPutter {
       return this;
     }
 
-    public Builder retries(final String retires) {
+    public Builder retries(final int retires) {
       this.retries = retires;
       return this;
     }

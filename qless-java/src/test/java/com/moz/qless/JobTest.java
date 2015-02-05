@@ -24,7 +24,7 @@ public class JobTest extends IntegrationTest {
     this.queue
         .newJobPutter()
         .jid(jid)
-        .priority("0")
+        .priority(0)
         .build()
         .put(JobTest.DEFAULT_NAME);
 

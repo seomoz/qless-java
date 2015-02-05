@@ -20,10 +20,10 @@ public final class RecurJobPutter {
   private final Map<String, Object> data;
   private final String jid;
   private final int interval;
-  private final String priority;
-  private final String offset;
-  private final String retries;
-  private final String backlog;
+  private final int priority;
+  private final int offset;
+  private final int retries;
+  private final int backlog;
   private final List<String> depends;
   private final List<String> tags;
 
@@ -69,11 +69,11 @@ public final class RecurJobPutter {
 
     private Map<String, Object> data = new HashMap<>();
     private String jid = ClientHelper.generateJid();
-    private String priority = ClientHelper.DEFAULT_PRIORITY;
+    private int priority = ClientHelper.DEFAULT_PRIORITY;
     private int interval = ClientHelper.DEFAULT_INTERVAL;
-    private String offset = ClientHelper.DEFAULT_OFFSET;
-    private String retries = ClientHelper.DEFAULT_RETRIES;
-    private String backlog = ClientHelper.DEFAULT_BACKLOG;
+    private int offset = ClientHelper.DEFAULT_OFFSET;
+    private int retries = ClientHelper.DEFAULT_RETRIES;
+    private int backlog = ClientHelper.DEFAULT_BACKLOG;
     private List<String> depends = new ArrayList<>();
     private List<String> tags = new ArrayList<>();
 
@@ -87,12 +87,12 @@ public final class RecurJobPutter {
       return this;
     }
 
-    public Builder priority(final String priority) {
+    public Builder priority(final int priority) {
       this.priority = priority;
       return this;
     }
 
-    public Builder offset(final String offset) {
+    public Builder offset(final int offset) {
       this.offset = offset;
       return this;
     }
@@ -107,12 +107,12 @@ public final class RecurJobPutter {
       return this;
     }
 
-    public Builder retries(final String retires) {
+    public Builder retries(final int retires) {
       this.retries = retires;
       return this;
     }
 
-    public Builder backlog(final String backlog) {
+    public Builder backlog(final int backlog) {
       this.backlog = backlog;
       return this;
     }
