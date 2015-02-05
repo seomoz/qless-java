@@ -126,7 +126,7 @@ public class RecurringJobTest extends IntegrationTest {
       .recur(RecurringJobTest.DEFAULT_NAME);
 
     final Job job = this.client.getJobs().get(jid);
-    assertThat((String) job.getDataField("hello"), equalTo("world"));
+    assertThat(job.<String>getDataField("hello"), equalTo("world"));
   }
 
   @Test

@@ -137,8 +137,9 @@ public class Job {
     }
   }
 
-  public Object getDataField(final String key) {
-    return this.data.get(key);
+  @SuppressWarnings("unchecked")
+  public <T> T getDataField(final String key) {
+    return (T) this.data.get(key);
   }
 
   public void setDataField(final String key, final Object value) throws IOException {

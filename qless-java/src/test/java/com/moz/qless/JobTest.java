@@ -149,7 +149,7 @@ public class JobTest extends IntegrationTest {
         .build()
         .put(JobTest.DEFAULT_NAME);
 
-    assertThat((String) this.client.getJobs().get(jid).getDataField("foo"),
+    assertThat(this.client.getJobs().get(jid).<String>getDataField("foo"),
         equalTo("bar"));
   }
 
@@ -165,11 +165,11 @@ public class JobTest extends IntegrationTest {
         .put(JobTest.DEFAULT_NAME);
 
     final Job job = this.client.getJobs().get(jid);
-    assertThat((String) job.getDataField(JobTest.DEFAULT_NAME),
+    assertThat(job.<String>getDataField(JobTest.DEFAULT_NAME),
         equalTo("bar1"));
 
     job.setDataField(JobTest.DEFAULT_NAME, "bar2");
-    assertThat((String) job.getDataField(JobTest.DEFAULT_NAME),
+    assertThat(job.<String>getDataField(JobTest.DEFAULT_NAME),
         equalTo("bar2"));
   }
 
@@ -182,7 +182,7 @@ public class JobTest extends IntegrationTest {
       .put(JobTest.DEFAULT_NAME);
 
     final Job job = this.client.getJobs().get(jid);
-    assertThat((String) job.getDataField("hello"), equalTo("world"));
+    assertThat(job.<String>getDataField("hello"), equalTo("world"));
   }
 
   @Test
