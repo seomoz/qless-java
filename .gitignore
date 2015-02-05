@@ -2,6 +2,11 @@
 .dump.rdb
 .vagrant
 
+#gpg
+settings.xml
+settings-security.xml
+.gnupg
+
 #maven 
 target/
 pom.xml.tag

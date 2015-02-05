@@ -20,3 +20,13 @@ sudo apt-get install -y autoconf bison build-essential git g++ libssl-dev libyam
     git submodule update --init --recursive
     make -C qless-java/src/qless-core
 )
+
+# For deploying
+mkdir -p /vagrant/.gnupg
+ln -s /vagrant/.gnupg/ /home/vagrant/.gnupg
+echo '\
+    eval $(gpg-agent --daemon --no-grab --write-env-file $HOME/.gpg-agent-info) \
+    export GPG_TTY=$(tty) \
+    export GPG_AGENT_INFO' >> ~/.bash_profile
+ln -s /vagrant/settings-security.xml /home/vagrant/.m2/settings-security.xml
+ln -s /vagrant/settings.xml /home/vagrant/.m2/settings.xml
