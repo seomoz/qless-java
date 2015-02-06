@@ -35,17 +35,17 @@ public class Jobs {
   @SuppressWarnings("unchecked")
   public List<String> complete(final int offset, final int count) throws IOException {
     final Object result = this.client.call(
-        LuaCommand.JOBS.toString(),
-        LuaCommand.COMPLETE.toString(),
-        Integer.toString(offset),
-        Integer.toString(count));
+        LuaCommand.JOBS,
+        LuaCommand.COMPLETE,
+        offset,
+        count);
 
     return (List<String>) result;
   }
 
   public Map<String, Long> failed() throws IOException {
     final Object result = this.client.call(
-        LuaCommand.FAILED.toString());
+        LuaCommand.FAILED);
 
     final JavaType javaType = new ObjectMapper().getTypeFactory().constructMapType(
         HashMap.class, String.class, Long.class);
@@ -64,10 +64,10 @@ public class Jobs {
   public List<String> failed(final String group, final int start, final int limit)
       throws IOException {
     final Object result = this.client.call(
-	    LuaCommand.FAILED.toString(),
+	    LuaCommand.FAILED,
 	    group,
-      Integer.toString(start),
-      Integer.toString(limit));
+      start,
+      limit);
 
     final ObjectMapper mapper = new ObjectMapper();
     final JsonNode resultObj = mapper.readTree(result.toString());
@@ -82,7 +82,7 @@ public class Jobs {
    */
   public List<Job> get(final List<String> jids) throws IOException {
     final Object result = this.client.call(
-        LuaCommand.MULTIGET.toString(),
+        LuaCommand.MULTIGET,
         jids);
 
     final InjectableValues inject = new InjectableValues.Std().addValue(
@@ -107,12 +107,12 @@ public class Jobs {
   public Job get(final String jid) throws IOException {
     Class<? extends Job> klass = Job.class;
     Object result = this.client.call(
-	    LuaCommand.GET.toString(),
+	    LuaCommand.GET,
 	    jid);
 
     if (null == result) {
       result = this.client.call(
-	      LuaCommand.RECUR_GET.toString(),
+	      LuaCommand.RECUR_GET,
 	      jid);
       if (null == result) {
         return null;
@@ -137,11 +137,11 @@ public class Jobs {
   public List<String> tagged(final String tag, final int offset, final int count)
       throws IOException {
     final Object result = this.client.call(
-	    LuaCommand.TAG.toString(),
-      LuaCommand.GET.toString(),
+	    LuaCommand.TAG,
+      LuaCommand.GET,
       tag,
-      Integer.toString(offset),
-      Integer.toString(count));
+      offset,
+      count);
 
     final ObjectMapper mapper = new ObjectMapper();
     final JsonNode resultObj = mapper.readTree(result.toString());
@@ -156,7 +156,7 @@ public class Jobs {
    */
   public List<Job> tracked() throws IOException {
     final Object result = this.client.call(
-        LuaCommand.TRACK.toString());
+        LuaCommand.TRACK);
 
     final ObjectMapper mapper = new ObjectMapper();
     final JsonNode resultObj = mapper.readTree(result.toString());

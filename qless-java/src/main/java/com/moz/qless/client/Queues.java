@@ -22,7 +22,7 @@ public class Queues {
 
   public List<QueueCounts> counts() throws IOException {
     final Object result = this.client.call(
-        LuaCommand.QUEUES.toString());
+        LuaCommand.QUEUES);
 
     final JavaType javaType = new ObjectMapper().getTypeFactory()
         .constructCollectionType(ArrayList.class, QueueCounts.class);

@@ -31,9 +31,9 @@ public class RecurringJobTest extends IntegrationTest {
     assertThat(job.getQueueName(),
         equalTo(RecurringJobTest.DEFAULT_NAME));
     assertThat(job.getPriority(),
-        equalTo(Integer.parseInt(ClientHelper.DEFAULT_PRIORITY)));
+        equalTo(ClientHelper.DEFAULT_PRIORITY));
     assertThat(job.getRetries(),
-        equalTo(Integer.parseInt(ClientHelper.DEFAULT_RETRIES)));
+        equalTo(ClientHelper.DEFAULT_RETRIES));
   }
 
   @Test
@@ -44,7 +44,7 @@ public class RecurringJobTest extends IntegrationTest {
         .newRecurJobPutter()
         .interval(60)
         .jid(jid)
-        .priority("0")
+        .priority(0)
         .build()
         .recur(RecurringJobTest.DEFAULT_NAME);
 
@@ -64,7 +64,7 @@ public class RecurringJobTest extends IntegrationTest {
         .newRecurJobPutter()
         .interval(60)
         .jid(jid)
-        .retries("2")
+        .retries(2)
         .build()
         .recur(RecurringJobTest.DEFAULT_NAME);
 
@@ -115,6 +115,18 @@ public class RecurringJobTest extends IntegrationTest {
 
     assertThat(job.getData().keySet(),
         containsInAnyOrder("key1", "key2"));
+  }
+
+  @Test
+  public void addData() throws IOException {
+    final String jid = this.queue
+      .newRecurJobPutter()
+      .data("hello", "world")
+      .build()
+      .recur(RecurringJobTest.DEFAULT_NAME);
+
+    final Job job = this.client.getJobs().get(jid);
+    assertThat(job.<String>getDataField("hello"), equalTo("world"));
   }
 
   @Test

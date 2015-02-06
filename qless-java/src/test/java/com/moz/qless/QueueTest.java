@@ -27,7 +27,7 @@ public class QueueTest extends IntegrationTest {
         .newJobPutter()
         .data(data)
         .jid(expectedJid)
-        .retries("3")
+        .retries(3)
         .tags("tag1", "tag2")
         .build()
         .put(QueueTest.DEFAULT_NAME);

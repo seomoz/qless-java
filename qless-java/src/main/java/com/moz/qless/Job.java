@@ -1,6 +1,8 @@
 package com.moz.qless;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -98,7 +100,7 @@ public class Job {
 
   public void cancel() throws IOException {
     this.client.call(
-        LuaCommand.CANCEL.toString(),
+        LuaCommand.CANCEL,
         this.jid);
   }
 
@@ -114,31 +116,37 @@ public class Job {
       throws IOException {
     if (null == nextQueueName) {
       this.client.call(
-          LuaCommand.COMPLETE.toString(),
+          LuaCommand.COMPLETE,
           this.jid,
           this.client.workerName(),
           this.queueName,
           JsonUtils.stringify(this.data));
     } else {
       this.client.call(
-          LuaCommand.COMPLETE.toString(),
+          LuaCommand.COMPLETE,
           this.jid,
           this.client.workerName(),
           this.queueName,
           JsonUtils.stringify(this.data),
-          LuaConfigParameter.NEXT.toString(),
+          LuaConfigParameter.NEXT,
           nextQueueName,
-          LuaConfigParameter.DELAY.toString(), MapUtils.get(opts,
+          LuaConfigParameter.DELAY, MapUtils.get(opts,
               LuaConfigParameter.DELAY.toString(),
-              ClientHelper.DEFAULT_DELAY),
-          LuaConfigParameter.DEPENDS.toString(),
+              ClientHelper.DEFAULT_DELAY.toString()),
+          LuaConfigParameter.DEPENDS,
           JsonUtils.stringify(MapUtils.getList(opts,
               LuaConfigParameter.DEPENDS.toString())));
     }
   }
 
-  public Object getDataField(final String key) {
-    return this.data.get(key);
+  @SuppressWarnings("unchecked")
+  public <T> T getDataField(final String key) {
+    return (T) this.data.get(key);
+  }
+
+  @SuppressWarnings("unchecked")
+  public <T> T getDataField(final Class<T> clazz, final String key) {
+    return (T) this.data.get(key);
   }
 
   public void setDataField(final String key, final Object value) throws IOException {
@@ -156,13 +164,13 @@ public class Job {
     args.toArray(array);
 
     this.client.call(
-        LuaCommand.DEPENDS.toString(),
+        LuaCommand.DEPENDS,
         array);
   }
 
   public void fail(final String group, final String message) throws IOException {
     this.client.call(
-        LuaCommand.FAIL.toString(),
+        LuaCommand.FAIL,
         this.jid,
         this.client.workerName(),
         group,
@@ -259,7 +267,7 @@ public class Job {
 
   public long heartbeat() throws IOException {
     try {
-      this.expires = (Long) this.client.call(LuaCommand.HEARTBEAT.toString(), this.jid,
+      this.expires = (Long) this.client.call(LuaCommand.HEARTBEAT, this.jid,
           this.worker, JsonUtils.stringify(this.data));
       return this.expires;
     } catch (final JedisDataException ex) {
@@ -273,7 +281,7 @@ public class Job {
 
   public void log(final String message) throws IOException {
     this.client.call(
-        LuaCommand.LOG.toString(),
+        LuaCommand.LOG,
         this.jid,
         message);
   }
@@ -298,7 +306,7 @@ public class Job {
   public void log(final String message, final Map<String, Object> data)
       throws IOException {
     this.client.call(
-        LuaCommand.LOG.toString(),
+        LuaCommand.LOG,
         this.jid,
         message,
         JsonUtils.stringify(data));
@@ -306,9 +314,9 @@ public class Job {
 
   public void priority(final int priority) throws IOException {
     this.client.call(
-        LuaCommand.PRIORITY.toString(),
+        LuaCommand.PRIORITY,
         this.jid,
-        Integer.toString(priority));
+        priority);
     this.priority = priority;
   }
 
@@ -323,11 +331,12 @@ public class Job {
       cls = this.getKlass();
     } catch (final ClassNotFoundException e) {
       try {
-        this.fail("missing class", this.klass);
+        this.fail(this.queueName + "-" + e.getClass().getName(),
+          "Failed to import " + this.klass);
       } catch (final IOException ex) {
         throw new QlessException(ex);
       }
-      throw new QlessException("class not found: " + this.klass, e);
+      return;
     }
 
     Method method;
@@ -337,10 +346,9 @@ public class Job {
       try {
         method = cls.getMethod(ClientHelper.DEFAULT_JOB_METHOD, Job.class);
       } catch (NoSuchMethodException | SecurityException ex) {
-        this.fail(ex.getMessage(), this.klass + ":"
-            + this.queueName);
-        throw new QlessException("method not found: "
-            + this.queueName, e);
+        this.fail(this.queueName + "-" + e.getClass().getName(),
+          "Method missing: " + this.klass + ":" + this.queueName);
+        return;
       }
     }
 
@@ -353,12 +361,15 @@ public class Job {
     } catch (IllegalAccessException | IllegalArgumentException
         | InvocationTargetException | InstantiationException e) {
       try {
-        this.fail(e.getMessage(), this.klass + ":"
-            + this.queueName);
+        /* Extract the stack trace. */
+        final StringWriter sw = new StringWriter();
+        final PrintWriter pw = new PrintWriter(sw);
+        e.printStackTrace(pw);
+        this.fail(this.queueName + "-" + e.getClass().getName(),
+          sw.toString());
       } catch (final IOException ex) {
         throw new QlessException(ex);
       }
-      throw new QlessException("fail to invoke " + this.queueName, e);
     }
   }
 
@@ -370,25 +381,27 @@ public class Job {
       throws IOException {
     try {
     this.client.call(
-        LuaCommand.REQUEUE.toString(),
+        LuaCommand.REQUEUE,
         this.client.workerName(),
         queueName,
         this.jid,
         this.klass,
         JsonUtils.stringify(this.data),
-        MapUtils.get(
-            opts, LuaConfigParameter.DELAY.toString(), ClientHelper.DEFAULT_DELAY),
-        LuaConfigParameter.PRIORITY.toString(),
-        MapUtils.get(
-            opts, LuaConfigParameter.PRIORITY.toString(),
-            Integer.toString(this.priority)),
-        LuaConfigParameter.TAGS.toString(),
+        MapUtils.get(opts,
+          LuaConfigParameter.DELAY.toString(),
+          ClientHelper.DEFAULT_DELAY.toString()),
+        LuaConfigParameter.PRIORITY,
+        MapUtils.get(opts,
+          LuaConfigParameter.PRIORITY.toString(),
+          Integer.toString(this.priority)),
+        LuaConfigParameter.TAGS,
         JsonUtils.stringify(
-            MapUtils.getList(opts, LuaConfigParameter.TAGS.toString(), this.tags)),
-        LuaConfigParameter.RETRIES.toString(),
-        MapUtils.get(
-            opts, LuaConfigParameter.RETRIES.toString(), ClientHelper.DEFAULT_RETRIES),
-        LuaConfigParameter.DEPENDS.toString(),
+          MapUtils.getList(opts, LuaConfigParameter.TAGS.toString(), this.tags)),
+        LuaConfigParameter.RETRIES,
+        MapUtils.get(opts,
+          LuaConfigParameter.RETRIES.toString(),
+          ClientHelper.DEFAULT_RETRIES.toString()),
+        LuaConfigParameter.DEPENDS,
         JsonUtils.stringify(MapUtils.getList(
             opts, LuaConfigParameter.DEPENDS.toString(), this.getDependencies())));
     } catch (final JedisDataException ex) {
@@ -412,18 +425,18 @@ public class Job {
       throws IOException {
     if (Strings.isNullOrEmpty(group)) {
       this.client.call(
-          LuaCommand.RETRY.toString(),
+          LuaCommand.RETRY,
           this.jid,
           this.queueName,
           this.worker,
-          Integer.toString(delay));
+          delay);
     } else {
       this.client.call(
-          LuaCommand.RETRY.toString(),
+          LuaCommand.RETRY,
           this.jid,
           this.queueName,
           this.worker,
-          Integer.toString(delay),
+          delay,
           group,
           message);
     }
@@ -437,7 +450,7 @@ public class Job {
     Collections.addAll(args, tags);
 
     this.client.call(
-        LuaCommand.TAG.toString(),
+        LuaCommand.TAG,
         args);
   }
 
@@ -459,8 +472,8 @@ public class Job {
 
   public void track() throws IOException {
     this.client.call(
-        LuaCommand.TRACK.toString(),
-        LuaCommand.TRACK.toString(),
+        LuaCommand.TRACK,
+        LuaCommand.TRACK,
         this.jid);
     this.tracked = true;
   }
@@ -476,7 +489,7 @@ public class Job {
     args.toArray(array);
 
     this.client.call(
-        LuaCommand.DEPENDS.toString(),
+        LuaCommand.DEPENDS,
         array);
   }
 
@@ -488,14 +501,14 @@ public class Job {
     Collections.addAll(args, tags);
 
     this.client.call(
-        LuaCommand.TAG.toString(),
+        LuaCommand.TAG,
         args);
   }
 
   public void untrack() throws IOException {
     this.client.call(
-        LuaCommand.TRACK.toString(),
-        LuaCommand.UNTRACK.toString(),
+        LuaCommand.TRACK,
+        LuaCommand.UNTRACK,
         this.jid);
     this.tracked = false;
   }

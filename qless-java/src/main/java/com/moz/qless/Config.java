@@ -22,7 +22,7 @@ public class Config {
   }
 
   public Map<String, Object> getMap() throws IOException {
-    final Object result = this.client.call(LuaCommand.CONFIG_GET.toString());
+    final Object result = this.client.call(LuaCommand.CONFIG_GET);
 
     final JavaType javaType = new ObjectMapper().getTypeFactory().constructMapType(
         HashMap.class, String.class, Object.class);
@@ -41,7 +41,7 @@ public class Config {
 
   public Object get(final String key) throws IOException {
       return this.client.call(
-          LuaCommand.CONFIG_GET.toString(),
+          LuaCommand.CONFIG_GET,
           key);
   }
 
@@ -51,9 +51,13 @@ public class Config {
 
   public void put(final String key, final Object value) throws IOException {
     this.client.call(
-        LuaCommand.CONFIG_SET.toString(),
+        LuaCommand.CONFIG_SET,
         key,
         value.toString());
+  }
+
+  public void put(final LuaConfigParameter key, final Object value) throws IOException {
+    this.put(key.toString(), value);
   }
 
   public Object pop(final String key) throws IOException {
@@ -65,7 +69,7 @@ public class Config {
 
   public void remove(final String key) throws IOException {
     this.client.call(
-        LuaCommand.CONFIG_UNSET.toString(),
+        LuaCommand.CONFIG_UNSET,
         key);
   }
 

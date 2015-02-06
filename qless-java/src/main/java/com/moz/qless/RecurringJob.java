@@ -39,10 +39,10 @@ public class RecurringJob extends Job {
 
   public void backlog(final int backlog) throws IOException {
     this.client.call(
-        LuaCommand.RECUR_UPDATE.toString(),
+        LuaCommand.RECUR_UPDATE,
         this.jid,
-        LuaConfigParameter.BACKLOG.toString(),
-        Integer.toString(backlog));
+        LuaConfigParameter.BACKLOG,
+        backlog);
 
     this.backlog = backlog;
   }
@@ -50,7 +50,7 @@ public class RecurringJob extends Job {
   @Override
   public void cancel() throws IOException {
       this.client.call(
-          LuaCommand.UNRECUR.toString(),
+          LuaCommand.UNRECUR,
           this.jid);
   }
 
@@ -60,9 +60,9 @@ public class RecurringJob extends Job {
 
   public void data(final Map<String, Object> data) throws IOException {
       this.client.call(
-          LuaCommand.RECUR_UPDATE.toString(),
+          LuaCommand.RECUR_UPDATE,
           this.jid,
-          LuaConfigParameter.DATA.toString(),
+          LuaConfigParameter.DATA,
           JsonUtils.stringify(data));
 
       this.data = data;
@@ -96,9 +96,9 @@ public class RecurringJob extends Job {
 
   public void klass(final String klass) throws IOException {
       this.client.call(
-          LuaCommand.RECUR_UPDATE.toString(),
+          LuaCommand.RECUR_UPDATE,
           this.jid,
-          LuaConfigParameter.KLASS.toString(),
+          LuaConfigParameter.KLASS,
           klass);
 
       this.klass = klass;
@@ -124,9 +124,9 @@ public class RecurringJob extends Job {
     this.queue = null;
 
     final Object result = this.client.call(
-        LuaCommand.RECUR_UPDATE.toString(),
+        LuaCommand.RECUR_UPDATE,
         this.jid,
-        LuaConfigParameter.QUEUE.toString(),
+        LuaConfigParameter.QUEUE,
         queueName);
 
     return result.toString();
@@ -139,10 +139,10 @@ public class RecurringJob extends Job {
   @Override
   public void priority(final int priority) throws IOException {
       this.client.call(
-          LuaCommand.RECUR_UPDATE.toString(),
+          LuaCommand.RECUR_UPDATE,
           this.jid,
-          LuaConfigParameter.PRIORITY.toString(),
-          Integer.toString(priority));
+          LuaConfigParameter.PRIORITY,
+          priority);
 
       this.priority = priority;
   }
@@ -159,10 +159,10 @@ public class RecurringJob extends Job {
 
   public void retries(final int retries) throws IOException {
       this.client.call(
-          LuaCommand.RECUR_UPDATE.toString(),
+          LuaCommand.RECUR_UPDATE,
           this.jid,
-          LuaConfigParameter.RETRIES.toString(),
-          Integer.toString(retries));
+          LuaConfigParameter.RETRIES,
+          retries);
 
       this.retries = retries;
   }
@@ -175,7 +175,7 @@ public class RecurringJob extends Job {
       Collections.addAll(args, tags);
 
       this.client.call(
-          LuaCommand.RECUR_TAG.toString(),
+          LuaCommand.RECUR_TAG,
           args);
   }
 
@@ -187,7 +187,7 @@ public class RecurringJob extends Job {
       Collections.addAll(args, tags);
 
       this.client.call(
-          LuaCommand.RECUR_UNTAG.toString(),
+          LuaCommand.RECUR_UNTAG,
           args);
   }
 }

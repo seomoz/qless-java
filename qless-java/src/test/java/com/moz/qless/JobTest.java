@@ -24,7 +24,7 @@ public class JobTest extends IntegrationTest {
     this.queue
         .newJobPutter()
         .jid(jid)
-        .priority("0")
+        .priority(0)
         .build()
         .put(JobTest.DEFAULT_NAME);
 
@@ -140,17 +140,19 @@ public class JobTest extends IntegrationTest {
 
   @Test
   public void getDataField() throws IOException {
-    final Map<String, Object> data = new HashMap<>();
-    data.put("foo", "bar");
+    final String key = "foo";
+    final String value = "bar";
 
     final String jid = this.queue
         .newJobPutter()
-        .data(data)
+        .data(key, value)
         .build()
         .put(JobTest.DEFAULT_NAME);
 
-    assertThat((String) this.client.getJobs().get(jid).getDataField("foo"),
-        equalTo("bar"));
+    assertThat(this.client.getJobs().get(jid).<String>getDataField(key),
+        equalTo(value));
+    assertThat(this.client.getJobs().get(jid).getDataField(String.class, key),
+        equalTo(value));
   }
 
   @Test
@@ -165,12 +167,24 @@ public class JobTest extends IntegrationTest {
         .put(JobTest.DEFAULT_NAME);
 
     final Job job = this.client.getJobs().get(jid);
-    assertThat((String) job.getDataField(JobTest.DEFAULT_NAME),
+    assertThat(job.<String>getDataField(JobTest.DEFAULT_NAME),
         equalTo("bar1"));
 
     job.setDataField(JobTest.DEFAULT_NAME, "bar2");
-    assertThat((String) job.getDataField(JobTest.DEFAULT_NAME),
+    assertThat(job.<String>getDataField(JobTest.DEFAULT_NAME),
         equalTo("bar2"));
+  }
+
+  @Test
+  public void addData() throws IOException {
+    final String jid = this.queue
+      .newJobPutter()
+      .data("hello", "world")
+      .build()
+      .put(JobTest.DEFAULT_NAME);
+
+    final Job job = this.client.getJobs().get(jid);
+    assertThat(job.<String>getDataField("hello"), equalTo("world"));
   }
 
   @Test
@@ -325,6 +339,16 @@ public class JobTest extends IntegrationTest {
   }
 
   @Test
+  public void failWithoutErrorMessage() throws IOException {
+    final Queue queue = this.client.getQueue("testMessagelessException");
+    final String jid = queue.newJobPutter()
+        .build()
+        .put("com.moz.qless.IntegrationTestJob");
+    queue.pop().process();
+    assertThat(this.client.getJobs().get(jid).getState(), equalTo("failed"));
+  }
+
+  @Test
   public void runJobBasic() throws IOException {
     final Queue queue = new Queue(this.client, "test");
 
@@ -338,14 +362,14 @@ public class JobTest extends IntegrationTest {
         contains("com.moz.qless.IntegrationTestJob.test"));
   }
 
-  @Test(expected = QlessException.class)
   public void runJobMissingKlass() throws IOException {
-    this.queue
+    final String jid = this.queue
         .newJobPutter()
         .build()
         .put(JobTest.DEFAULT_NAME);
 
     this.queue.pop().process();
+    assertThat(this.client.getJobs().get(jid).getState(), equalTo("failed"));
   }
 
   @Test
@@ -356,19 +380,18 @@ public class JobTest extends IntegrationTest {
         .put("com.moz.qless.IntegrationTestJob");
 
     queue.pop().process();
-
     assertThat(IntegrationTestJob.runningHistory,
         contains("com.moz.qless.IntegrationTestJob." + ClientHelper.DEFAULT_JOB_METHOD));
   }
 
-  @Test(expected = QlessException.class)
   public void runJobMissingMethod() throws IOException {
     final Queue queue = new Queue(this.client, "none");
-    queue.newJobPutter()
+    final String jid = queue.newJobPutter()
         .build()
         .put("com.moz.qless.EmptyJob");
 
     queue.pop().process();
+    assertThat(this.client.getJobs().get(jid).getState(), equalTo("failed"));
   }
 
   @Test
