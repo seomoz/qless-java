@@ -360,14 +360,14 @@ public class JobTest extends IntegrationTest {
         contains("com.moz.qless.IntegrationTestJob.test"));
   }
 
-  @Test(expected = QlessException.class)
   public void runJobMissingKlass() throws IOException {
-    this.queue
+    final String jid = this.queue
         .newJobPutter()
         .build()
         .put(JobTest.DEFAULT_NAME);
 
     this.queue.pop().process();
+    assertThat(this.client.getJobs().get(jid).getState(), equalTo("failed"));
   }
 
   @Test
@@ -378,19 +378,18 @@ public class JobTest extends IntegrationTest {
         .put("com.moz.qless.IntegrationTestJob");
 
     queue.pop().process();
-
     assertThat(IntegrationTestJob.runningHistory,
         contains("com.moz.qless.IntegrationTestJob." + ClientHelper.DEFAULT_JOB_METHOD));
   }
 
-  @Test(expected = QlessException.class)
   public void runJobMissingMethod() throws IOException {
     final Queue queue = new Queue(this.client, "none");
-    queue.newJobPutter()
+    final String jid = queue.newJobPutter()
         .build()
         .put("com.moz.qless.EmptyJob");
 
     queue.pop().process();
+    assertThat(this.client.getJobs().get(jid).getState(), equalTo("failed"));
   }
 
   @Test

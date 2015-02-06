@@ -1,6 +1,8 @@
 package com.moz.qless;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -324,11 +326,12 @@ public class Job {
       cls = this.getKlass();
     } catch (final ClassNotFoundException e) {
       try {
-        this.fail("missing class", this.klass);
+        this.fail(this.queueName + "-" + e.getClass().getName(),
+          "Failed to import " + this.klass);
       } catch (final IOException ex) {
         throw new QlessException(ex);
       }
-      throw new QlessException("class not found: " + this.klass, e);
+      return;
     }
 
     Method method;
@@ -338,10 +341,9 @@ public class Job {
       try {
         method = cls.getMethod(ClientHelper.DEFAULT_JOB_METHOD, Job.class);
       } catch (NoSuchMethodException | SecurityException ex) {
-        this.fail(ex.getMessage(), this.klass + ":"
-            + this.queueName);
-        throw new QlessException("method not found: "
-            + this.queueName, e);
+        this.fail(this.queueName + "-" + e.getClass().getName(),
+          "Method missing: " + this.klass + ":" + this.queueName);
+        return;
       }
     }
 
@@ -354,12 +356,15 @@ public class Job {
     } catch (IllegalAccessException | IllegalArgumentException
         | InvocationTargetException | InstantiationException e) {
       try {
-        this.fail(e.getMessage(), this.klass + ":"
-            + this.queueName);
+        /* Extract the stack trace. */
+        final StringWriter sw = new StringWriter();
+        final PrintWriter pw = new PrintWriter(sw);
+        e.printStackTrace(pw);
+        this.fail(this.queueName + "-" + e.getClass().getName(),
+          sw.toString());
       } catch (final IOException ex) {
         throw new QlessException(ex);
       }
-      throw new QlessException("fail to invoke " + this.queueName, e);
     }
   }
 
