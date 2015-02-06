@@ -337,6 +337,16 @@ public class JobTest extends IntegrationTest {
   }
 
   @Test
+  public void failWithoutErrorMessage() throws IOException {
+    final Queue queue = this.client.getQueue("testMessagelessException");
+    final String jid = queue.newJobPutter()
+        .build()
+        .put("com.moz.qless.IntegrationTestJob");
+    queue.pop().process();
+    assertThat(this.client.getJobs().get(jid).getState(), equalTo("failed"));
+  }
+
+  @Test
   public void runJobBasic() throws IOException {
     final Queue queue = new Queue(this.client, "test");
 

@@ -47,4 +47,8 @@ public class IntegrationTestJob {
     IntegrationTestJob.runningHistory.add(result);
     System.out.println(result);
   }
+
+  public static void testMessagelessException(final Job job) {
+    throw new RuntimeException();
+  }
 }
