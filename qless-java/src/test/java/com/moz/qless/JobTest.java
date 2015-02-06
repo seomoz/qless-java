@@ -140,17 +140,19 @@ public class JobTest extends IntegrationTest {
 
   @Test
   public void getDataField() throws IOException {
-    final Map<String, Object> data = new HashMap<>();
-    data.put("foo", "bar");
+    final String key = "foo";
+    final String value = "bar";
 
     final String jid = this.queue
         .newJobPutter()
-        .data(data)
+        .data(key, value)
         .build()
         .put(JobTest.DEFAULT_NAME);
 
-    assertThat(this.client.getJobs().get(jid).<String>getDataField("foo"),
-        equalTo("bar"));
+    assertThat(this.client.getJobs().get(jid).<String>getDataField(key),
+        equalTo(value));
+    assertThat(this.client.getJobs().get(jid).getDataField(String.class, key),
+        equalTo(value));
   }
 
   @Test
