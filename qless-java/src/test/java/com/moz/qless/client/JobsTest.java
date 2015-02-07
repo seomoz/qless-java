@@ -16,6 +16,7 @@ import com.moz.qless.IntegrationTest;
 import org.junit.Test;
 
 public class JobsTest extends IntegrationTest {
+
   @Test
   public void getSingleJob() throws IOException {
     final String expectedJid = ClientHelper.generateJid();
@@ -23,11 +24,7 @@ public class JobsTest extends IntegrationTest {
     assertThat(this.client.getJobs().get(expectedJid),
         nullValue());
 
-    this.queue
-        .newJobPutter()
-        .jid(expectedJid)
-        .build()
-        .put(JobsTest.DEFAULT_NAME);
+    this.queue.put(jobSpec().setJid(expectedJid));
 
     assertThat(this.client.getJobs().get(expectedJid),
         notNullValue());
@@ -35,20 +32,9 @@ public class JobsTest extends IntegrationTest {
 
   @Test
   public void getMultiJobs() throws IOException {
-    final String jid1 = this.queue
-        .newJobPutter()
-        .build()
-        .put("job1");
-
-    final String jid2 = this.queue
-        .newJobPutter()
-        .build()
-        .put("job2");
-
-    final String jid3 = this.queue
-        .newJobPutter()
-        .build()
-        .put("job3");
+    final String jid1 = this.queue.put(jobSpec());
+    final String jid2 = this.queue.put(jobSpec());
+    final String jid3 = this.queue.put(jobSpec());
 
     assertThat(this.client.getJobs().get(jid1, jid2, jid3),
         hasSize(3));
@@ -76,15 +62,8 @@ public class JobsTest extends IntegrationTest {
   public void complete() throws IOException {
     assertThat(this.client.getJobs().complete(), is(empty()));
 
-    final String jid1 = this.queue
-        .newJobPutter()
-        .build()
-        .put(JobsTest.DEFAULT_NAME);
-
-    final String jid2 = this.queue
-        .newJobPutter()
-        .build()
-        .put(JobsTest.DEFAULT_NAME);
+    final String jid1 = this.queue.put(jobSpec());
+    final String jid2 = this.queue.put(jobSpec());
 
     assertThat(this.client.getJobs().get(jid1),
         notNullValue());
@@ -103,15 +82,8 @@ public class JobsTest extends IntegrationTest {
     assertThat(this.client.getJobs().tracked(),
         nullValue());
 
-    final String jid1 = this.queue
-        .newJobPutter()
-        .build()
-        .put(JobsTest.DEFAULT_NAME);
-
-    final String jid2 = this.queue
-        .newJobPutter()
-        .build()
-        .put(JobsTest.DEFAULT_NAME);
+    final String jid1 = this.queue.put(jobSpec());
+    final String jid2 = this.queue.put(jobSpec());
 
     assertThat(this.client.getJobs().get(jid1),
         notNullValue());
@@ -135,17 +107,8 @@ public class JobsTest extends IntegrationTest {
   public void tagged() throws IOException {
     assertThat(this.client.getJobs().tagged(JobsTest.DEFAULT_NAME), nullValue());
 
-    final String jid1 = this.queue
-        .newJobPutter()
-        .tags(JobsTest.DEFAULT_NAME)
-        .build()
-        .put(JobsTest.DEFAULT_NAME);
-
-    final String jid2 = this.queue
-        .newJobPutter()
-        .tags(JobsTest.DEFAULT_NAME)
-        .build()
-        .put(JobsTest.DEFAULT_NAME);
+    final String jid1 = this.queue.put(jobSpec().tagged(JobsTest.DEFAULT_NAME));
+    final String jid2 = this.queue.put(jobSpec().tagged(JobsTest.DEFAULT_NAME));
 
     assertThat(this.client.getJobs().get(jid1),
         notNullValue());
@@ -163,10 +126,7 @@ public class JobsTest extends IntegrationTest {
     assertThat(this.client.getJobs().failed("foo"),
         nullValue());
 
-    final String jid = this.queue
-        .newJobPutter()
-        .build()
-        .put(JobsTest.DEFAULT_NAME);
+    final String jid = this.queue.put(jobSpec());
 
     this.queue.pop().fail("group", "message");
     assertThat(this.client.getJobs().failed("group"),
@@ -180,17 +140,11 @@ public class JobsTest extends IntegrationTest {
     assertThat(null, this.client.getJobs().failed(),
         nullValue());
 
-    this.queue
-        .newJobPutter()
-        .build()
-        .put(JobsTest.DEFAULT_NAME);
+    this.queue.put(jobSpec());
 
     this.queue.pop().fail("group1", "message1");
 
-    this.queue
-        .newJobPutter()
-        .build()
-        .put(JobsTest.DEFAULT_NAME);
+    this.queue.put(jobSpec());
 
     this.queue.pop().fail("group2", "message2");
 

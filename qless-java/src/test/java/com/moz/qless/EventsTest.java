@@ -28,17 +28,11 @@ public class EventsTest extends IntegrationTest {
   public void before() throws IOException {
     this.untracked = this.client
         .getJobs()
-        .get(this.queue
-            .newJobPutter()
-            .build()
-            .put("untracked"));
+        .get(this.queue.put(jobSpec("untracked")));
 
     this.tracked = this.client
         .getJobs()
-        .get(this.queue
-            .newJobPutter()
-            .build()
-            .put("untracked"));
+        .get(this.queue.put(jobSpec("untracked")));
 
     this.tracked.track();
   }

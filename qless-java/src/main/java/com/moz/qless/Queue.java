@@ -2,6 +2,7 @@ package com.moz.qless;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -10,7 +11,6 @@ import java.util.Map;
 
 import com.google.common.base.Preconditions;
 import com.moz.qless.client.ClientHelper;
-import com.moz.qless.job.JobPutter;
 import com.moz.qless.job.RecurJobPutter;
 import com.moz.qless.lua.LuaCommand;
 import com.moz.qless.lua.LuaConfigParameter;
@@ -23,6 +23,91 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Transaction;
 
 public class Queue {
+
+  public static class JobSpec {
+    private String klass;
+    private Map<String, Object> data = new HashMap<>();
+    private String jid = ClientHelper.generateJid();
+    private int priority = ClientHelper.DEFAULT_PRIORITY;
+    private int delay = ClientHelper.DEFAULT_DELAY;
+    private int retries = ClientHelper.DEFAULT_RETRIES;
+    private int interval = ClientHelper.DEFAULT_INTERVAL;
+    private int backlog = ClientHelper.DEFAULT_BACKLOG;
+    private List<String> depends = new ArrayList<>();
+    private List<String> tags = new ArrayList<>();
+
+    public static JobSpec newJobSpec() {
+      return new JobSpec();
+    }
+
+    public JobSpec setKlass(final String klass) {
+      this.klass = klass;
+      return this;
+    }
+
+    public <T> JobSpec setKlass(final Class<T> klass) {
+      return setKlass(klass.getCanonicalName());
+    }
+
+    public JobSpec setData(final Map<String, Object> data) {
+      this.data = data;
+      return this;
+    }
+
+    public JobSpec setData(final String key, final Object value) {
+      this.data.put(key, value);
+      return this;
+    }
+
+    public JobSpec setJid(final String jid) {
+      this.jid = jid;
+      return this;
+    }
+
+    public JobSpec setPriority(final int priority) {
+      this.priority = priority;
+      return this;
+    }
+
+    public JobSpec setRetries(final int retries) {
+      this.retries = retries;
+      return this;
+    }
+
+    public JobSpec setDelay(final int delay) {
+      this.delay = delay;
+      return this;
+    }
+
+    public JobSpec setInterval(final int interval) {
+      this.interval = interval;
+      return this;
+    }
+
+    public JobSpec setBacklog(final int backlog) {
+      this.backlog = backlog;
+      return this;
+    }
+
+    public JobSpec dependsOn(final String... jids) {
+      return dependsOn(Arrays.asList(jids));
+    }
+
+    public JobSpec dependsOn(final List<String> jids) {
+      this.depends.addAll(jids);
+      return this;
+    }
+
+    public JobSpec tagged(final String... tags) {
+      return tagged(Arrays.asList(tags));
+    }
+
+    public JobSpec tagged(final List<String> tags) {
+      this.tags.addAll(tags);
+      return this;
+    }
+  }
+
   private final Client client;
   private final String name;
 
@@ -172,19 +257,6 @@ public class Queue {
   }
 
   /**
-   *  Either create a new job in the provided queue with the provided attributes, or move
-   *  that job into that queue. If the job is being serviced by a worker, subsequent
-   *  attempts by that worker to either "heartbeat" or "complete" the job should fail and
-   *  return "false". The "priority" argument should be negative to be run sooner rather
-   *  than later, and positive if it's less important. The "tags" argument should be a
-   *  JSON array of the tags associated with the instance and the "valid after" argument
-   *  should be in how many seconds the instance should be considered actionable.
-   */
-  public JobPutter.Builder newJobPutter() throws IOException {
-    return new JobPutter.Builder(this.client, this.name);
-  }
-
-  /**
    * Place a recurring job in this queue
    */
   public RecurJobPutter.Builder newRecurJobPutter() throws IOException {
@@ -208,4 +280,48 @@ public class Queue {
         LuaCommand.UNPAUSE,
         this.name);
   }
+
+  public String put(final JobSpec jobSpec) throws IOException {
+    final Object result = this.client.call(
+        LuaCommand.PUT,
+        this.client.workerName(),
+        this.name,
+        jobSpec.jid,
+        jobSpec.klass,
+        JsonUtils.stringify(jobSpec.data),
+        jobSpec.delay,
+        "priority",
+        jobSpec.priority,
+        "tags",
+        JsonUtils.stringify(jobSpec.tags),
+        "retries",
+        jobSpec.retries,
+        "depends",
+        JsonUtils.stringify(jobSpec.depends));
+
+    return result.toString();
+  }
+
+  public String recur(final JobSpec jobSpec) throws IOException {
+    final Object result = this.client.call(
+        LuaCommand.RECUR,
+        this.name,
+        jobSpec.jid,
+        jobSpec.klass,
+        JsonUtils.stringify(jobSpec.data),
+        LuaConfigParameter.INTERVAL,
+        jobSpec.interval,
+        jobSpec.delay,
+        LuaConfigParameter.PRIORITY,
+        jobSpec.priority,
+        LuaConfigParameter.TAGS,
+        JsonUtils.stringify(jobSpec.tags),
+        LuaConfigParameter.RETRIES,
+        jobSpec.retries,
+        LuaConfigParameter.BACKLOG,
+        jobSpec.backlog);
+
+    return result.toString();
+  }
+
 }

@@ -16,6 +16,7 @@ import com.moz.qless.lua.LuaConfigParameter;
 import org.junit.Test;
 
 public class QueueTest extends IntegrationTest {
+
   @Test
   public void put() throws IOException {
     final Map<String, Object> data = new HashMap<>();
@@ -23,14 +24,12 @@ public class QueueTest extends IntegrationTest {
 
     final String expectedJid = ClientHelper.generateJid();
 
-    final String actualJid = this.queue
-        .newJobPutter()
-        .data(data)
-        .jid(expectedJid)
-        .retries(3)
-        .tags("tag1", "tag2")
-        .build()
-        .put(QueueTest.DEFAULT_NAME);
+    final String actualJid = this.queue.put(
+      jobSpec()
+        .setData(data)
+        .setJid(expectedJid)
+        .setRetries(3)
+        .tagged("tag1", "tag2"));
 
     assertThat(expectedJid,
         equalTo(actualJid));
@@ -38,10 +37,7 @@ public class QueueTest extends IntegrationTest {
 
   @Test
   public void jobs() throws IOException {
-    this.queue
-        .newJobPutter()
-        .build()
-        .put(QueueTest.DEFAULT_NAME);
+    this.queue.put(jobSpec());
 
     assertThat(this.queue.jobs().depends(),
         is(empty()));
@@ -77,10 +73,7 @@ public class QueueTest extends IntegrationTest {
 
   @Test
   public void counts() throws IOException {
-    this.queue
-      .newJobPutter()
-      .build()
-      .put(QueueTest.DEFAULT_NAME);
+    this.queue.put(jobSpec());
 
     final QueueCounts count = this.queue.getCounts();
     assertThat(count.getScheduled(),
@@ -117,10 +110,7 @@ public class QueueTest extends IntegrationTest {
 
   @Test
   public void pop() throws IOException {
-    final String jid = this.queue
-        .newJobPutter()
-        .build()
-        .put(QueueTest.DEFAULT_NAME);
+    final String jid = this.queue.put(jobSpec());
 
     assertThat(this.queue.pop().getJid(),
         is(jid));
@@ -130,15 +120,8 @@ public class QueueTest extends IntegrationTest {
 
   @Test
   public void multiPop() throws IOException {
-    final String jid1 = this.queue
-        .newJobPutter()
-        .build()
-        .put(QueueTest.DEFAULT_NAME);
-
-    final String jid2 = this.queue
-        .newJobPutter()
-        .build()
-        .put(QueueTest.DEFAULT_NAME);
+    final String jid1 = this.queue.put(jobSpec());
+    final String jid2 = this.queue.put(jobSpec());
 
     final List<Job> jobs = this.queue.pop(10);
     final List<String> jids = new ArrayList<>();
@@ -154,10 +137,7 @@ public class QueueTest extends IntegrationTest {
 
   @Test
   public void peek() throws IOException {
-    final String jid = this.queue
-        .newJobPutter()
-        .build()
-        .put(QueueTest.DEFAULT_NAME);
+    final String jid = this.queue.put(jobSpec());
 
     assertThat(this.queue.peek().getJid(),
         is(jid));
@@ -167,15 +147,8 @@ public class QueueTest extends IntegrationTest {
 
   @Test
   public void multiPeek() throws IOException {
-    final String jid1 = this.queue
-        .newJobPutter()
-        .build()
-        .put(QueueTest.DEFAULT_NAME);
-
-    final String jid2 = this.queue
-        .newJobPutter()
-        .build()
-        .put(QueueTest.DEFAULT_NAME);
+    final String jid1 = this.queue.put(jobSpec());
+    final String jid2 = this.queue.put(jobSpec());
 
     final List<Job> jobs = this.queue.peek(10);
     final List<String> jids = new ArrayList<>();
@@ -191,10 +164,7 @@ public class QueueTest extends IntegrationTest {
 
   @Test
   public void stats() throws IOException {
-    this.queue
-        .newJobPutter()
-        .build()
-        .put(QueueTest.DEFAULT_NAME);
+    this.queue.put(jobSpec());
 
     final Map<String, Object> stats = this.queue.getStats();
 
@@ -212,10 +182,7 @@ public class QueueTest extends IntegrationTest {
 
   @Test
   public void len() throws IOException {
-    this.queue
-        .newJobPutter()
-        .build()
-        .put(QueueTest.DEFAULT_NAME);
+    this.queue.put(jobSpec());
 
     assertThat(this.queue.length(),
         equalTo(1));

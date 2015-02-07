@@ -13,10 +13,7 @@ import org.junit.Test;
 public class ClientTest extends IntegrationTest {
   @Test
   public void track() throws IOException {
-    final String jid = this.queue
-        .newJobPutter()
-        .build()
-        .put(ClientTest.DEFAULT_NAME);
+    final String jid = this.queue.put(jobSpec());
 
     this.client.track(jid);
 
@@ -26,10 +23,7 @@ public class ClientTest extends IntegrationTest {
 
   @Test
   public void unTrack() throws IOException {
-    final String jid = this.queue
-        .newJobPutter()
-        .build()
-        .put(ClientTest.DEFAULT_NAME);
+    final String jid = this.queue.put(jobSpec());
 
     this.client.track(jid);
     assertThat(this.client.getJobs().tracked().get(0).getJid(),
@@ -49,10 +43,7 @@ public class ClientTest extends IntegrationTest {
   public void tags() throws IOException {
     assertThat(this.client.tags(), nullValue());
 
-    final String jid = this.queue
-        .newJobPutter()
-        .build()
-        .put(ClientTest.DEFAULT_NAME);
+    final String jid = this.queue.put(jobSpec());
 
     this.client.getJobs().get(jid).tag("tag1", "tag2");
     assertThat(this.client.tags(),
@@ -61,10 +52,7 @@ public class ClientTest extends IntegrationTest {
 
   @Test
   public void unfail() throws IOException {
-    final String jid = this.queue
-        .newJobPutter()
-        .build()
-        .put(ClientTest.DEFAULT_NAME);
+    final String jid = this.queue.put(jobSpec());
 
     this.queue.pop().fail(ClientTest.DEFAULT_NAME, ClientTest.DEFAULT_NAME);
 
