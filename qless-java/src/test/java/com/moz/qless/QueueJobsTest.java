@@ -30,11 +30,7 @@ public class QueueJobsTest extends IntegrationTest {
 
   @Test
   public void recurringJobStatus() throws IOException {
-    final String jid = this.queue
-        .newRecurJobPutter()
-        .interval(60)
-        .build()
-        .recur(QueueJobsTest.DEFAULT_NAME);
+    final String jid = this.queue.recur(jobSpec().setInterval(60));
 
     assertThat(this.queue.jobs().depends(),
         is(empty()));

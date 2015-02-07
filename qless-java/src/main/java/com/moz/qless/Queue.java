@@ -11,7 +11,6 @@ import java.util.Map;
 
 import com.google.common.base.Preconditions;
 import com.moz.qless.client.ClientHelper;
-import com.moz.qless.job.RecurJobPutter;
 import com.moz.qless.lua.LuaCommand;
 import com.moz.qless.lua.LuaConfigParameter;
 import com.moz.qless.utils.JsonUtils;
@@ -254,13 +253,6 @@ public class Queue {
     final JavaType javaType = new ObjectMapper().getTypeFactory()
         .constructCollectionType(ArrayList.class, Job.class);
     return JsonUtils.parse(result.toString(), javaType, injectables);
-  }
-
-  /**
-   * Place a recurring job in this queue
-   */
-  public RecurJobPutter.Builder newRecurJobPutter() throws IOException {
-    return new RecurJobPutter.Builder(this.client, this.name);
   }
 
   public void setHeartbeat(final int heartbeat) throws IOException {

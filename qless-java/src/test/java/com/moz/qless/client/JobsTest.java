@@ -47,12 +47,7 @@ public class JobsTest extends IntegrationTest {
     assertThat(this.client.getJobs().get(expectedJid),
         nullValue());
 
-    this.queue
-        .newRecurJobPutter()
-        .interval(60)
-        .jid(expectedJid)
-        .build()
-        .recur(JobsTest.DEFAULT_NAME);
+    this.queue.recur(jobSpec().setInterval(60).setJid(expectedJid));
 
     assertThat(this.client.getJobs().get(expectedJid),
         notNullValue());

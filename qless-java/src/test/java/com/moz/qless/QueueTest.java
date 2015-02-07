@@ -53,11 +53,7 @@ public class QueueTest extends IntegrationTest {
 
   @Test
   public void jobsRecur() throws IOException {
-    final String jid = this.queue
-        .newRecurJobPutter()
-        .interval(60)
-        .build()
-        .recur(QueueTest.DEFAULT_NAME);
+    final String jid = this.queue.recur(jobSpec().setInterval(60));
 
     assertThat(this.queue.jobs().depends(),
         is(empty()));
