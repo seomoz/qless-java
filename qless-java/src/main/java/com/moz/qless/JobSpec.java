@@ -21,7 +21,7 @@ public class JobSpec {
   protected List<String> depends = new ArrayList<>();
   protected List<String> tags = new ArrayList<>();
 
-  public static JobSpec newJobSpec() {
+  public static JobSpec create() {
     return new JobSpec();
   }
 
@@ -34,6 +34,10 @@ public class JobSpec {
     return setKlass(klass.getCanonicalName());
   }
 
+  public String getKlass() {
+    return klass;
+  }
+
   public JobSpec setData(final Map<String, Object> data) {
     this.data = data;
     return this;
@@ -44,9 +48,17 @@ public class JobSpec {
     return this;
   }
 
+  public Map<String, Object> getData() {
+    return data;
+  }
+
   public JobSpec setJid(final String jid) {
     this.jid = jid;
     return this;
+  }
+
+  public String getJid() {
+    return jid;
   }
 
   public JobSpec setPriority(final int priority) {
@@ -54,9 +66,17 @@ public class JobSpec {
     return this;
   }
 
+  public Integer getPriority() {
+    return priority;
+  }
+
   public JobSpec setRetries(final int retries) {
     this.retries = retries;
     return this;
+  }
+
+  public Integer getRetries() {
+    return retries;
   }
 
   public JobSpec setDelay(final int delay) {
@@ -64,14 +84,26 @@ public class JobSpec {
     return this;
   }
 
+  public Integer getDelay() {
+    return delay;
+  }
+
   public JobSpec setInterval(final int interval) {
     this.interval = interval;
     return this;
   }
 
+  public Integer getInterval() {
+    return interval;
+  }
+
   public JobSpec setBacklog(final int backlog) {
     this.backlog = backlog;
     return this;
+  }
+
+  public Integer getBacklog() {
+    return backlog;
   }
 
   public JobSpec dependsOn(final String... jids) {
@@ -83,6 +115,19 @@ public class JobSpec {
     return this;
   }
 
+  public JobSpec setDepends(final String... jids) {
+    return setDepends(Arrays.asList(jids));
+  }
+
+  public JobSpec setDepends(final List<String> jids) {
+    this.depends = jids;
+    return this;
+  }
+
+  public List<String> getDepends() {
+    return depends;
+  }
+
   public JobSpec tagged(final String... tags) {
     return tagged(Arrays.asList(tags));
   }
@@ -90,5 +135,18 @@ public class JobSpec {
   public JobSpec tagged(final List<String> tags) {
     this.tags.addAll(tags);
     return this;
+  }
+
+  public JobSpec setTags(final String... tags) {
+    return setTags(Arrays.asList(tags));
+  }
+
+  public JobSpec setTags(final List<String> tags) {
+    this.tags = tags;
+    return this;
+  }
+
+  public List<String> getTags() {
+    return tags;
   }
 }

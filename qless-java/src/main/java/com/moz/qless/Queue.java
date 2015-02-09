@@ -20,7 +20,7 @@ import org.codehaus.jackson.type.JavaType;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Transaction;
 
-public class Queue {
+public final class Queue {
 
   private final Client client;
   private final String name;

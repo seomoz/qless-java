@@ -291,7 +291,7 @@ public class Job {
     this.queue = null;
 
     final Object result = getQueue().put(
-      JobSpec.newJobSpec()
+      JobSpec.create()
         .setJid(this.jid)
         .setData(this.data)
         .setKlass(this.klass)

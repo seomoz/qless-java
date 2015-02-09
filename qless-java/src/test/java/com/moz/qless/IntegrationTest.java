@@ -27,7 +27,7 @@ public class IntegrationTest {
   }
 
   protected JobSpec jobSpec(final String klass) {
-    return JobSpec.newJobSpec().setKlass(klass);
+    return JobSpec.create().setKlass(klass);
   }
 
   private Client create() {
