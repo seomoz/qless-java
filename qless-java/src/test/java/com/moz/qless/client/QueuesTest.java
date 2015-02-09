@@ -13,6 +13,7 @@ import org.junit.Test;
 
 
 public class QueuesTest extends IntegrationTest {
+
   @Test
   public void countsBasic() {
     assertThat(this.client.getQueue(QueuesTest.DEFAULT_NAME),
@@ -23,10 +24,7 @@ public class QueuesTest extends IntegrationTest {
   public void countsSingleJob() throws IOException {
     assertThat(this.client.getQueues().counts(), nullValue());
 
-    this.client.getQueue(QueuesTest.DEFAULT_NAME)
-        .newJobPutter()
-        .build()
-        .put(QueuesTest.DEFAULT_NAME);
+    this.client.getQueue(QueuesTest.DEFAULT_NAME).put(jobSpec());
 
     final List<QueueCounts> counts = this.client.getQueues().counts();
     assertThat(counts,
@@ -56,15 +54,9 @@ public class QueuesTest extends IntegrationTest {
     assertThat(this.client.getQueues().counts(),
         nullValue());
 
-    this.client.getQueue(QueuesTest.DEFAULT_NAME)
-        .newJobPutter()
-        .build()
-        .put(QueuesTest.DEFAULT_NAME);
+    this.client.getQueue(QueuesTest.DEFAULT_NAME).put(jobSpec());
 
-    this.client.getQueue(QueuesTest.DEFAULT_NAME)
-        .newJobPutter()
-        .build()
-        .put("foo2");
+    this.client.getQueue(QueuesTest.DEFAULT_NAME).put(jobSpec("foo2"));
 
     final List<QueueCounts> counts = this.client.getQueues().counts();
     assertThat(counts,
@@ -93,15 +85,9 @@ public class QueuesTest extends IntegrationTest {
   public void countsMultiQueues() throws IOException {
     assertThat(this.client.getQueues().counts(), nullValue());
 
-    this.client.getQueue(QueuesTest.DEFAULT_NAME)
-        .newJobPutter()
-        .build()
-        .put(QueuesTest.DEFAULT_NAME);
+    this.client.getQueue(QueuesTest.DEFAULT_NAME).put(jobSpec());
 
-    this.client.getQueue("foo2")
-        .newJobPutter()
-        .build()
-        .put("foo2");
+    this.client.getQueue("foo2").put(jobSpec("foo2"));
 
     assertThat(this.client.getQueues().counts(),
         hasSize(2));
@@ -111,10 +97,7 @@ public class QueuesTest extends IntegrationTest {
   public void countsAdvanced() throws IOException {
     assertThat(this.client.getQueues().counts(),
         nullValue());
-    final String jid = this.client.getQueue(QueuesTest.DEFAULT_NAME)
-        .newJobPutter()
-        .build()
-        .put(QueuesTest.DEFAULT_NAME);
+    final String jid = this.client.getQueue(QueuesTest.DEFAULT_NAME).put(jobSpec());
 
     this.client.getQueues().get(QueuesTest.DEFAULT_NAME).pop();
     List<QueueCounts> counts = this.client.getQueues().counts();

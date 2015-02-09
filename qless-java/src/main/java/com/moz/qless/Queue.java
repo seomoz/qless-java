@@ -10,8 +10,6 @@ import java.util.Map;
 
 import com.google.common.base.Preconditions;
 import com.moz.qless.client.ClientHelper;
-import com.moz.qless.job.JobPutter;
-import com.moz.qless.job.RecurJobPutter;
 import com.moz.qless.lua.LuaCommand;
 import com.moz.qless.lua.LuaConfigParameter;
 import com.moz.qless.utils.JsonUtils;
@@ -22,7 +20,8 @@ import org.codehaus.jackson.type.JavaType;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Transaction;
 
-public class Queue {
+public final class Queue {
+
   private final Client client;
   private final String name;
 
@@ -171,26 +170,6 @@ public class Queue {
     return JsonUtils.parse(result.toString(), javaType, injectables);
   }
 
-  /**
-   *  Either create a new job in the provided queue with the provided attributes, or move
-   *  that job into that queue. If the job is being serviced by a worker, subsequent
-   *  attempts by that worker to either "heartbeat" or "complete" the job should fail and
-   *  return "false". The "priority" argument should be negative to be run sooner rather
-   *  than later, and positive if it's less important. The "tags" argument should be a
-   *  JSON array of the tags associated with the instance and the "valid after" argument
-   *  should be in how many seconds the instance should be considered actionable.
-   */
-  public JobPutter.Builder newJobPutter() throws IOException {
-    return new JobPutter.Builder(this.client, this.name);
-  }
-
-  /**
-   * Place a recurring job in this queue
-   */
-  public RecurJobPutter.Builder newRecurJobPutter() throws IOException {
-    return new RecurJobPutter.Builder(this.client, this.name);
-  }
-
   public void setHeartbeat(final int heartbeat) throws IOException {
     this.client.getConfig().put(
         this.getHeartbeatConfigName(),
@@ -208,4 +187,48 @@ public class Queue {
         LuaCommand.UNPAUSE,
         this.name);
   }
+
+  public String put(final JobSpec jobSpec) throws IOException {
+    final Object result = this.client.call(
+        LuaCommand.PUT,
+        this.client.workerName(),
+        this.name,
+        jobSpec.jid,
+        jobSpec.klass,
+        JsonUtils.stringify(jobSpec.data),
+        jobSpec.delay,
+        "priority",
+        jobSpec.priority,
+        "tags",
+        JsonUtils.stringify(jobSpec.tags),
+        "retries",
+        jobSpec.retries,
+        "depends",
+        JsonUtils.stringify(jobSpec.depends));
+
+    return result.toString();
+  }
+
+  public String recur(final JobSpec jobSpec) throws IOException {
+    final Object result = this.client.call(
+        LuaCommand.RECUR,
+        this.name,
+        jobSpec.jid,
+        jobSpec.klass,
+        JsonUtils.stringify(jobSpec.data),
+        LuaConfigParameter.INTERVAL,
+        jobSpec.interval,
+        jobSpec.delay,
+        LuaConfigParameter.PRIORITY,
+        jobSpec.priority,
+        LuaConfigParameter.TAGS,
+        JsonUtils.stringify(jobSpec.tags),
+        LuaConfigParameter.RETRIES,
+        jobSpec.retries,
+        LuaConfigParameter.BACKLOG,
+        jobSpec.backlog);
+
+    return result.toString();
+  }
+
 }

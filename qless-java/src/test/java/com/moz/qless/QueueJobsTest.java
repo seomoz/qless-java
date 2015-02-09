@@ -10,10 +10,7 @@ import org.junit.Test;
 public class QueueJobsTest extends IntegrationTest {
   @Test
   public void regularJobStatus() throws IOException {
-    final String jid = this.queue
-        .newJobPutter()
-        .build()
-        .put(QueueJobsTest.DEFAULT_NAME);
+    final String jid = this.queue.put(jobSpec());
 
     assertThat(this.queue.jobs().depends(),
         is(empty()));
@@ -33,11 +30,7 @@ public class QueueJobsTest extends IntegrationTest {
 
   @Test
   public void recurringJobStatus() throws IOException {
-    final String jid = this.queue
-        .newRecurJobPutter()
-        .interval(60)
-        .build()
-        .recur(QueueJobsTest.DEFAULT_NAME);
+    final String jid = this.queue.recur(jobSpec().setInterval(60));
 
     assertThat(this.queue.jobs().depends(),
         is(empty()));

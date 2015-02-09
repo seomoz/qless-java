@@ -22,6 +22,14 @@ public class IntegrationTest {
     IntegrationTestJob.runningHistory.clear();
   }
 
+  protected JobSpec jobSpec() {
+    return jobSpec(IntegrationTest.DEFAULT_NAME);
+  }
+
+  protected JobSpec jobSpec(final String klass) {
+    return JobSpec.create().setKlass(klass);
+  }
+
   private Client create() {
     final Jedis jedis = this.jedisPool.getResource();
     try {

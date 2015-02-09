@@ -290,14 +290,12 @@ public class Job {
     this.queueName = queueName;
     this.queue = null;
 
-    final Object result =
-        this.client.getQueue(queueName)
-          .newJobPutter()
-          .data(this.data)
-          .jid(this.jid)
-          .depends(this.getDependencies())
-          .build()
-          .put(this.klass);
+    final Object result = getQueue().put(
+      JobSpec.create()
+        .setJid(this.jid)
+        .setData(this.data)
+        .setKlass(this.klass)
+        .dependsOn(this.dependencies));
 
     return result.toString();
   }

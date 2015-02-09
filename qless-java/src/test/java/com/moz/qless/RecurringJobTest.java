@@ -14,11 +14,7 @@ import org.junit.Test;
 public class RecurringJobTest extends IntegrationTest {
   @Test
   public void recurringJobAttributes() throws IOException {
-    final String jid = this.queue
-        .newRecurJobPutter()
-        .interval(60)
-        .build()
-        .recur(RecurringJobTest.DEFAULT_NAME);
+    final String jid = this.queue.recur(jobSpec().setInterval(60));
 
     final RecurringJob job = (RecurringJob) this.client.getJobs().get(jid);
 
@@ -38,15 +34,7 @@ public class RecurringJobTest extends IntegrationTest {
 
   @Test
   public void setPriority() throws IOException {
-    final String jid = ClientHelper.generateJid();
-
-    this.queue
-        .newRecurJobPutter()
-        .interval(60)
-        .jid(jid)
-        .priority(0)
-        .build()
-        .recur(RecurringJobTest.DEFAULT_NAME);
+    final String jid = this.queue.recur(jobSpec().setInterval(60));
 
     assertThat(this.client.getJobs().get(jid).priority,
         equalTo(0));
@@ -58,15 +46,7 @@ public class RecurringJobTest extends IntegrationTest {
 
   @Test
   public void setRetries() throws IOException {
-    final String jid = ClientHelper.generateJid();
-
-    this.queue
-        .newRecurJobPutter()
-        .interval(60)
-        .jid(jid)
-        .retries(2)
-        .build()
-        .recur(RecurringJobTest.DEFAULT_NAME);
+    final String jid = this.queue.recur(jobSpec().setInterval(60).setRetries(2));
 
     final RecurringJob job = (RecurringJob) this.client.getJobs().get(jid);
     assertThat(job.getRetries(),
@@ -79,11 +59,7 @@ public class RecurringJobTest extends IntegrationTest {
 
   @Test
   public void setInterval() throws IOException {
-    final String jid = this.queue
-        .newRecurJobPutter()
-        .interval(60)
-        .build()
-        .recur(RecurringJobTest.DEFAULT_NAME);
+    final String jid = this.queue.recur(jobSpec().setInterval(60));
 
     final RecurringJob job = (RecurringJob) this.client.getJobs().get(jid);
 
@@ -97,11 +73,7 @@ public class RecurringJobTest extends IntegrationTest {
 
   @Test
   public void setData() throws IOException {
-    final String jid = this.queue
-        .newRecurJobPutter()
-        .interval(60)
-        .build()
-        .recur(RecurringJobTest.DEFAULT_NAME);
+    final String jid = this.queue.recur(jobSpec().setInterval(60));
 
     final RecurringJob job = (RecurringJob) this.client.getJobs().get(jid);
 
@@ -119,11 +91,7 @@ public class RecurringJobTest extends IntegrationTest {
 
   @Test
   public void addData() throws IOException {
-    final String jid = this.queue
-      .newRecurJobPutter()
-      .data("hello", "world")
-      .build()
-      .recur(RecurringJobTest.DEFAULT_NAME);
+    final String jid = this.queue.recur(jobSpec().setData("hello", "world"));
 
     final Job job = this.client.getJobs().get(jid);
     assertThat(job.<String>getDataField("hello"), equalTo("world"));
@@ -131,11 +99,7 @@ public class RecurringJobTest extends IntegrationTest {
 
   @Test
   public void setKlass() throws IOException {
-    final String jid = this.queue
-        .newRecurJobPutter()
-        .interval(60)
-        .build()
-        .recur(RecurringJobTest.DEFAULT_NAME);
+    final String jid = this.queue.recur(jobSpec().setInterval(60));
 
     final RecurringJob job = (RecurringJob) this.client.getJobs().get(jid);
 
@@ -149,11 +113,7 @@ public class RecurringJobTest extends IntegrationTest {
 
   @Test
   public void getNext() throws IOException {
-    final String jid = this.queue
-        .newRecurJobPutter()
-        .interval(60)
-        .build()
-        .recur(RecurringJobTest.DEFAULT_NAME);
+    final String jid = this.queue.recur(jobSpec().setInterval(60));
 
     final RecurringJob job = (RecurringJob) this.client.getJobs().get(jid);
 
@@ -168,13 +128,7 @@ public class RecurringJobTest extends IntegrationTest {
     final Map<String, Object> data = new HashMap<>();
     data.put("key", "value");
 
-    final String jid = this.queue
-        .newRecurJobPutter()
-        .interval(60)
-        .data(data)
-        .depends("jid2")
-        .build()
-        .recur(RecurringJobTest.DEFAULT_NAME);
+    final String jid = this.queue.recur(jobSpec().setInterval(60).setData(data));
 
     final RecurringJob job = (RecurringJob) this.client.getJobs().get(jid);
     assertThat(job.getJid(),
@@ -190,11 +144,7 @@ public class RecurringJobTest extends IntegrationTest {
 
   @Test
   public void cancel() throws IOException {
-    final String jid = this.queue
-        .newRecurJobPutter()
-        .interval(60)
-        .build()
-        .recur(RecurringJobTest.DEFAULT_NAME);
+    final String jid = this.queue.recur(jobSpec().setInterval(60));
 
     final RecurringJob job = (RecurringJob) this.client.getJobs().get(jid);
 
@@ -204,11 +154,7 @@ public class RecurringJobTest extends IntegrationTest {
 
   @Test
   public void tagUntag() throws IOException {
-    final String jid = this.queue
-        .newRecurJobPutter()
-        .interval(60)
-        .build()
-        .recur(RecurringJobTest.DEFAULT_NAME);
+    final String jid = this.queue.recur(jobSpec().setInterval(60));
 
     this.client.getJobs().get(jid).tag(RecurringJobTest.DEFAULT_NAME);
     assertThat(this.client.getJobs().get(jid).getTags(),
