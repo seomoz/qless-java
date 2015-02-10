@@ -66,7 +66,7 @@ public class JobSpec {
     return this;
   }
 
-  public Integer getPriority() {
+  public int getPriority() {
     return priority;
   }
 
@@ -75,7 +75,7 @@ public class JobSpec {
     return this;
   }
 
-  public Integer getRetries() {
+  public int getRetries() {
     return retries;
   }
 
@@ -84,7 +84,7 @@ public class JobSpec {
     return this;
   }
 
-  public Integer getDelay() {
+  public int getDelay() {
     return delay;
   }
 
@@ -93,7 +93,7 @@ public class JobSpec {
     return this;
   }
 
-  public Integer getInterval() {
+  public int getInterval() {
     return interval;
   }
 
@@ -102,7 +102,7 @@ public class JobSpec {
     return this;
   }
 
-  public Integer getBacklog() {
+  public int getBacklog() {
     return backlog;
   }
 
