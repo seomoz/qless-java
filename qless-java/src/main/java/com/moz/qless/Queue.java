@@ -193,18 +193,18 @@ public final class Queue {
         LuaCommand.PUT,
         this.client.workerName(),
         this.name,
-        jobSpec.jid,
-        jobSpec.klass,
-        JsonUtils.stringify(jobSpec.data),
-        jobSpec.delay,
+        jobSpec.getJid(),
+        jobSpec.getKlass(),
+        JsonUtils.stringify(jobSpec.getData()),
+        jobSpec.getDelay(),
         "priority",
-        jobSpec.priority,
+        jobSpec.getPriority(),
         "tags",
-        JsonUtils.stringify(jobSpec.tags),
+        JsonUtils.stringify(jobSpec.getTags()),
         "retries",
-        jobSpec.retries,
+        jobSpec.getRetries(),
         "depends",
-        JsonUtils.stringify(jobSpec.depends));
+        JsonUtils.stringify(jobSpec.getDepends()));
 
     return result.toString();
   }
@@ -213,20 +213,20 @@ public final class Queue {
     final Object result = this.client.call(
         LuaCommand.RECUR,
         this.name,
-        jobSpec.jid,
-        jobSpec.klass,
-        JsonUtils.stringify(jobSpec.data),
+        jobSpec.getJid(),
+        jobSpec.getKlass(),
+        JsonUtils.stringify(jobSpec.getData()),
         LuaConfigParameter.INTERVAL,
-        jobSpec.interval,
-        jobSpec.delay,
+        jobSpec.getInterval(),
+        jobSpec.getDelay(),
         LuaConfigParameter.PRIORITY,
-        jobSpec.priority,
+        jobSpec.getPriority(),
         LuaConfigParameter.TAGS,
-        JsonUtils.stringify(jobSpec.tags),
+        JsonUtils.stringify(jobSpec.getTags()),
         LuaConfigParameter.RETRIES,
-        jobSpec.retries,
+        jobSpec.getRetries(),
         LuaConfigParameter.BACKLOG,
-        jobSpec.backlog);
+        jobSpec.getBacklog());
 
     return result.toString();
   }

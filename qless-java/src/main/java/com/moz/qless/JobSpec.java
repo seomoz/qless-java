@@ -10,16 +10,16 @@ import com.moz.qless.client.ClientHelper;
 
 public class JobSpec {
 
-  protected String klass;
-  protected Map<String, Object> data = new HashMap<>();
-  protected String jid = ClientHelper.generateJid();
-  protected int priority = ClientHelper.DEFAULT_PRIORITY;
-  protected int delay = ClientHelper.DEFAULT_DELAY;
-  protected int retries = ClientHelper.DEFAULT_RETRIES;
-  protected int interval = ClientHelper.DEFAULT_INTERVAL;
-  protected int backlog = ClientHelper.DEFAULT_BACKLOG;
-  protected List<String> depends = new ArrayList<>();
-  protected List<String> tags = new ArrayList<>();
+  private String klass;
+  private Map<String, Object> data = new HashMap<>();
+  private String jid = ClientHelper.generateJid();
+  private int priority = ClientHelper.DEFAULT_PRIORITY;
+  private int delay = ClientHelper.DEFAULT_DELAY;
+  private int retries = ClientHelper.DEFAULT_RETRIES;
+  private int interval = ClientHelper.DEFAULT_INTERVAL;
+  private int backlog = ClientHelper.DEFAULT_BACKLOG;
+  private List<String> depends = new ArrayList<>();
+  private List<String> tags = new ArrayList<>();
 
   public static JobSpec create() {
     return new JobSpec();
@@ -66,7 +66,7 @@ public class JobSpec {
     return this;
   }
 
-  public Integer getPriority() {
+  public int getPriority() {
     return priority;
   }
 
@@ -75,7 +75,7 @@ public class JobSpec {
     return this;
   }
 
-  public Integer getRetries() {
+  public int getRetries() {
     return retries;
   }
 
@@ -84,7 +84,7 @@ public class JobSpec {
     return this;
   }
 
-  public Integer getDelay() {
+  public int getDelay() {
     return delay;
   }
 
@@ -93,7 +93,7 @@ public class JobSpec {
     return this;
   }
 
-  public Integer getInterval() {
+  public int getInterval() {
     return interval;
   }
 
@@ -102,7 +102,7 @@ public class JobSpec {
     return this;
   }
 
-  public Integer getBacklog() {
+  public int getBacklog() {
     return backlog;
   }
 
