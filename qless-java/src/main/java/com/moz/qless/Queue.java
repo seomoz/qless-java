@@ -30,6 +30,10 @@ public final class Queue {
     this.name = name;
   }
 
+  public Client getClient() {
+    return client;
+  }
+
   public QueueCounts getCounts() throws IOException {
     final Object result = this.client.call(
         LuaCommand.QUEUES,
