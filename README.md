@@ -1,4 +1,4 @@
-qless-java
+qless-java [![Build Status](https://travis-ci.org/seomoz/qless-java.svg?branch=master)](https://travis-ci.org/seomoz/qless-java)
 ==========
 Java bindings for qless.
 
