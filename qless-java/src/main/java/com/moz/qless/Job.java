@@ -98,6 +98,10 @@ public class Job {
     this.client = client;
   }
 
+  public Client getClient() {
+    return client;
+  }
+
   public void cancel() throws IOException {
     this.client.call(
         LuaCommand.CANCEL,
