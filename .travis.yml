@@ -3,7 +3,7 @@ services:
   - redis-server
 before_install:
   - git submodule update --init --recursive
-  - make -C qless-java/src/qless-core/
+  - make -C src/qless-core/
 script: cd qless-java/
 script: mvn clean test
 script: cd bin/target/
