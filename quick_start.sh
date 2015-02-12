@@ -2,6 +2,6 @@
 
 git submodule update --init --recursive
 
-make -C qless-java/src/qless-core
+make -C src/qless-core
 
 mvn clean test

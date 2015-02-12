@@ -18,7 +18,7 @@ sudo apt-get install -y autoconf bison build-essential git g++ libssl-dev libyam
 (
     cd /vagrant
     git submodule update --init --recursive
-    make -C qless-java/src/qless-core
+    make -C src/qless-core
 )
 
 # For deploying
