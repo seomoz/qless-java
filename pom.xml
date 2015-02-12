@@ -8,7 +8,7 @@
   <packaging>pom</packaging>
 
   <name>${project.groupId}:${project.artifactId}</name>
-  <description>A parent to both qless-java and qless-worker</description>
+  <description>A parent to qless-java</description>
   <url>http://github.com/seomoz/qless-java</url>
 
   <licenses>
@@ -42,7 +42,6 @@
 
   <modules>
     <module>qless-java</module>
-    <module>qless-worker</module>
   </modules>
 
   <distributionManagement>
