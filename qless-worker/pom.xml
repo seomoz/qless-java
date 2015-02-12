@@ -6,7 +6,7 @@
   <parent>
     <groupId>com.moz.qless</groupId>
     <artifactId>qless-parent</artifactId>
-    <version>0.0.1-rc1</version>
+    <version>0.0.1-rc2</version>
   </parent>
   
   <artifactId>qless-worker</artifactId>
