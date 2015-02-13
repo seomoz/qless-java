@@ -34,6 +34,13 @@
       <organization>Moz</organization>
       <organizationUrl>http://moz.com</organizationUrl>
     </developer>
+
+    <developer>
+      <name>Brandon Forehand</name>
+      <email>brandon@moz.com</email>
+      <organization>Moz</organization>
+      <organizationUrl>http://moz.com</organizationUrl>
+    </developer>
   </developers>
 
   <scm>

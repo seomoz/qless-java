@@ -1,3 +1,4 @@
+*~
 .DS_Store
 .dump.rdb
 .vagrant
@@ -7,7 +8,7 @@ settings.xml
 settings-security.xml
 .gnupg
 
-#maven 
+#maven
 target/
 pom.xml.tag
 pom.xml.releaseBackup
