@@ -12,12 +12,6 @@ To depend on this:
   <artifactId>qless-java</artifactId>
   <version><VERSION></version>
 </dependency>
-
-<dependency>
-  <groupId>com.moz.qless</groupId>
-  <artifactId>qless-worker</artifactId>
-  <version><VERSION></version>
-</dependency>
 ```
 
 Development
