@@ -44,7 +44,7 @@ public class Client {
   private final LuaScript luaScript;
   private final Queues queues;
 
-  private static final List<String> KEYS_LIST = new ArrayList<String>();
+  private static final List<String> KEYS_LIST = new ArrayList<>();
 
   public Client() {
     this(new JedisPool(ClientHelper.DEFAULT_HOSTNAME));
@@ -64,7 +64,7 @@ public class Client {
   }
 
   public Object call(final String command, final List<Object> args) throws IOException {
-    final List<String> argsList = new ArrayList<String>();
+    final List<String> argsList = new ArrayList<>();
     argsList.add(command);
     argsList.add(ClientHelper.getCurrentSeconds());
 
