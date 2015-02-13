@@ -70,7 +70,8 @@ public class Client {
 
     for (final Object arg : args) {
       if (arg instanceof List) {
-        for (final Object subArg : (List<Object>) arg) {
+        final List<?> subArgs = (List<?>) arg;
+        for (final Object subArg : subArgs) {
           argsList.add(subArg.toString());
         }
       } else {

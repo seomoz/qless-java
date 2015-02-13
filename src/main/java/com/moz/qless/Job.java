@@ -164,8 +164,7 @@ public class Job {
       args.add(jid);
     }
 
-    final String[] array = new String[args.size()];
-    args.toArray(array);
+    final Object[] array = args.toArray(new String[args.size()]);
 
     this.client.call(
         LuaCommand.DEPENDS,
@@ -487,8 +486,7 @@ public class Job {
 
     Collections.addAll(args, jids);
 
-    final String[] array = new String[args.size()];
-    args.toArray(array);
+    final Object[] array = args.toArray(new String[args.size()]);
 
     this.client.call(
         LuaCommand.DEPENDS,
