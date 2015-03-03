@@ -46,6 +46,10 @@ public final class Queue {
     return this.name + "-" + LuaConfigParameter.HEARTBEAT;
   }
 
+  private String getMaxConcurrencyConfigName() {
+    return this.name + "-" + LuaConfigParameter.MAX_CONCURRENCY;
+  }
+
   public int getHeartbeat() throws IOException {
     Object heartbeat = this.client.getConfig()
         .get(this.getHeartbeatConfigName());
@@ -57,10 +61,13 @@ public final class Queue {
     return Integer.parseInt(heartbeat.toString());
   }
 
+  /**
+   * Returns the max concurrency for the queue, or -1 if there is none.
+   */
   public int getMaxConcurrency() throws IOException {
-    return Integer.parseInt(
-        this.client.getConfig().get(LuaConfigParameter.MAX_CONCURRENCY)
-        .toString());
+    final String concurrency =
+      (String) this.client.getConfig().get(getMaxConcurrencyConfigName());
+    return concurrency == null ? -1 : Integer.parseInt(concurrency);
   }
 
   public String getName() {
@@ -180,10 +187,15 @@ public final class Queue {
         heartbeat);
   }
 
+  /**
+   * Setting to a negative number removes any max concurrency restriction.
+   */
   public void setMaxConcurrency(final int maxConcurrency) throws IOException {
-    this.client.getConfig().put(
-        LuaConfigParameter.MAX_CONCURRENCY,
-        maxConcurrency);
+    if (maxConcurrency < 0) {
+      this.client.getConfig().pop(getMaxConcurrencyConfigName());
+    } else {
+      this.client.getConfig().put(getMaxConcurrencyConfigName(), maxConcurrency);
+    }
   }
 
   public void unpause() throws IOException {
