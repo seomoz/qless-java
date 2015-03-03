@@ -183,4 +183,31 @@ public class QueueTest extends IntegrationTest {
     assertThat(this.queue.length(),
         equalTo(1));
   }
+
+  @Test
+  public void setMaxConcurrency() throws IOException {
+    this.queue.setMaxConcurrency(10);
+    assertThat(
+      Integer.parseInt(
+        (String) this.client.getConfig().get(this.queue.getName() + "-max-concurrency")),
+      equalTo(10));
+  }
+
+  @Test
+  public void getMaxConcurrency() throws IOException {
+    this.client.getConfig().put(this.queue.getName() + "-max-concurrency", 10);
+    assertThat(this.queue.getMaxConcurrency(), equalTo(10));
+  }
+
+  @Test
+  public void getMaxConcurrencyNotSet() throws IOException {
+    assertThat(this.queue.getMaxConcurrency(), equalTo(-1));
+  }
+
+  @Test
+  public void unsetMaxConcurrency() throws IOException {
+    this.queue.setMaxConcurrency(10);
+    this.queue.setMaxConcurrency(-1);
+    assertThat(this.queue.getMaxConcurrency(), equalTo(-1));
+  }
 }
