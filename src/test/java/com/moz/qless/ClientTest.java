@@ -64,4 +64,9 @@ public class ClientTest extends IntegrationTest {
     assertThat(this.client.getJobs().get(jid).getState(),
         equalTo(LuaJobStatus.WAITING.toString()));
   }
+
+  @Test
+  public void redisUrlBasic() throws IOException {
+    new Client("redis://localhost:6379/");
+  }
 }
