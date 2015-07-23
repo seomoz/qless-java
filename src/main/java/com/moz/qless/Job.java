@@ -143,13 +143,20 @@ public class Job {
     }
   }
 
-  @SuppressWarnings("unchecked")
-  public <T> T getDataField(final String key) {
-    return (T) this.data.get(key);
+  public <T> T getDataField(final String key, final T defaultValue) {
+    final T value = this.<T>getDataField(key);
+    if (value == null) {
+      return defaultValue;
+    }
+    return value;
+  }
+
+  public <T> T getDataField(final Class<T> clazz, final String key) {
+    return this.<T>getDataField(key);
   }
 
   @SuppressWarnings("unchecked")
-  public <T> T getDataField(final Class<T> clazz, final String key) {
+  public <T> T getDataField(final String key) {
     return (T) this.data.get(key);
   }
 
