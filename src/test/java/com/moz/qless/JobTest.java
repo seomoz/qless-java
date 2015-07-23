@@ -118,6 +118,8 @@ public class JobTest extends IntegrationTest {
         equalTo(value));
     assertThat(this.client.getJobs().get(jid).getDataField(String.class, key),
         equalTo(value));
+    assertThat(this.client.getJobs().get(jid).getDataField("unknown", "DEFAULT"),
+        equalTo("DEFAULT"));
   }
 
   @Test
