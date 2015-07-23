@@ -28,5 +28,8 @@ echo '\
     eval $(gpg-agent --daemon --no-grab --write-env-file $HOME/.gpg-agent-info) \
     export GPG_TTY=$(tty) \
     export GPG_AGENT_INFO' >> ~/.bash_profile
+mkdir -p /home/vagrant/.m2
 ln -s /vagrant/settings-security.xml /home/vagrant/.m2/settings-security.xml
 ln -s /vagrant/settings.xml /home/vagrant/.m2/settings.xml
+mkdir -p /vagrant/.m2/repository
+ln -s /vagrant/.m2/repository /home/vagrant/.m2/repository
