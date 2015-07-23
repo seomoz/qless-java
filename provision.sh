@@ -10,9 +10,9 @@ sudo apt-get install -y oracle-java7-installer
 
 # Some dependencies
 sudo apt-get update
-sudo apt-get install -y autoconf bison build-essential git g++ libssl-dev libyaml-dev \
-    libreadline6-dev zlib1g-dev libncurses5-dev redis-server fontconfig libxml2-dev \
-    libxslt-dev maven
+sudo apt-get install -y autoconf bison build-essential git g++ gnupg-agent \
+    libssl-dev libyaml-dev libreadline6-dev zlib1g-dev libncurses5-dev \
+    redis-server fontconfig libxml2-dev libxslt-dev maven
 
 # Build qless-core
 (
