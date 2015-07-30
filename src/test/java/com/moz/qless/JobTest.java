@@ -310,6 +310,23 @@ public class JobTest extends IntegrationTest {
   }
 
   @Test
+  public void runJobThatFails() throws IOException {
+    final Queue queue = new Queue(this.client, "testAlwaysFails");
+    final String jid = queue.put(
+      jobSpec(DEFAULT_JOB_CLASS_NAME));
+
+    queue.pop().process();
+
+    final Job job = this.client.getJobs().get(jid);
+    assertThat(job.getState(), equalTo(JobStatus.FAILED.toString()));
+    assertThat(
+      job.getFailure(),
+      hasEntry(
+        "group",
+        (Object) "testAlwaysFails-java.lang.UnsupportedOperationException"));
+  }
+
+  @Test
   public void history() throws IOException {
     final String jid = this.queue.put(jobSpec());
 
