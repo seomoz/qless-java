@@ -261,7 +261,9 @@ public class JobTest extends IntegrationTest {
     final Queue queue = this.client.getQueue("testMessagelessException");
     final String jid = queue.put(jobSpec("com.moz.qless.IntegrationTestJob"));
     queue.pop().process();
-    assertThat(this.client.getJobs().get(jid).getState(), equalTo("failed"));
+    assertThat(
+      this.client.getJobs().get(jid).getState(),
+      equalTo(JobStatus.FAILED.toString()));
   }
 
   @Test
@@ -281,7 +283,9 @@ public class JobTest extends IntegrationTest {
     final String jid = this.queue.put(jobSpec());
 
     this.queue.pop().process();
-    assertThat(this.client.getJobs().get(jid).getState(), equalTo("failed"));
+    assertThat(
+      this.client.getJobs().get(jid).getState(),
+      equalTo(JobStatus.FAILED.toString()));
   }
 
   @Test
@@ -290,8 +294,9 @@ public class JobTest extends IntegrationTest {
     queue.put(jobSpec("com.moz.qless.IntegrationTestJob"));
 
     queue.pop().process();
-    assertThat(IntegrationTestJob.runningHistory,
-        contains("com.moz.qless.IntegrationTestJob." + ClientHelper.DEFAULT_JOB_METHOD));
+    assertThat(
+      IntegrationTestJob.runningHistory,
+      contains("com.moz.qless.IntegrationTestJob." + ClientHelper.DEFAULT_JOB_METHOD));
   }
 
   public void runJobMissingMethod() throws IOException {
@@ -299,7 +304,9 @@ public class JobTest extends IntegrationTest {
     final String jid = queue.put(jobSpec("com.moz.qless.EmptyJob"));
 
     queue.pop().process();
-    assertThat(this.client.getJobs().get(jid).getState(), equalTo("failed"));
+    assertThat(
+      this.client.getJobs().get(jid).getState(),
+      equalTo(JobStatus.FAILED.toString()));
   }
 
   @Test
