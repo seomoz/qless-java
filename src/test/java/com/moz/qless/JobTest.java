@@ -88,10 +88,10 @@ public class JobTest extends IntegrationTest {
 
   @Test
   public void repr() throws IOException {
-      final String jid = this.queue.put(jobSpec());
+    final String jid = this.queue.put(jobSpec());
 
-      final String str = this.client.getJobs().get(jid).toString();
-      Assert.assertTrue(str.contains("foo (" + jid + " / foo / waiting)"));
+    final String str = this.client.getJobs().get(jid).toString();
+    Assert.assertTrue(str.contains("foo (" + jid + " / foo / waiting)"));
   }
 
   @Test
@@ -305,21 +305,21 @@ public class JobTest extends IntegrationTest {
 
   @Test
   public void history() throws IOException {
-      final String jid = this.queue.put(jobSpec());
+    final String jid = this.queue.put(jobSpec());
 
-      this.client.getJobs().get(jid).log("log1");
+    this.client.getJobs().get(jid).log("log1");
 
-      final Map<String, Object> data = new HashMap<>();
-      data.put("key", "value");
-      this.client.getJobs().get(jid).log("log2", data);
+    final Map<String, Object> data = new HashMap<>();
+    data.put("key", "value");
+    this.client.getJobs().get(jid).log("log2", data);
 
-      final List<Job.LogHistory> history =
-          this.client.getJobs().get(jid).getHistory();
+    final List<Job.LogHistory> history =
+      this.client.getJobs().get(jid).getHistory();
 
-      assertThat(history, hasSize(3));
-      assertThat(history.get(1).what().toString(),
-          equalTo("log1"));
-      assertThat(history.get(2).get("key").toString(),
-          equalTo("value"));
+    assertThat(history, hasSize(3));
+    assertThat(history.get(1).what().toString(),
+      equalTo("log1"));
+    assertThat(history.get(2).get("key").toString(),
+      equalTo("value"));
   }
 }
