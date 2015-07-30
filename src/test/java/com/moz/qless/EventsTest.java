@@ -13,7 +13,6 @@ import com.google.common.collect.Multimap;
 
 import com.moz.qless.event.QlessEventListener;
 import com.moz.qless.lua.LuaConfigParameter;
-import com.moz.qless.lua.LuaJobStatus;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -58,7 +57,7 @@ public class EventsTest extends IntegrationTest {
 
     this.client
       .getEvents()
-      .on(LuaJobStatus.CANCELED.toString())
+      .on(JobStatus.CANCELED.toString())
       .fire(eventCapture);
 
     this.tracked.cancel();
@@ -66,9 +65,9 @@ public class EventsTest extends IntegrationTest {
 
     Thread.sleep(100);
 
-    assertThat(eventCapture.jidsForEvent(LuaJobStatus.CANCELED.toString()),
+    assertThat(eventCapture.jidsForEvent(JobStatus.CANCELED.toString()),
       hasSize(1));
-    assertThat(eventCapture.jidsForEvent(LuaJobStatus.CANCELED.toString()),
+    assertThat(eventCapture.jidsForEvent(JobStatus.CANCELED.toString()),
       contains(this.tracked.getJid()));
   }
 
@@ -78,7 +77,7 @@ public class EventsTest extends IntegrationTest {
 
     this.client
       .getEvents()
-      .on(LuaJobStatus.COMPLETED.toString())
+      .on(JobStatus.COMPLETED.toString())
       .fire(eventCapture);
 
     for (final Job job : this.queue.pop(10)) {
@@ -87,9 +86,9 @@ public class EventsTest extends IntegrationTest {
 
     Thread.sleep(100);
 
-    assertThat(eventCapture.jidsForEvent(LuaJobStatus.COMPLETED.toString()),
+    assertThat(eventCapture.jidsForEvent(JobStatus.COMPLETED.toString()),
       hasSize(1));
-    assertThat(eventCapture.jidsForEvent(LuaJobStatus.COMPLETED.toString()),
+    assertThat(eventCapture.jidsForEvent(JobStatus.COMPLETED.toString()),
       contains(this.tracked.getJid()));
   }
 
@@ -99,7 +98,7 @@ public class EventsTest extends IntegrationTest {
 
     this.client
       .getEvents()
-      .on(LuaJobStatus.FAILED.toString())
+      .on(JobStatus.FAILED.toString())
       .fire(eventCapture);
 
     for (final Job job : this.queue.pop(10)) {
@@ -108,9 +107,9 @@ public class EventsTest extends IntegrationTest {
 
     Thread.sleep(100);
 
-    assertThat(eventCapture.jidsForEvent(LuaJobStatus.FAILED.toString()),
+    assertThat(eventCapture.jidsForEvent(JobStatus.FAILED.toString()),
       hasSize(1));
-    assertThat(eventCapture.jidsForEvent(LuaJobStatus.FAILED.toString()),
+    assertThat(eventCapture.jidsForEvent(JobStatus.FAILED.toString()),
       contains(this.tracked.getJid()));
   }
 
@@ -120,16 +119,16 @@ public class EventsTest extends IntegrationTest {
 
     this.client
       .getEvents()
-      .on(LuaJobStatus.POPPED.toString())
+      .on(JobStatus.POPPED.toString())
       .fire(eventCapture);
 
     this.queue.pop(10);
 
     Thread.sleep(100);
 
-    assertThat(eventCapture.jidsForEvent(LuaJobStatus.POPPED.toString()),
+    assertThat(eventCapture.jidsForEvent(JobStatus.POPPED.toString()),
       hasSize(1));
-    assertThat(eventCapture.jidsForEvent(LuaJobStatus.POPPED.toString()),
+    assertThat(eventCapture.jidsForEvent(JobStatus.POPPED.toString()),
       contains(this.tracked.getJid()));
   }
 
@@ -139,7 +138,7 @@ public class EventsTest extends IntegrationTest {
 
     this.client
       .getEvents()
-      .on(LuaJobStatus.PUT.toString())
+      .on(JobStatus.PUT.toString())
       .fire(eventCapture);
 
     this.tracked.requeue("other");
@@ -147,9 +146,9 @@ public class EventsTest extends IntegrationTest {
 
     Thread.sleep(100);
 
-    assertThat(eventCapture.jidsForEvent(LuaJobStatus.PUT.toString()),
+    assertThat(eventCapture.jidsForEvent(JobStatus.PUT.toString()),
       hasSize(1));
-    assertThat(eventCapture.jidsForEvent(LuaJobStatus.PUT.toString()),
+    assertThat(eventCapture.jidsForEvent(JobStatus.PUT.toString()),
       contains(this.tracked.getJid()));
   }
 
@@ -166,7 +165,7 @@ public class EventsTest extends IntegrationTest {
 
     this.client
       .getEvents()
-      .on(LuaJobStatus.STALLED.toString())
+      .on(JobStatus.STALLED.toString())
       .fire(eventCapture);
 
     this.queue.pop(2);
@@ -174,9 +173,9 @@ public class EventsTest extends IntegrationTest {
 
     Thread.sleep(100);
 
-    assertThat(eventCapture.jidsForEvent(LuaJobStatus.STALLED.toString()),
+    assertThat(eventCapture.jidsForEvent(JobStatus.STALLED.toString()),
       hasSize(1));
-    assertThat(eventCapture.jidsForEvent(LuaJobStatus.STALLED.toString()),
+    assertThat(eventCapture.jidsForEvent(JobStatus.STALLED.toString()),
       contains(this.tracked.getJid()));
   }
 

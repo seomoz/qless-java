@@ -10,7 +10,6 @@ import static org.hamcrest.Matchers.*;
 
 import com.moz.qless.client.ClientHelper;
 import com.moz.qless.lua.LuaConfigParameter;
-import com.moz.qless.lua.LuaJobStatus;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -171,7 +170,7 @@ public class JobTest extends IntegrationTest {
     this.queue.pop().complete();
 
     assertThat(this.client.getJobs().get(jid).getState(),
-        equalTo(LuaJobStatus.COMPLETE.toString()));
+        equalTo(JobStatus.COMPLETE.toString()));
   }
 
   @Test
@@ -183,7 +182,7 @@ public class JobTest extends IntegrationTest {
     assertThat(this.client.getJobs().get(jid).getQueueName(),
         equalTo("q2"));
     assertThat(this.client.getJobs().get(jid).getState(),
-        equalTo(LuaJobStatus.WAITING.toString()));
+        equalTo(JobStatus.WAITING.toString()));
   }
 
   @Test

@@ -1,6 +1,6 @@
-package com.moz.qless.lua;
+package com.moz.qless;
 
-public enum LuaJobStatus {
+public enum JobStatus {
   CANCELED("canceled"),
   COMPLETE("complete"),
   COMPLETED("completed"),
@@ -19,7 +19,7 @@ public enum LuaJobStatus {
 
   private final String status;
 
-  private LuaJobStatus(final String status) {
+  private JobStatus(final String status) {
     this.status = status;
   }
 
