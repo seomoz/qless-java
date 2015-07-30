@@ -5,3 +5,6 @@ services:
 before_install:
   - git submodule update --init --recursive
   - make -C src/qless-core/
+cache:
+  directories:
+    - $HOME/.m2
