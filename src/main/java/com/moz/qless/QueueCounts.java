@@ -31,7 +31,7 @@ public class QueueCounts {
   protected int scheduled;
 
   public String getName() {
-      return this.name;
+    return this.name;
   }
 
   public boolean getPaused() {
@@ -64,15 +64,16 @@ public class QueueCounts {
 
   @Override
   public String toString() {
-      return Objects.toStringHelper(this)
-              .add("name", this.name)
-              .add(LuaJobStatus.PAUSED.toString(), this.paused)
-              .add(LuaJobStatus.RUNNING.toString(), this.running)
-              .add(LuaJobStatus.WAITING.toString(), this.waiting)
-              .add(LuaJobStatus.RECURRING.toString(), this.recurring)
-              .add(LuaJobStatus.DEPENDS.toString(), this.depends)
-              .add(LuaJobStatus.STALLED.toString(), this.stalled)
-              .add(LuaJobStatus.SCHEDULED.toString(), this.scheduled)
-              .toString();
+    return Objects
+      .toStringHelper(this)
+      .add("name", this.name)
+      .add(LuaJobStatus.PAUSED.toString(), this.paused)
+      .add(LuaJobStatus.RUNNING.toString(), this.running)
+      .add(LuaJobStatus.WAITING.toString(), this.waiting)
+      .add(LuaJobStatus.RECURRING.toString(), this.recurring)
+      .add(LuaJobStatus.DEPENDS.toString(), this.depends)
+      .add(LuaJobStatus.STALLED.toString(), this.stalled)
+      .add(LuaJobStatus.SCHEDULED.toString(), this.scheduled)
+      .toString();
   }
 }
