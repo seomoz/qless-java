@@ -178,14 +178,30 @@ public class Job {
         array);
   }
 
-  public void fail(final String group, final String message) throws IOException {
-    this.client.call(
+  public void fail(final String group, final String message) {
+    try {
+      this.client.call(
         LuaCommand.FAIL,
         this.jid,
         this.client.workerName(),
         group,
         message,
         JsonUtils.stringify(this.data));
+    } catch (final IOException ex) {
+      throw new QlessException(ex);
+    }
+  }
+
+  public void fail(final Throwable cause, final String message) {
+    this.fail(this.queueName + "-" + cause.getClass().getName(), message);
+  }
+
+  public void fail(final Throwable cause) {
+    /* Extract the stack trace. */
+    final StringWriter sw = new StringWriter();
+    final PrintWriter pw = new PrintWriter(sw);
+    cause.printStackTrace(pw);
+    this.fail(cause, sw.toString());
   }
 
   public Object failure(final String group) {
@@ -338,12 +354,7 @@ public class Job {
     try {
       cls = this.getKlass();
     } catch (final ClassNotFoundException e) {
-      try {
-        this.fail(this.queueName + "-" + e.getClass().getName(),
-          "Failed to import " + this.klass);
-      } catch (final IOException ex) {
-        throw new QlessException(ex);
-      }
+      this.fail(e, "Failed to import " + this.klass);
       return;
     }
 
@@ -354,8 +365,7 @@ public class Job {
       try {
         method = cls.getMethod(ClientHelper.DEFAULT_JOB_METHOD, Job.class);
       } catch (NoSuchMethodException | SecurityException ex) {
-        this.fail(this.queueName + "-" + e.getClass().getName(),
-          "Method missing: " + this.klass + ":" + this.queueName);
+        this.fail(ex, "Method missing: " + this.klass + ":" + this.queueName);
         return;
       }
     }
@@ -366,18 +376,11 @@ public class Job {
       } else {
         method.invoke(cls.newInstance(), this);
       }
+    } catch (InvocationTargetException ite) {
+      this.fail(ite.getCause());
     } catch (IllegalAccessException | IllegalArgumentException
-        | InvocationTargetException | InstantiationException e) {
-      try {
-        /* Extract the stack trace. */
-        final StringWriter sw = new StringWriter();
-        final PrintWriter pw = new PrintWriter(sw);
-        e.printStackTrace(pw);
-        this.fail(this.queueName + "-" + e.getClass().getName(),
-          sw.toString());
-      } catch (final IOException ex) {
-        throw new QlessException(ex);
-      }
+      | InstantiationException e) {
+      this.fail(e);
     }
   }
 

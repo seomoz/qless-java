@@ -259,7 +259,7 @@ public class JobTest extends IntegrationTest {
   @Test
   public void failWithoutErrorMessage() throws IOException {
     final Queue queue = this.client.getQueue("testMessagelessException");
-    final String jid = queue.put(jobSpec("com.moz.qless.IntegrationTestJob"));
+    final String jid = queue.put(jobSpec(DEFAULT_JOB_CLASS_NAME));
     queue.pop().process();
     assertThat(
       this.client.getJobs().get(jid).getState(),
@@ -270,7 +270,7 @@ public class JobTest extends IntegrationTest {
   public void runJobBasic() throws IOException {
     final Queue queue = new Queue(this.client, "test");
 
-    queue.put(jobSpec("com.moz.qless.IntegrationTestJob"));
+    queue.put(jobSpec(DEFAULT_JOB_CLASS_NAME));
 
     queue.pop().process();
 
@@ -291,12 +291,12 @@ public class JobTest extends IntegrationTest {
   @Test
   public void runJobDefaultMethod() throws IOException {
     final Queue queue = new Queue(this.client, "none");
-    queue.put(jobSpec("com.moz.qless.IntegrationTestJob"));
+    queue.put(jobSpec(DEFAULT_JOB_CLASS_NAME));
 
     queue.pop().process();
     assertThat(
       IntegrationTestJob.runningHistory,
-      contains("com.moz.qless.IntegrationTestJob." + ClientHelper.DEFAULT_JOB_METHOD));
+      contains(DEFAULT_JOB_CLASS_NAME + "." + ClientHelper.DEFAULT_JOB_METHOD));
   }
 
   public void runJobMissingMethod() throws IOException {
@@ -307,6 +307,23 @@ public class JobTest extends IntegrationTest {
     assertThat(
       this.client.getJobs().get(jid).getState(),
       equalTo(JobStatus.FAILED.toString()));
+  }
+
+  @Test
+  public void runJobThatFails() throws IOException {
+    final Queue queue = new Queue(this.client, "testAlwaysFails");
+    final String jid = queue.put(
+      jobSpec(DEFAULT_JOB_CLASS_NAME));
+
+    queue.pop().process();
+
+    final Job job = this.client.getJobs().get(jid);
+    assertThat(job.getState(), equalTo(JobStatus.FAILED.toString()));
+    assertThat(
+      job.getFailure(),
+      hasEntry(
+        "group",
+        (Object) "testAlwaysFails-java.lang.UnsupportedOperationException"));
   }
 
   @Test

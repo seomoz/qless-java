@@ -14,6 +14,8 @@ public class IntegrationTest {
   protected Client client;
   protected Queue queue;
   protected static final String DEFAULT_NAME = "foo";
+  protected static final String DEFAULT_JOB_CLASS_NAME =
+    IntegrationTestJob.class.getName();
 
   @Before
   public void setupQueues() throws IOException {

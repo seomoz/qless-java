@@ -51,4 +51,8 @@ public class IntegrationTestJob {
   public static void testMessagelessException(final Job job) {
     throw new RuntimeException();
   }
+
+  public static void testAlwaysFails(final Job job) {
+    throw new UnsupportedOperationException("This always fails");
+  }
 }
