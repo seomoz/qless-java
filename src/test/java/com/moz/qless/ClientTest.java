@@ -5,8 +5,6 @@ import java.io.IOException;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-import com.moz.qless.lua.LuaJobStatus;
-
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -57,12 +55,12 @@ public class ClientTest extends IntegrationTest {
     this.queue.pop().fail(ClientTest.DEFAULT_NAME, ClientTest.DEFAULT_NAME);
 
     assertThat(this.client.getJobs().get(jid).getState(),
-        equalTo(LuaJobStatus.FAILED.toString()));
+        equalTo(JobStatus.FAILED.toString()));
 
     this.client.unfail(ClientTest.DEFAULT_NAME, ClientTest.DEFAULT_NAME);
 
     assertThat(this.client.getJobs().get(jid).getState(),
-        equalTo(LuaJobStatus.WAITING.toString()));
+        equalTo(JobStatus.WAITING.toString()));
   }
 
   @Test
