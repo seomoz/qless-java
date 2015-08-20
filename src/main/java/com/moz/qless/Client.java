@@ -70,6 +70,7 @@ public class Client implements AutoCloseable {
 
   @Override
   public void close() throws IOException {
+    this.events.close();
     this.jedisPool.close();
   }
 

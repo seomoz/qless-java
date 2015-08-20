@@ -41,21 +41,23 @@ public class Events implements AutoCloseable {
     this.jedis = jedisPool.getResource();
 
     this.listenerThread = new EventThread(this);
-    this.listenerThread.setDaemon(true);
     this.listenerThread.start();
   }
 
   @Override
   public void close() throws IOException {
+    this.listener.unsubscribe();
+    try {
+      this.listenerThread.join();
+    } catch (InterruptedException e) {
+      // Restore the interrupted status
+      Thread.currentThread().interrupt();
+    }
     this.jedisPool.returnResource(jedis);
   }
 
   public void subscribe(final String... channels) {
     this.jedis.subscribe(this.listener, channels);
-  }
-
-  public void unsubscribe() {
-    this.listener.unsubscribe();
   }
 
   public Builder on(final String... events) {
