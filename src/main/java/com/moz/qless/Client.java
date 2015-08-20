@@ -54,6 +54,11 @@ public class Client implements AutoCloseable {
     this(new JedisPool(url));
   }
 
+  /**
+   * Note that this constructor assumes ownership of the passed in
+   * JedisPool, and it will be closed by the corresponding
+   * Client#close method.
+   */
   public Client(final JedisPool jedisPool) {
     this.jedisPool = jedisPool;
     this.luaScript = new LuaScript(this.jedisPool);
