@@ -26,32 +26,15 @@ public class Events implements AutoCloseable {
     "put",
     "stalled",
     "track",
-    "untrack" };
+    "untrack"
+  };
 
   private final JedisPool jedisPool;
-  public JedisPool getJedisPool() {
-    return this.jedisPool;
-  }
-
   private final Jedis jedis;
-
-  public Jedis getJedis() {
-    return this.jedis;
-  }
-
   private final EventListener listener = new EventListener(this);
-  public EventListener getListener() {
-    return this.listener;
-  }
-
   private final EventThread listenerThread;
-
   private final Multimap<String, QlessEventListener> listenersByChannel =
       ArrayListMultimap.create();
-
-  public Multimap<String, QlessEventListener> getListenersByChannel() {
-    return this.listenersByChannel;
-  }
 
   Events(final JedisPool jedisPool) {
     this.jedisPool = jedisPool;
@@ -64,11 +47,23 @@ public class Events implements AutoCloseable {
 
   @Override
   public void close() throws IOException {
-    this.listenerThread.cleanup();
+    this.jedisPool.returnResource(jedis);
+  }
+
+  public void subscribe(final String... channels) {
+    this.jedis.subscribe(this.listener, channels);
+  }
+
+  public void unsubscribe() {
+    this.listener.unsubscribe();
   }
 
   public Builder on(final String... events) {
     return new Builder(events);
+  }
+
+  public Multimap<String, QlessEventListener> getListenersByChannel() {
+    return this.listenersByChannel;
   }
 
   public class Builder {
