@@ -3,8 +3,6 @@ package com.moz.qless;
 import java.io.IOException;
 import java.util.Arrays;
 
-import com.moz.qless.workers.SerialWorker;
-
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;

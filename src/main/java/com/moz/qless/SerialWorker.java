@@ -1,4 +1,4 @@
-package com.moz.qless.workers;
+package com.moz.qless;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -7,11 +7,6 @@ import java.util.List;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-
-import com.moz.qless.Client;
-import com.moz.qless.Job;
-import com.moz.qless.QlessException;
-import com.moz.qless.Queue;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

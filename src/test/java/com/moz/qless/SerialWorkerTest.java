@@ -1,15 +1,10 @@
-package com.moz.qless.worker;
+package com.moz.qless;
 
 import java.io.IOException;
 import java.util.Arrays;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-
-import com.moz.qless.IntegrationTest;
-import com.moz.qless.IntegrationTestJob;
-import com.moz.qless.Queue;
-import com.moz.qless.workers.SerialWorker;
 
 import org.junit.Test;
 
