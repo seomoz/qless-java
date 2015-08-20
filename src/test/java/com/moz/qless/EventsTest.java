@@ -201,6 +201,6 @@ public class EventsTest extends IntegrationTest {
 
       return results;
     }
-  };
+  }
 
 }
