@@ -8,7 +8,7 @@ import java.util.UUID;
 public class ClientHelper {
   public static final String EMPTY_RESULT = "{}";
 
-  public static final String DEFAULT_HOSTNAME = "localhost";
+  public static final String DEFAULT_URI = "redis://";
   public static final String DEFAULT_APPLICATION = "qless";
   public static final Integer DEFAULT_BACKLOG = 0;
   public static final Integer DEFAULT_DELAY = 0;
@@ -37,7 +37,7 @@ public class ClientHelper {
     try {
       return InetAddress.getLocalHost().getHostName();
     } catch (final UnknownHostException e) {
-      return ClientHelper.DEFAULT_HOSTNAME;
+      return "localhost";
     }
   }
 
