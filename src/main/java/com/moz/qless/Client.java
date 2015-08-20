@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import redis.clients.jedis.JedisPool;
 
-public class Client {
+public class Client implements AutoCloseable {
   private static final Logger LOGGER = LoggerFactory.getLogger(Client.class);
 
   private final JedisPool jedisPool;
@@ -54,6 +54,11 @@ public class Client {
     this(new JedisPool(url));
   }
 
+  /**
+   * Note that this constructor assumes ownership of the passed in
+   * JedisPool, and it will be closed by the corresponding
+   * Client#close method.
+   */
   public Client(final JedisPool jedisPool) {
     this.jedisPool = jedisPool;
     this.luaScript = new LuaScript(this.jedisPool);
@@ -61,6 +66,11 @@ public class Client {
     this.events = new Events(this.jedisPool);
     this.jobs = new Jobs(this);
     this.queues = new Queues(this);
+  }
+
+  @Override
+  public void close() throws IOException {
+    this.jedisPool.close();
   }
 
   public Object call(final String command, final List<Object> args) throws IOException {

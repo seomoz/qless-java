@@ -28,17 +28,10 @@ public class EventThread extends Thread {
     final String[] channels = new String[channelList.size()];
     channelList.toArray(channels);
 
-    if (null != this.events.getJedis()) {
-      this.events.getJedis().subscribe(this.events.getListener(), channels);
-    }
+    this.events.subscribe(channels);
 
     EventThread.LOGGER.debug("Run loop ending");
-    this.cleanup();
-  }
 
-  public void cleanup() {
-    if (null != this.events.getJedis()) {
-      this.events.getJedisPool().returnResource(this.events.getJedis());
-    }
+    this.events.unsubscribe();
   }
 }
