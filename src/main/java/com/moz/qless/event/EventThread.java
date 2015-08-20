@@ -31,7 +31,5 @@ public class EventThread extends Thread {
     this.events.subscribe(channels);
 
     EventThread.LOGGER.debug("Run loop ending");
-
-    this.events.unsubscribe();
   }
 }
