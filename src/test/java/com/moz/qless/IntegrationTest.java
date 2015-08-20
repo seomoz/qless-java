@@ -33,11 +33,8 @@ public class IntegrationTest {
   }
 
   private Client create() {
-    final Jedis jedis = this.jedisPool.getResource();
-    try {
+    try (final Jedis jedis = this.jedisPool.getResource()) {
       jedis.flushDB();
-    } finally {
-      this.jedisPool.returnResource(jedis);
     }
 
     return new Client(this.jedisPool);

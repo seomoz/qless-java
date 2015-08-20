@@ -26,11 +26,8 @@ public class LuaScript {
 
   public Object call(final List<String> keys, final List<String> args)
       throws IOException {
-    final Jedis jedis = this.jedisPool.getResource();
-    try {
+    try (final Jedis jedis = this.jedisPool.getResource()) {
       return jedis.evalsha(this.calculateSha1(jedis), keys, args);
-    } finally {
-      this.jedisPool.returnResource(jedis);
     }
   }
 
