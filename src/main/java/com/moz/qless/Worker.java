@@ -3,8 +3,6 @@ package com.moz.qless;
 import java.io.IOException;
 import java.util.Arrays;
 
-import com.moz.qless.workers.SerialWorker;
-
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
@@ -12,7 +10,7 @@ import org.kohsuke.args4j.spi.StringArrayOptionHandler;
 
 import redis.clients.jedis.JedisPool;
 
-public class QlessJavaWorker {
+public class Worker {
   @Option(name = "-host", usage = "The url to connect to Redis")
   public String host = "localhost";
 
@@ -27,7 +25,7 @@ public class QlessJavaWorker {
   public String[] queues = null;
 
   public static void main(final String[] args) {
-    final QlessJavaWorker worker = new QlessJavaWorker();
+    final Worker worker = new Worker();
     final CmdLineParser parser = new CmdLineParser(worker);
 
     try {
