@@ -2,15 +2,13 @@ package com.moz.qless;
 
 import java.io.IOException;
 
-import com.moz.qless.client.ClientHelper;
-
 import org.junit.Before;
 
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
 public class IntegrationTest {
-  private final JedisPool jedisPool = new JedisPool(ClientHelper.DEFAULT_HOSTNAME);
+  private final JedisPool jedisPool = new JedisPool();
   protected Client client;
   protected Queue queue;
   protected static final String DEFAULT_NAME = "foo";
@@ -33,11 +31,8 @@ public class IntegrationTest {
   }
 
   private Client create() {
-    final Jedis jedis = this.jedisPool.getResource();
-    try {
+    try (final Jedis jedis = this.jedisPool.getResource()) {
       jedis.flushDB();
-    } finally {
-      this.jedisPool.returnResource(jedis);
     }
 
     return new Client(this.jedisPool);

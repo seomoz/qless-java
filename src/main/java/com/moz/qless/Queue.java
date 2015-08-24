@@ -94,8 +94,7 @@ public final class Queue {
   }
 
   public int length() throws IOException {
-    final Jedis jedis = this.client.getJedisPool().getResource();
-    try {
+    try (final Jedis jedis = this.client.getJedisPool().getResource()) {
       final Transaction transaction = jedis.multi();
       transaction.zcard("ql:q:" + this.name + "-locks");
       transaction.zcard("ql:q:" + this.name + "-work");
@@ -107,8 +106,6 @@ public final class Queue {
       }
 
       return length;
-    } finally {
-      this.client.getJedisPool().returnResource(jedis);
     }
   }
 

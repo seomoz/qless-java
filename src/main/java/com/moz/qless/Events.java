@@ -53,7 +53,7 @@ public class Events implements AutoCloseable {
       // Restore the interrupted status
       Thread.currentThread().interrupt();
     }
-    this.jedisPool.returnResource(jedis);
+    jedis.close();
   }
 
   public void subscribe(final String... channels) {

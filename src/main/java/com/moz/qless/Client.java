@@ -1,6 +1,7 @@
 package com.moz.qless;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -47,11 +48,15 @@ public class Client implements AutoCloseable {
   private static final List<String> KEYS_LIST = new ArrayList<>();
 
   public Client() {
-    this(new JedisPool(ClientHelper.DEFAULT_HOSTNAME));
+    this(ClientHelper.DEFAULT_URI);
   }
 
-  public Client(final String url) {
-    this(new JedisPool(url));
+  public Client(final String uri) {
+    this(URI.create(uri));
+  }
+
+  public Client(final URI uri) {
+    this(new JedisPool(uri));
   }
 
   /**
