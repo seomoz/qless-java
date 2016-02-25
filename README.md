@@ -44,8 +44,8 @@ GPG
 With your GPG keypair generated, you'll need to upload it to the relevant servers:
 
 ```bash
- gpg2 --keyserver hkp://pool.sks-keyservers.net --send-keys <ID>
- ```
+gpg2 --keyserver hkp://pool.sks-keyservers.net --send-keys <ID>
+```
 
 Sonatype Credentials
 --------------------
