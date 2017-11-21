@@ -26,7 +26,7 @@ public enum LuaConfigParameter {
 
   private final String parameter;
 
-  private LuaConfigParameter(final String parameter) {
+  LuaConfigParameter(final String parameter) {
     this.parameter = parameter;
   }
 
