@@ -4,8 +4,6 @@ import java.io.IOException;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
@@ -15,7 +13,6 @@ import com.moz.qless.event.QlessEventListener;
 
 
 public class Events implements AutoCloseable {
-  private static final Logger LOGGER = LoggerFactory.getLogger(Events.class);
   public static final String[] CHANNELS = {
     "canceled",
     "completed",
