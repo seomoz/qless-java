@@ -35,7 +35,7 @@ public class SerialWorkerTest extends IntegrationTest {
     final SerialWorker worker = new SerialWorker(
         Arrays.asList(DEFAULT_QUEUE_NAME),
         this.client, null, 10);
-    IntegrationTestJob.runningHistory.clear();
+    IntegrationTestJob.RUNNING_HISTORY.clear();
 
     final Thread signal = this.getWorkerThread(worker, 2);
 
@@ -56,14 +56,14 @@ public class SerialWorkerTest extends IntegrationTest {
     final SerialWorker worker = new SerialWorker(
         Arrays.asList(DEFAULT_QUEUE_NAME),
         this.client, null, 10);
-    IntegrationTestJob.runningHistory.clear();
+    IntegrationTestJob.RUNNING_HISTORY.clear();
 
     final Thread signal = this.getWorkerThread(worker, 2);
 
     signal.start();
     worker.run();
 
-    assertThat(IntegrationTestJob.runningHistory.get(0),
+    assertThat(IntegrationTestJob.RUNNING_HISTORY.get(0),
         equalTo(DEFAULT_JOB_NAME + ".test"));
   }
 
@@ -75,14 +75,14 @@ public class SerialWorkerTest extends IntegrationTest {
     final SerialWorker worker = new SerialWorker(
         Arrays.asList("foo"),
         this.client, null, 10);
-    IntegrationTestJob.runningHistory.clear();
+    IntegrationTestJob.RUNNING_HISTORY.clear();
 
     final Thread signal = this.getWorkerThread(worker, 2);
 
     signal.start();
     worker.run();
 
-    assertThat(IntegrationTestJob.runningHistory.get(0),
+    assertThat(IntegrationTestJob.RUNNING_HISTORY.get(0),
         equalTo(DEFAULT_JOB_NAME + ".process"));
   }
 
@@ -101,14 +101,14 @@ public class SerialWorkerTest extends IntegrationTest {
     final SerialWorker worker = new SerialWorker(
         Arrays.asList("testA", "testB", "testC"),
         this.client, null, 10);
-    IntegrationTestJob.runningHistory.clear();
+    IntegrationTestJob.RUNNING_HISTORY.clear();
 
     final Thread signal = this.getWorkerThread(worker, 3);
 
     signal.start();
     worker.run();
 
-    assertThat(IntegrationTestJob.runningHistory,
+    assertThat(IntegrationTestJob.RUNNING_HISTORY,
         contains(
             "com.moz.qless.IntegrationTestJob.testA",
             "com.moz.qless.IntegrationTestJob.testB",
