@@ -6,13 +6,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JacksonInject;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import com.moz.qless.lua.LuaCommand;
 import com.moz.qless.lua.LuaConfigParameter;
 import com.moz.qless.utils.JsonUtils;
-
-import org.codehaus.jackson.annotate.JsonCreator;
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.map.annotate.JacksonInject;
 
 public class RecurringJob extends Job {
 
@@ -29,7 +29,7 @@ public class RecurringJob extends Job {
   protected int retries;
 
   @JsonCreator
-  RecurringJob(@JacksonInject("client") final Client client) {
+  RecurringJob(@JacksonInject final Client client) {
       super(client);
   }
 

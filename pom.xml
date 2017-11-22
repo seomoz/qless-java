@@ -73,7 +73,7 @@
           <showWarnings>true</showWarnings>
           <compilerArgs>
             <arg>-Werror</arg>
-            <arg>-Xlint:all</arg>
+            <arg>-Xlint:all,-processing</arg>
           </compilerArgs>
         </configuration>
       </plugin>
@@ -260,14 +260,19 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.codehaus.jackson</groupId>
-      <artifactId>jackson-core-asl</artifactId>
-      <version>1.9.13</version>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+      <version>2.9.2</version>
     </dependency>
     <dependency>
-      <groupId>org.codehaus.jackson</groupId>
-      <artifactId>jackson-mapper-asl</artifactId>
-      <version>1.9.13</version>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
+      <version>2.9.2</version>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>2.9.2</version>
     </dependency>
     <dependency>
       <groupId>redis.clients</groupId>

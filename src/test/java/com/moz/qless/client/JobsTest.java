@@ -11,9 +11,9 @@ import static org.hamcrest.core.IsNull.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-import com.moz.qless.IntegrationTest;
-
 import org.junit.Test;
+
+import com.moz.qless.IntegrationTest;
 
 public class JobsTest extends IntegrationTest {
 

@@ -4,14 +4,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.moz.qless.client.ClientHelper;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.JsonParser;
-import org.codehaus.jackson.map.DeserializationContext;
-import org.codehaus.jackson.map.JsonDeserializer;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.type.JavaType;
+import com.moz.qless.client.ClientHelper;
 
 public class StringArrayDeserializer extends JsonDeserializer<List<String>> {
   @Override
@@ -24,6 +24,6 @@ public class StringArrayDeserializer extends JsonDeserializer<List<String>> {
 
     final JavaType type = new ObjectMapper().getTypeFactory().constructCollectionType(
         List.class, String.class);
-    return new ObjectMapper().reader(type).readValue(node.toString());
+    return new ObjectMapper().readerFor(type).readValue(node.toString());
   }
 }

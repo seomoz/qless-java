@@ -4,16 +4,14 @@ import java.io.IOException;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
 
 import com.moz.qless.event.EventListener;
 import com.moz.qless.event.EventThread;
 import com.moz.qless.event.QlessEventListener;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
 
 
 public class Events implements AutoCloseable {

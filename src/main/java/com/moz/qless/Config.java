@@ -7,12 +7,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.moz.qless.lua.LuaCommand;
 import com.moz.qless.lua.LuaConfigParameter;
 import com.moz.qless.utils.JsonUtils;
-
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.type.JavaType;
 
 public class Config {
   private final Client client;

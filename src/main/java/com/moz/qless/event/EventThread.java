@@ -3,10 +3,10 @@ package com.moz.qless.event;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.moz.qless.Events;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.moz.qless.Events;
 
 public class EventThread extends Thread {
   private static final Logger LOGGER = LoggerFactory.getLogger(EventThread.class);

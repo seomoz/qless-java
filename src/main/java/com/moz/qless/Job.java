@@ -13,7 +13,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JacksonInject;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.common.base.Strings;
+import redis.clients.jedis.exceptions.JedisDataException;
+
 import com.moz.qless.client.ClientHelper;
 import com.moz.qless.lua.LuaCommand;
 import com.moz.qless.lua.LuaConfigParameter;
@@ -21,14 +28,6 @@ import com.moz.qless.utils.JsonUtils;
 import com.moz.qless.utils.MapDeserializer;
 import com.moz.qless.utils.MapUtils;
 import com.moz.qless.utils.StringArrayDeserializer;
-
-import org.codehaus.jackson.annotate.JsonCreator;
-import org.codehaus.jackson.annotate.JsonIgnore;
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.map.annotate.JacksonInject;
-import org.codehaus.jackson.map.annotate.JsonDeserialize;
-
-import redis.clients.jedis.exceptions.JedisDataException;
 
 public class Job {
   @JsonIgnore
@@ -94,7 +93,7 @@ public class Job {
   protected String worker;
 
   @JsonCreator
-  Job(@JacksonInject("client") final Client client) {
+  Job(@JacksonInject final Client client) {
     this.client = client;
   }
 

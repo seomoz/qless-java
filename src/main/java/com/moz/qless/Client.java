@@ -6,18 +6,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import redis.clients.jedis.JedisPool;
+
 import com.moz.qless.client.ClientHelper;
 import com.moz.qless.client.Jobs;
 import com.moz.qless.client.Queues;
 import com.moz.qless.lua.LuaCommand;
 import com.moz.qless.lua.LuaScript;
 import com.moz.qless.utils.JsonUtils;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.type.JavaType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import redis.clients.jedis.JedisPool;
 
 public class Client implements AutoCloseable {
   private static final Logger LOGGER = LoggerFactory.getLogger(Client.class);

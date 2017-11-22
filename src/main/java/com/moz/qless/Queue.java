@@ -8,17 +8,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.databind.InjectableValues;
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Preconditions;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.Transaction;
+
 import com.moz.qless.client.ClientHelper;
 import com.moz.qless.lua.LuaCommand;
 import com.moz.qless.lua.LuaConfigParameter;
 import com.moz.qless.utils.JsonUtils;
-import org.codehaus.jackson.map.InjectableValues;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.type.JavaType;
-
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.Transaction;
 
 public final class Queue {
 
@@ -146,7 +146,7 @@ public final class Queue {
     }
 
     final InjectableValues injectables = new InjectableValues.Std().addValue(
-        "client",
+        this.client.getClass(),
         this.client);
 
     final JavaType javaType = new ObjectMapper().getTypeFactory()
@@ -170,7 +170,8 @@ public final class Queue {
       return Collections.emptyList();
     }
 
-    final InjectableValues injectables = new InjectableValues.Std().addValue("client",
+    final InjectableValues injectables = new InjectableValues.Std().addValue(
+        this.client.getClass(),
         this.client);
 
     final JavaType javaType = new ObjectMapper().getTypeFactory()
