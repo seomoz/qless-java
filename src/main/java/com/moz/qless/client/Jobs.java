@@ -57,9 +57,9 @@ public class Jobs {
   }
 
   /**
-   * If no group is provided, this returns a JSON blob of the counts of the various types
-   * of failures known. If a group is provided, returns paginated job objects affected by
-   * that kind of failure.
+   * If no group is provided, this returns a JSON blob of the counts
+   * of the various types of failures known. If a group is provided,
+   * returns paginated job objects affected by that kind of failure.
    */
   public List<String> failed(final String group, final int start, final int limit)
       throws IOException {

@@ -345,9 +345,10 @@ public class Job {
   }
 
   /**
-   * Load the module containing your class, and run the appropriate method.
-   * For example, if this job was popped from the queue "testing", then this
-   * would invoke the "testing" method of your class.
+   * Load the module containing your class, and run the appropriate
+   * method. For example, if this job was popped from the queue
+   * "testing", then this would invoke the "testing" method of your
+   * class.
    */
   public void process() throws IOException {
     Class<?> cls;
