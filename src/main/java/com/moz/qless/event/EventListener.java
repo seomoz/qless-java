@@ -3,12 +3,11 @@ package com.moz.qless.event;
 import java.io.IOException;
 import java.util.Collection;
 
-import com.moz.qless.Events;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import redis.clients.jedis.JedisPubSub;
+
+import com.moz.qless.Events;
 
 public class EventListener extends JedisPubSub {
   private static final Logger LOGGER = LoggerFactory.getLogger(EventListener.class);

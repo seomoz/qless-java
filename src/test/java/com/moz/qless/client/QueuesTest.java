@@ -6,10 +6,10 @@ import java.util.List;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
+import org.junit.Test;
+
 import com.moz.qless.IntegrationTest;
 import com.moz.qless.QueueCounts;
-
-import org.junit.Test;
 
 
 public class QueuesTest extends IntegrationTest {

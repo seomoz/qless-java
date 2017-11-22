@@ -10,14 +10,13 @@ import static org.hamcrest.Matchers.*;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
-
-import com.moz.qless.event.QlessEventListener;
-import com.moz.qless.lua.LuaConfigParameter;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.moz.qless.event.QlessEventListener;
+import com.moz.qless.lua.LuaConfigParameter;
 
 public class EventsTest extends IntegrationTest {
   private static final Logger LOGGER = LoggerFactory.getLogger(EventsTest.class);

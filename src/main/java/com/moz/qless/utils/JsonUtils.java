@@ -2,12 +2,12 @@ package com.moz.qless.utils;
 
 import java.io.IOException;
 
-import com.moz.qless.client.ClientHelper;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.InjectableValues;
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.codehaus.jackson.map.DeserializationConfig.Feature;
-import org.codehaus.jackson.map.InjectableValues;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.type.JavaType;
+import com.moz.qless.client.ClientHelper;
 
 public class JsonUtils {
   public static <T> T parse(final String json, final Class<T> klass) throws IOException {
@@ -34,9 +34,9 @@ public class JsonUtils {
     }
 
     final ObjectMapper mapper = new ObjectMapper();
-    mapper.configure(Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-    return mapper.reader(klass).withInjectableValues(injectables).readValue(json);
+    return mapper.readerFor(klass).with(injectables).readValue(json);
   }
 
   public static <T> T parse(final String json, final JavaType javaType,
@@ -46,9 +46,9 @@ public class JsonUtils {
     }
 
     final ObjectMapper mapper = new ObjectMapper();
-    mapper.configure(Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-    return mapper.reader(javaType).withInjectableValues(injectables).readValue(json);
+    return mapper.readerFor(javaType).with(injectables).readValue(json);
   }
 
   public static String stringify(final Object obj) throws IOException {

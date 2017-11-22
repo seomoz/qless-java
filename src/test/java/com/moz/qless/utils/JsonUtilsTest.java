@@ -8,15 +8,15 @@ import java.util.List;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
+import com.fasterxml.jackson.databind.InjectableValues;
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.Resources;
-import com.moz.qless.Client;
-import com.moz.qless.Job;
-
-import org.codehaus.jackson.map.InjectableValues;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.type.JavaType;
 import org.easymock.EasyMock;
 import org.junit.Test;
+
+import com.moz.qless.Client;
+import com.moz.qless.Job;
 
 public class JsonUtilsTest {
 
@@ -25,7 +25,8 @@ public class JsonUtilsTest {
     final String json = Resources.toString(
         Resources.getResource(JsonUtilsTest.class, "job.json"), Charset.defaultCharset());
 
-    final InjectableValues injectables = new InjectableValues.Std().addValue("client",
+    final InjectableValues injectables = new InjectableValues.Std().addValue(
+        Client.class,
         EasyMock.createNiceMock(Client.class));
     final Job job = JsonUtils.parse(json, Job.class, injectables);
 
@@ -90,7 +91,8 @@ public class JsonUtilsTest {
     final String json = Resources
         .toString(Resources.getResource(JsonUtilsTest.class, "jobs.json"),
             Charset.defaultCharset());
-    final InjectableValues injectables = new InjectableValues.Std().addValue("client",
+    final InjectableValues injectables = new InjectableValues.Std().addValue(
+        Client.class,
         EasyMock.createNiceMock(Client.class));
 
     final JavaType javaType = new ObjectMapper().getTypeFactory()

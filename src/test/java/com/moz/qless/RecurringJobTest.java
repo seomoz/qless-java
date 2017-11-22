@@ -7,9 +7,10 @@ import java.util.Map;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-import com.moz.qless.client.ClientHelper;
 import org.junit.Assert;
 import org.junit.Test;
+
+import com.moz.qless.client.ClientHelper;
 
 public class RecurringJobTest extends IntegrationTest {
   @Test

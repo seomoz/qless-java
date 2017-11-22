@@ -6,11 +6,11 @@ import java.util.Map;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-import com.moz.qless.client.ClientHelper;
-import com.moz.qless.lua.LuaConfigParameter;
-
 import org.hamcrest.Matchers;
 import org.junit.Test;
+
+import com.moz.qless.client.ClientHelper;
+import com.moz.qless.lua.LuaConfigParameter;
 
 public class ConfigTest extends IntegrationTest {
   private final String testKey = "foo";

@@ -7,16 +7,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.databind.InjectableValues;
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.moz.qless.Client;
 import com.moz.qless.Job;
 import com.moz.qless.lua.LuaCommand;
 import com.moz.qless.RecurringJob;
 import com.moz.qless.utils.JsonUtils;
-
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.InjectableValues;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.type.JavaType;
 
 public class Jobs {
   private final Client client;
@@ -64,10 +64,10 @@ public class Jobs {
   public List<String> failed(final String group, final int start, final int limit)
       throws IOException {
     final Object result = this.client.call(
-	    LuaCommand.FAILED,
-	    group,
-      start,
-      limit);
+        LuaCommand.FAILED,
+        group,
+        start,
+        limit);
 
     final ObjectMapper mapper = new ObjectMapper();
     final JsonNode resultObj = mapper.readTree(result.toString());
@@ -86,7 +86,7 @@ public class Jobs {
         jids);
 
     final InjectableValues inject = new InjectableValues.Std().addValue(
-        "client",
+        this.client.getClass(),
         this.client);
 
     final JavaType javaType = new ObjectMapper().getTypeFactory()
@@ -107,13 +107,13 @@ public class Jobs {
   public Job get(final String jid) throws IOException {
     Class<? extends Job> klass = Job.class;
     Object result = this.client.call(
-	    LuaCommand.GET,
-	    jid);
+        LuaCommand.GET,
+        jid);
 
     if (null == result) {
       result = this.client.call(
-	      LuaCommand.RECUR_GET,
-	      jid);
+          LuaCommand.RECUR_GET,
+          jid);
       if (null == result) {
         return null;
       }
@@ -122,7 +122,7 @@ public class Jobs {
 
     final String json = result.toString();
     final InjectableValues inject = new InjectableValues.Std().addValue(
-	    "client",
+      this.client.getClass(),
       this.client);
     return JsonUtils.parse(json, klass, inject);
   }
@@ -137,11 +137,11 @@ public class Jobs {
   public List<String> tagged(final String tag, final int offset, final int count)
       throws IOException {
     final Object result = this.client.call(
-	    LuaCommand.TAG,
-      LuaCommand.GET,
-      tag,
-      offset,
-      count);
+        LuaCommand.TAG,
+        LuaCommand.GET,
+        tag,
+        offset,
+        count);
 
     final ObjectMapper mapper = new ObjectMapper();
     final JsonNode resultObj = mapper.readTree(result.toString());
@@ -161,7 +161,8 @@ public class Jobs {
     final ObjectMapper mapper = new ObjectMapper();
     final JsonNode resultObj = mapper.readTree(result.toString());
 
-    final InjectableValues injectables = new InjectableValues.Std().addValue("client",
+    final InjectableValues injectables = new InjectableValues.Std().addValue(
+        this.client.getClass(),
         this.client);
     final JavaType javaType = new ObjectMapper().getTypeFactory()
         .constructCollectionType(ArrayList.class, Job.class);

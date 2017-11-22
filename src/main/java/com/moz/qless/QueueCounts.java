@@ -1,8 +1,7 @@
 package com.moz.qless;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
-
-import org.codehaus.jackson.annotate.JsonProperty;
 
 public class QueueCounts {
   @JsonProperty("name")
