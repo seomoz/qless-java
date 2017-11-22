@@ -18,7 +18,7 @@ public class EventThread extends Thread {
 
   @Override
   public void run() {
-    EventThread.LOGGER.debug("Run loop starting");
+    LOGGER.debug("Run loop starting");
     final List<String> channelList = new ArrayList<>();
 
     for (final String channel : Events.CHANNELS) {
@@ -30,6 +30,6 @@ public class EventThread extends Thread {
 
     this.events.subscribe(channels);
 
-    EventThread.LOGGER.debug("Run loop ending");
+    LOGGER.debug("Run loop ending");
   }
 }

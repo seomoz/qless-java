@@ -184,7 +184,7 @@ public class EventsTest extends IntegrationTest {
 
     @Override
     public void fire(final String channel, final Object event) {
-      EventsTest.LOGGER.debug("fire {}", event);
+      LOGGER.debug("fire {}", event);
       this.eventsByChannel.put(channel, event);
     }
 

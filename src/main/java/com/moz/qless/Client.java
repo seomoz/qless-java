@@ -20,6 +20,7 @@ import com.moz.qless.lua.LuaScript;
 import com.moz.qless.utils.JsonUtils;
 
 public class Client implements AutoCloseable {
+  private static final List<String> KEYS_LIST = new ArrayList<>();
   private static final Logger LOGGER = LoggerFactory.getLogger(Client.class);
 
   private final JedisPool jedisPool;
@@ -44,8 +45,6 @@ public class Client implements AutoCloseable {
 
   private final LuaScript luaScript;
   private final Queues queues;
-
-  private static final List<String> KEYS_LIST = new ArrayList<>();
 
   public Client() {
     this(ClientHelper.DEFAULT_URI);
@@ -95,9 +94,9 @@ public class Client implements AutoCloseable {
       }
     }
 
-    Client.LOGGER.debug("{}", argsList);
+    LOGGER.debug("{}", argsList);
 
-    return this.luaScript.call(Client.KEYS_LIST, argsList);
+    return this.luaScript.call(KEYS_LIST, argsList);
   }
 
   public Object call(final String command, final Object... args) throws IOException {

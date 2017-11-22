@@ -16,6 +16,7 @@ import redis.clients.util.SafeEncoder;
 public class LuaScript {
   private static final Logger LOGGER = LoggerFactory.getLogger(LuaScript.class);
   private static final String SCRIPT = "qless.lua";
+
   private final JedisPool jedisPool;
   private byte[] scriptContents;
   private String encodedSha1;
@@ -34,7 +35,7 @@ public class LuaScript {
   private byte[] scriptContents() throws IOException {
     if (null == this.scriptContents) {
       this.scriptContents = Resources
-          .toByteArray(Resources.getResource(LuaScript.SCRIPT));
+          .toByteArray(Resources.getResource(SCRIPT));
     }
 
     return this.scriptContents;
@@ -44,9 +45,9 @@ public class LuaScript {
     if (null == this.encodedSha1) {
       final byte[] script = this.scriptContents();
       this.encodedSha1 = SafeEncoder.encode(jedis.scriptLoad(script));
-      LuaScript.LOGGER.info(
+      LOGGER.info(
           "{} ({} bytes) uploaded to redis, sha1={}",
-          LuaScript.SCRIPT,
+          SCRIPT,
           new DecimalFormat("#,##0.#").format(script.length),
           this.encodedSha1);
     }

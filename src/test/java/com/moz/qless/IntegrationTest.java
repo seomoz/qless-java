@@ -8,22 +8,23 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
 public class IntegrationTest {
-  private final JedisPool jedisPool = new JedisPool();
-  protected Client client;
-  protected Queue queue;
   protected static final String DEFAULT_NAME = "foo";
   protected static final String DEFAULT_JOB_CLASS_NAME =
     IntegrationTestJob.class.getName();
 
+  private final JedisPool jedisPool = new JedisPool();
+  protected Client client;
+  protected Queue queue;
+
   @Before
   public void setupQueues() throws IOException {
     this.client = this.create();
-    this.queue = new Queue(this.client, IntegrationTest.DEFAULT_NAME);
+    this.queue = new Queue(this.client, DEFAULT_NAME);
     IntegrationTestJob.runningHistory.clear();
   }
 
   protected JobSpec jobSpec() {
-    return jobSpec(IntegrationTest.DEFAULT_NAME);
+    return jobSpec(DEFAULT_NAME);
   }
 
   protected JobSpec jobSpec(final String klass) {

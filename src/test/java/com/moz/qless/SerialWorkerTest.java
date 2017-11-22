@@ -29,11 +29,11 @@ public class SerialWorkerTest extends IntegrationTest {
 
   @Test
   public void workerMeta() throws IOException, InterruptedException {
-    final Queue queue = this.client.getQueue(SerialWorkerTest.DEFAULT_QUEUE_NAME);
+    final Queue queue = this.client.getQueue(DEFAULT_QUEUE_NAME);
     final String jid = queue.put(jobSpec());
 
     final SerialWorker worker = new SerialWorker(
-        Arrays.asList(SerialWorkerTest.DEFAULT_QUEUE_NAME),
+        Arrays.asList(DEFAULT_QUEUE_NAME),
         this.client, null, 10);
     IntegrationTestJob.runningHistory.clear();
 
@@ -50,11 +50,11 @@ public class SerialWorkerTest extends IntegrationTest {
 
   @Test
   public void singleQueue() throws IOException, InterruptedException {
-    final Queue queue = this.client.getQueue(SerialWorkerTest.DEFAULT_QUEUE_NAME);
+    final Queue queue = this.client.getQueue(DEFAULT_QUEUE_NAME);
     queue.put(jobSpec(DEFAULT_JOB_NAME));
 
     final SerialWorker worker = new SerialWorker(
-        Arrays.asList(SerialWorkerTest.DEFAULT_QUEUE_NAME),
+        Arrays.asList(DEFAULT_QUEUE_NAME),
         this.client, null, 10);
     IntegrationTestJob.runningHistory.clear();
 
@@ -64,7 +64,7 @@ public class SerialWorkerTest extends IntegrationTest {
     worker.run();
 
     assertThat(IntegrationTestJob.runningHistory.get(0),
-        equalTo(SerialWorkerTest.DEFAULT_JOB_NAME + ".test"));
+        equalTo(DEFAULT_JOB_NAME + ".test"));
   }
 
   @Test
@@ -83,7 +83,7 @@ public class SerialWorkerTest extends IntegrationTest {
     worker.run();
 
     assertThat(IntegrationTestJob.runningHistory.get(0),
-        equalTo(SerialWorkerTest.DEFAULT_JOB_NAME + ".process"));
+        equalTo(DEFAULT_JOB_NAME + ".process"));
   }
 
   @Test
