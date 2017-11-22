@@ -19,7 +19,7 @@ public enum JobStatus {
 
   private final String status;
 
-  private JobStatus(final String status) {
+  JobStatus(final String status) {
     this.status = status;
   }
 

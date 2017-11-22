@@ -1,6 +1,6 @@
 package com.moz.qless;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 
@@ -63,7 +63,7 @@ public class QueueCounts {
 
   @Override
   public String toString() {
-    return Objects
+    return MoreObjects
       .toStringHelper(this)
       .add("name", this.name)
       .add(JobStatus.PAUSED.toString(), this.paused)

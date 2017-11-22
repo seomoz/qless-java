@@ -95,7 +95,6 @@
     </module>
     <module name="OneStatementPerLine"/>
     <module name="PackageDeclaration"/>
-    <module name="RedundantThrows"/>
     <module name="SimplifyBooleanExpression"/>
     <module name="SimplifyBooleanReturn">
       <!-- If there are no violations, keep -->

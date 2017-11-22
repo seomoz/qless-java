@@ -43,7 +43,7 @@ public enum LuaCommand {
 
   private final String command;
 
-  private LuaCommand(final String command) {
+  LuaCommand(final String command) {
     this.command = command;
   }
 
