@@ -274,7 +274,7 @@ public class JobTest extends IntegrationTest {
 
     queue.pop().process();
 
-    assertThat(IntegrationTestJob.runningHistory,
+    assertThat(IntegrationTestJob.RUNNING_HISTORY,
         contains("com.moz.qless.IntegrationTestJob.test"));
   }
 
@@ -295,7 +295,7 @@ public class JobTest extends IntegrationTest {
 
     queue.pop().process();
     assertThat(
-      IntegrationTestJob.runningHistory,
+      IntegrationTestJob.RUNNING_HISTORY,
       contains(DEFAULT_JOB_CLASS_NAME + "." + ClientHelper.DEFAULT_JOB_METHOD));
   }
 

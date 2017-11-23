@@ -20,7 +20,7 @@ public class IntegrationTest {
   public void setupQueues() throws IOException {
     this.client = this.create();
     this.queue = new Queue(this.client, DEFAULT_NAME);
-    IntegrationTestJob.runningHistory.clear();
+    IntegrationTestJob.RUNNING_HISTORY.clear();
   }
 
   protected JobSpec jobSpec() {
