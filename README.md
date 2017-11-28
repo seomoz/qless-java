@@ -23,7 +23,6 @@ A `Vagrantfile` is provided to bring up a development environment. With
 vagrant up
 vagrant ssh
 # On the vagrant machine
-cd /vagrant/
 mvn clean test
 ```
 
