@@ -8,8 +8,6 @@ import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 import org.kohsuke.args4j.spi.StringArrayOptionHandler;
 
-import redis.clients.jedis.JedisPool;
-
 public class Worker {
   @Option(name = "-host", usage = "The url to connect to Redis")
   public String host = "localhost";
@@ -36,13 +34,14 @@ public class Worker {
     }
 
     try {
-      final JedisPool jedisPool = new JedisPool(worker.host);
-      final Client client = new Client(jedisPool);
+      final Client client = Client.builder()
+        .jedisUri(worker.host)
+        .workerName(worker.name)
+        .build();
 
       final SerialWorker serialWorker = new SerialWorker(
           Arrays.asList(worker.queues),
           client,
-          worker.name,
           worker.inverval);
 
       serialWorker.run();

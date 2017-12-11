@@ -65,6 +65,6 @@ public class ClientTest extends IntegrationTest {
 
   @Test
   public void redisUrlBasic() throws IOException {
-    new Client("redis://localhost:6379/");
+    Client.builder().jedisUri("redis://localhost:6379/").build();
   }
 }

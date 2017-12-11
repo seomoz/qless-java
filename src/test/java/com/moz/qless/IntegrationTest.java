@@ -36,6 +36,6 @@ public class IntegrationTest {
       jedis.flushDB();
     }
 
-    return new Client(this.jedisPool);
+    return Client.builder().jedisPool(this.jedisPool).build();
   }
 }
