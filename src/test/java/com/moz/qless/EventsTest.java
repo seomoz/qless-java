@@ -19,6 +19,7 @@ import com.moz.qless.event.QlessEventListener;
 import com.moz.qless.lua.LuaConfigParameter;
 
 public class EventsTest extends IntegrationTest {
+  private static final long SLEEP_MS = 500;
   private static final Logger LOGGER = LoggerFactory.getLogger(EventsTest.class);
   private Job untracked, tracked;
 
@@ -44,7 +45,7 @@ public class EventsTest extends IntegrationTest {
       .on("none")
       .fire(eventCapture);
 
-    Thread.sleep(100);
+    Thread.sleep(SLEEP_MS);
 
     assertThat(eventCapture.jidsForEvent("none"),
       is(empty()));
@@ -62,7 +63,7 @@ public class EventsTest extends IntegrationTest {
     this.tracked.cancel();
     this.untracked.cancel();
 
-    Thread.sleep(100);
+    Thread.sleep(SLEEP_MS);
 
     assertThat(eventCapture.jidsForEvent(JobStatus.CANCELED.toString()),
       hasSize(1));
@@ -83,7 +84,7 @@ public class EventsTest extends IntegrationTest {
       job.complete();
     }
 
-    Thread.sleep(100);
+    Thread.sleep(SLEEP_MS);
 
     assertThat(eventCapture.jidsForEvent(JobStatus.COMPLETED.toString()),
       hasSize(1));
@@ -104,7 +105,7 @@ public class EventsTest extends IntegrationTest {
       job.fail("foo", "bar");
     }
 
-    Thread.sleep(100);
+    Thread.sleep(SLEEP_MS);
 
     assertThat(eventCapture.jidsForEvent(JobStatus.FAILED.toString()),
       hasSize(1));
@@ -123,7 +124,7 @@ public class EventsTest extends IntegrationTest {
 
     this.queue.pop(10);
 
-    Thread.sleep(100);
+    Thread.sleep(SLEEP_MS);
 
     assertThat(eventCapture.jidsForEvent(JobStatus.POPPED.toString()),
       hasSize(1));
@@ -143,7 +144,7 @@ public class EventsTest extends IntegrationTest {
     this.tracked.requeue("other");
     this.untracked.requeue("other");
 
-    Thread.sleep(100);
+    Thread.sleep(SLEEP_MS);
 
     assertThat(eventCapture.jidsForEvent(JobStatus.PUT.toString()),
       hasSize(1));
@@ -170,7 +171,7 @@ public class EventsTest extends IntegrationTest {
     this.queue.pop(2);
     this.queue.pop(2);
 
-    Thread.sleep(100);
+    Thread.sleep(SLEEP_MS);
 
     assertThat(eventCapture.jidsForEvent(JobStatus.STALLED.toString()),
       hasSize(1));

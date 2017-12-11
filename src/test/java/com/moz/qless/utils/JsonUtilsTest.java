@@ -7,12 +7,12 @@ import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.mockito.Mockito.mock;
 
 import com.fasterxml.jackson.databind.InjectableValues;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.Resources;
-import org.easymock.EasyMock;
 import org.junit.Test;
 
 import com.moz.qless.Client;
@@ -27,7 +27,7 @@ public class JsonUtilsTest {
 
     final InjectableValues injectables = new InjectableValues.Std().addValue(
         Client.class,
-        EasyMock.createNiceMock(Client.class));
+        mock(Client.class));
     final Job job = JsonUtils.parse(json, Job.class, injectables);
 
     assertThat(job.getJid(),
@@ -93,7 +93,7 @@ public class JsonUtilsTest {
             Charset.defaultCharset());
     final InjectableValues injectables = new InjectableValues.Std().addValue(
         Client.class,
-        EasyMock.createNiceMock(Client.class));
+        mock(Client.class));
 
     final JavaType javaType = new ObjectMapper().getTypeFactory()
         .constructCollectionType(ArrayList.class, Job.class);

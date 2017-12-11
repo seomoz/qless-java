@@ -8,6 +8,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import redis.clients.jedis.JedisPool;
@@ -19,7 +20,7 @@ import com.moz.qless.lua.LuaCommand;
 import com.moz.qless.lua.LuaScript;
 import com.moz.qless.utils.JsonUtils;
 
-public class Client implements AutoCloseable {
+public final class Client implements AutoCloseable {
   private static final List<String> KEYS_LIST = new ArrayList<>();
   private static final Logger LOGGER = LoggerFactory.getLogger(Client.class);
 
@@ -45,17 +46,63 @@ public class Client implements AutoCloseable {
 
   private final LuaScript luaScript;
   private final Queues queues;
+  private final String workerName;
 
-  public Client() {
-    this(ClientHelper.DEFAULT_URI);
-  }
+  public static final class Builder {
+    private JedisPool jedisPool;
+    private String workerName;
 
-  public Client(final String uri) {
-    this(URI.create(uri));
-  }
+    public Builder() {
+      this.workerName = defaultWorkerName();
+    }
 
-  public Client(final URI uri) {
-    this(new JedisPool(uri));
+    public Builder jedisUri(final String uri) {
+      return jedisUri(URI.create(uri));
+    }
+
+    public Builder jedisUri(final URI uri) {
+      resetJedis();
+      jedisPool = new JedisPool(uri);
+      return this;
+    }
+
+    /**
+     * Note that this assumes ownership of the passed in JedisPool,
+     * and it will be closed if the jedisPool is reassigned or if the
+     * the eventually created Client is closed.
+     */
+    public Builder jedisPool(final JedisPool jedisPool) {
+      resetJedis();
+      this.jedisPool = jedisPool;
+      return this;
+    }
+
+    public Builder workerName(final String workerName) {
+      if (Strings.isNullOrEmpty(workerName)) {
+        this.workerName = defaultWorkerName();
+      } else {
+        this.workerName = workerName;
+      }
+      return this;
+    }
+
+    public Client build() {
+      if (jedisPool == null) {
+        jedisUri(ClientHelper.DEFAULT_URI);
+      }
+      return new Client(jedisPool, workerName);
+    }
+
+    private void resetJedis() {
+      if (jedisPool != null) {
+        jedisPool.close();
+        jedisPool = null;
+      }
+    }
+
+    private String defaultWorkerName() {
+      return ClientHelper.getHostName() + "-" + ClientHelper.getPid();
+    }
   }
 
   /**
@@ -63,13 +110,18 @@ public class Client implements AutoCloseable {
    * JedisPool, and it will be closed by the corresponding
    * Client#close method.
    */
-  public Client(final JedisPool jedisPool) {
+  private Client(final JedisPool jedisPool, final String workerName) {
     this.jedisPool = jedisPool;
     this.luaScript = new LuaScript(this.jedisPool);
     this.config = new Config(this);
     this.events = new Events(this.jedisPool);
     this.jobs = new Jobs(this);
     this.queues = new Queues(this);
+    this.workerName = workerName;
+  }
+
+  public static Builder builder() {
+    return new Builder();
   }
 
   @Override
@@ -155,7 +207,7 @@ public class Client implements AutoCloseable {
   }
 
   public String workerName() {
-    return ClientHelper.getHostName() + "-" + ClientHelper.getPid();
+    return this.workerName;
   }
 
   public Queues getQueues() {

@@ -6,7 +6,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +18,6 @@ public class SerialWorker {
   private final List<Queue> queues =
       new ArrayList<>();
 
-  private String workerName;
   private String currentJid;
   private final int intervalInSeconds;
 
@@ -29,7 +27,7 @@ public class SerialWorker {
   public SerialWorker(
       final List<String> queueNameList,
       final Client client,
-      final String workerName, final int intervalInSeconds) {
+      final int intervalInSeconds) {
 
     Preconditions.checkArgument(
         (null != queueNameList) && (!queueNameList.isEmpty()),
@@ -43,14 +41,6 @@ public class SerialWorker {
 
     this.client = client;
     this.intervalInSeconds = intervalInSeconds;
-
-    if (Strings.isNullOrEmpty(workerName)) {
-      this.setWorkerName(this.client.workerName());
-    } else {
-      this.setWorkerName(workerName
-          + "-"
-          + this.client.workerName());
-    }
 
     for (final String queueName : queueNameList) {
       this.queues.add(this.client.getQueue(queueName));
@@ -122,13 +112,5 @@ public class SerialWorker {
 
   public void setCurrentJid(final String currentJid) {
     this.currentJid = currentJid;
-  }
-
-  public String getWorkerName() {
-    return this.workerName;
-  }
-
-  private void setWorkerName(final String workerName) {
-    this.workerName = workerName;
   }
 }

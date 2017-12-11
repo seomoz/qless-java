@@ -34,7 +34,7 @@ public class SerialWorkerTest extends IntegrationTest {
 
     final SerialWorker worker = new SerialWorker(
         Arrays.asList(DEFAULT_QUEUE_NAME),
-        this.client, null, 10);
+        this.client, 10);
     IntegrationTestJob.RUNNING_HISTORY.clear();
 
     final Thread signal = this.getWorkerThread(worker, 2);
@@ -42,10 +42,7 @@ public class SerialWorkerTest extends IntegrationTest {
     signal.start();
     worker.run();
 
-    assertThat(worker.getCurrentJid(),
-        equalTo(jid));
-    assertThat(worker.getWorkerName(),
-        equalTo(this.client.workerName()));
+    assertThat(worker.getCurrentJid(), equalTo(jid));
   }
 
   @Test
@@ -55,7 +52,7 @@ public class SerialWorkerTest extends IntegrationTest {
 
     final SerialWorker worker = new SerialWorker(
         Arrays.asList(DEFAULT_QUEUE_NAME),
-        this.client, null, 10);
+        this.client, 10);
     IntegrationTestJob.RUNNING_HISTORY.clear();
 
     final Thread signal = this.getWorkerThread(worker, 2);
@@ -74,7 +71,7 @@ public class SerialWorkerTest extends IntegrationTest {
 
     final SerialWorker worker = new SerialWorker(
         Arrays.asList("foo"),
-        this.client, null, 10);
+        this.client, 10);
     IntegrationTestJob.RUNNING_HISTORY.clear();
 
     final Thread signal = this.getWorkerThread(worker, 2);
@@ -100,7 +97,7 @@ public class SerialWorkerTest extends IntegrationTest {
 
     final SerialWorker worker = new SerialWorker(
         Arrays.asList("testA", "testB", "testC"),
-        this.client, null, 10);
+        this.client, 10);
     IntegrationTestJob.RUNNING_HISTORY.clear();
 
     final Thread signal = this.getWorkerThread(worker, 3);
