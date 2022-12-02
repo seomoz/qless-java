@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
-import redis.clients.util.SafeEncoder;
+import redis.clients.jedis.util.SafeEncoder;
 
 public class LuaScript {
   private static final Logger LOGGER = LoggerFactory.getLogger(LuaScript.class);

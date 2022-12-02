@@ -3,10 +3,10 @@
 set -e
 
 # JDK 8
-sudo add-apt-repository -y ppa:webupd8team/java
+sudo -E add-apt-repository ppa:openjdk-r/ppa
 echo debconf shared/accepted-oracle-license-v1-1 select true | sudo debconf-set-selections
 sudo apt-get update
-sudo apt-get install -y oracle-java8-installer
+sudo apt-get install -y openjdk-8-jdk
 
 # Some dependencies
 sudo apt-get update
